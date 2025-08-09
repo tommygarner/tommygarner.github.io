@@ -20,6 +20,10 @@ I love to learn about coding and solving problems, and I'm currently trying to c
 
 ## Blog
 
+{% for post in site.posts limit:3 %}
+* [{{ post.title }}]({{ post.url | relative_url }})
+{% endfor %}
+
 * **[Latest Blog Post Title](URL_to_Latest_Blog_Post)**
     * *A short summary of your latest post.*
 * **[Previous Blog Post Title](URL_to_Previous_Blog_Post)**
