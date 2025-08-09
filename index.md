@@ -7,7 +7,9 @@ title: Home
 
 I love to learn about coding and solving problems, and I'm currently trying to create a Github Pages to host these projects and blogs as I continue learning. I'm enrolled at the Univeristy of Texas at Austin's Masters of Science in Business Analytics program, so a lot of my work will feature academic projects along with passion projects as I try out new tools.
 
-## Projects
+## Featured Projects
+
+Here are some of my favorite recent projects. Each one is a detailed write-up of my work, including code, visuals, and my thoughts.
 
 * **[Project 1 Title](URL_to_Project_1_Page)**
     * *A brief, one-sentence description of Project 1.*
@@ -17,19 +19,6 @@ I love to learn about coding and solving problems, and I'm currently trying to c
     * *A brief, one-sentence description of Project 3.*
 
 [See all projects →](URL_to_your_projects_page_if_you_create_one)
-
-## Blog
-
-{% for post in site.posts limit:3 %}
-* [{{ post.title }}]({{ post.url | relative_url }})
-{% endfor %}
-
-* **[Latest Blog Post Title](URL_to_Latest_Blog_Post)**
-    * *A short summary of your latest post.*
-* **[Previous Blog Post Title](URL_to_Previous_Blog_Post)**
-    * *A short summary of a previous post.*
-
-[Read more on the blog →](URL_to_your_blog_index_page)
 
 ## About Me
 
