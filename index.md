@@ -15,7 +15,7 @@ Here are some of my favorite recent projects. Each one is a detailed write-up of
     * *A brief, one-sentence description of Project 1.*
 * **[Project 2 Title](URL_to_Project_2_Page)**
     * *A brief, one-sentence description of Project 2.*
-* **[Project 3 Title](URL_to_Project_3_Page)**
+* **[Test Data Analysis Project](/projects/test-data-analysis-project.html)**
     * *A brief, one-sentence description of Project 3.*
 
 [See all projects →](URL_to_your_projects_page_if_you_create_one)
