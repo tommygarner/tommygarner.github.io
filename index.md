@@ -11,7 +11,7 @@ I love to solve complex problems, and I'm currently trying to create a Github Pa
 
 Here are some of my favorite recent projects. Each one is a detailed write-up of my work, including code, visuals, and my thoughts.
 
-* **[Scoring the DGPT](https://tommygarner.github.io/projects/discgolf/holesandcourses/blog.html)**
+* **[Scoring the DGPT](https://tommygarner.github.io/projects/discgolf/holesandcourses/blog.md)**
     * *A brief, one-sentence description of Project 1.*
 * **[Project 2 Title](URL_to_Project_2_Page)**
     * *A brief, one-sentence description of Project 2.*
