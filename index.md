@@ -5,7 +5,7 @@ title: Home
 
 # Hi, I'm Tommy Garner!
 
-I love to learn about coding and solving problems, and I'm currently trying to create a Github Pages to host these projects and blogs as I continue learning. I'm enrolled at the Univeristy of Texas at Austin's Masters of Science in Business Analytics program, so a lot of my work will feature academic projects along with passion projects as I try out new tools.
+I love to solve complex problems, and I'm currently trying to create a Github Pages to host these projects and blogs as I continue learning. I'm enrolled at the Univeristy of Texas at Austin's Masters of Science in Business Analytics program, so a lot of my work will feature academic projects along with passion projects as I try out new tools.
 
 ## Featured Projects
 
