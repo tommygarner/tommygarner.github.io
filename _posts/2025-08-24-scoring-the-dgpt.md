@@ -21,7 +21,7 @@ To answer these questions, I chose to turn to the raw data.
 
 How can we use analytics to determine the difficulty of a course or a specific hole? What determines difficulty? Is it subjective?
 
-The following poll was found on Reddit that polled nearly 440 responses on r/discgolf asking that very question: *What determines difficulty?*
+The following poll was found on [Reddit]([url](https://www.reddit.com/r/discgolf/comments/u0whi7/how_do_you_determine_the_difficulty_of_a_course/)) that polled nearly 440 responses on r/discgolf asking that very question: *What determines difficulty?*
 
 | What determines difficulty? | Number of responses |
 | :--- | :--- |
