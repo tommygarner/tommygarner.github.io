@@ -8,7 +8,7 @@ I love playing and watching disc golf, but I'm no good. I just play for fun. The
 
 In my 3 years of playing, I've brought along friends and had some of the deepest conversations on the course. I've made incredible shots on video and have used UDisc as my Strava equivalent. Eventually, as everyone does, I came across Jomez.
 
-[JomezPro]([url](https://www.youtube.com/@JomezPro)) is a disc golf media channel that captures a large majority of content on the Disc Golf Pro Tour (DGPT). The channel features lead cards from every round while also incorporating highlight plays from the Chase cards and other players in competition.
+[JomezPro]([[url](https://www.youtube.com/@JomezPro)]) is a disc golf media channel that captures a large majority of content on the Disc Golf Pro Tour (DGPT). The channel features lead cards from every round while also incorporating highlight plays from the Chase cards and other players in competition.
 
 I love JomezPro. The content is pure. Scorecards are clean. Video editing is sharp. And the BigSexyCommentary can always make me chuckle.
 
