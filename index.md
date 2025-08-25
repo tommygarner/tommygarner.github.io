@@ -11,7 +11,7 @@ I love to solve complex problems, and I'm currently trying to create a Github Pa
 
 Here are some of my favorite recent projects. Each one is a detailed write-up of my work, including code, visuals, and my thoughts.
 
-* **[Scoring the DGPT]([https://tommygarner.github.io/_posts/2025-08-24-scoring-the-dgpt.md](https://tommygarner.github.io/2025/08/24/scoring-the-dgpt.html))**
+* **[Scoring the DGPT](https://tommygarner.github.io/2025/08/24/scoring-the-dgpt.html)**
     * *What is the hardest course on the Disc Golf Pro Tour? Solving the problem analytically.*
 * **[Project 2 Title](URL_to_Project_2_Page)**
     * *A brief, one-sentence description of Project 2.*
