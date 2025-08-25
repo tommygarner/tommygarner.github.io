@@ -4,7 +4,7 @@ title: "Scoring the DGPT"
 ---
 
 ## Introduction
-I love playing and watching disc golf. I could tell you what the easiest course is in my hometown, or even the easiest hole I know. However, that's based purely on my bias and little playing experience of less than 3 years. 
+I love playing and watching disc golf. However, there's one problem: I'm no good. I just play for fun. There's only a handful of courses in my area, and most of the time it's just too hot to play. 
 
 In my 3 years of playing, I've brought along friends and had some of the deepest conversations on the course. I've made incredible shots on video and have used UDisc as my Strava equivalent. Eventually, as everyone does, I came across Jomez.
 
