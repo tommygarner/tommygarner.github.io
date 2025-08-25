@@ -8,7 +8,7 @@ I love playing and watching disc golf, but I'm no good. I just play for fun. The
 
 In my 3 years of playing, I've brought along friends and had some of the deepest conversations on the course. I've made incredible shots on video and have used UDisc as my Strava equivalent. Eventually, as everyone does, I came across Jomez.
 
-[JomezPro]([[url](https://www.youtube.com/@JomezPro)]) is a disc golf media channel that captures a large majority of content on the Disc Golf Pro Tour (DGPT). The channel features lead cards from every round while also incorporating highlight plays from the Chase cards and other players in competition.
+[JomezPro](https://www.youtube.com/@JomezPro) is a disc golf media channel that captures a large majority of content on the Disc Golf Pro Tour (DGPT). The channel features lead cards from every round while also incorporating highlight plays from the Chase cards and other players in competition.
 
 I love JomezPro. The content is pure. Scorecards are clean. Video editing is sharp. And the BigSexyCommentary can always make me chuckle.
 
@@ -21,7 +21,7 @@ To answer these questions, I chose to turn to the raw data.
 
 How can we use analytics to determine the difficulty of a course or a specific hole? What determines difficulty? Is it subjective?
 
-The following poll was found on [Reddit]([url](https://www.reddit.com/r/discgolf/comments/u0whi7/how_do_you_determine_the_difficulty_of_a_course/)) that polled nearly 440 responses on r/discgolf asking that very question: *What determines difficulty?*
+The following poll was found on [Reddit](https://www.reddit.com/r/discgolf/comments/u0whi7/how_do_you_determine_the_difficulty_of_a_course/) that polled nearly 440 responses on r/discgolf asking that very question: *What determines difficulty?*
 
 | What determines difficulty? | Number of responses |
 | :--- | :--- |
@@ -35,7 +35,7 @@ The following poll was found on [Reddit]([url](https://www.reddit.com/r/discgolf
 Eventually, I determined that performance will be my chosen relative proxy for determining difficulty of a course, especially accounting for intangibles such as subjective feel or even accounting for OBs, Mandatories (mandos), and Hazards that are much harder to quantify and structure in data.
 
 ### Data Collection
-This website [Statmando]([url](https://statmando.com/stats/tour-holes-2024-mpo)) is a platform that provides granular disc golf statistics on every pro and many amateur events and tournaments. The company was found by a group of disc golfers who wanted to create a resource where statistics live for the niche sport, and their data helps rank, profile, and compare statistics amongst players and performances. 
+This website [Statmando](https://statmando.com/stats/tour-holes-2024-mpo) is a platform that provides granular disc golf statistics on every pro and many amateur events and tournaments. The company was found by a group of disc golfers who wanted to create a resource where statistics live for the niche sport, and their data helps rank, profile, and compare statistics amongst players and performances. 
 
 The table this project drew inspiration from is from  Statmando's StatZone, a specific page on the site that contains data on individual holes from Major and Elite series events in the 2024 MPO (Mixed Professional Open) division. This would classify as hole-by-hole data, including data analysis metrics like Avg to Par, under and over Par percentages.
 
