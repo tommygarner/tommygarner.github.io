@@ -32,18 +32,16 @@ The following poll was found on [Reddit]([url](https://www.reddit.com/r/discgolf
 | Results | 45 |
 | Any other suggestions (comments)? | 2 |
 
-Eventually, I determined that performance will be my chosen relative proxy for determining difficulty of a course, especially for intangibles such as subjective feel or even accounting for OBs, Mandatories (mandos), and Hazards.
-
-Specifically, StatMando tracks an 'Avg to Par' metric that calculates the average score during the tournament relative to the par for a given hole. Think of this as net rating in basketball.
+Eventually, I determined that performance will be my chosen relative proxy for determining difficulty of a course, especially accounting for intangibles such as subjective feel or even accounting for OBs, Mandatories (mandos), and Hazards that are much harder to quantify and structure in data.
 
 ### Data Collection
 This website [Statmando]([url](https://statmando.com/stats/tour-holes-2024-mpo)) is a platform that provides granular disc golf statistics on every pro and many amateur events and tournaments. The company was found by a group of disc golfers who wanted to create a resource where statistics live for the niche sport, and their data helps rank, profile, and compare statistics amongst players and performances. 
 
-The table this project drew inspiration from is from the Statmando's StatZone, a specific page on the site that contains data on individual holes from Major and Elite series events in the 2024 MPO (Mixed Professional Open) division. This would classify as hole-by-hole data, including data analysis metrics like Avg to Par, under and over Par percentages.
+The table this project drew inspiration from is from  Statmando's StatZone, a specific page on the site that contains data on individual holes from Major and Elite series events in the 2024 MPO (Mixed Professional Open) division. This would classify as hole-by-hole data, including data analysis metrics like Avg to Par, under and over Par percentages.
 
-Statmando has been collecting hole-by-hole data since 2021 for the MPO division. So after finding the data source, I then aggregated each year's statistic into the same dataframe. 
+Statmando has been collecting hole-by-hole data since 2021 for the MPO division. So after finding the data source, I then aggregated each year's statistic into the same dataframe. For the scope of answering my driving question, I decided that their average-to-par statistic will be the best measurement available.
 
-It is good to note that some Events and Layouts have changed names over the years. Likewise, some Holes have been drastically altered from 2021-2024. While data cleaning, I decided to standardize each Layout to help in the aggregating of statistics. There are some discrepancies as courses have changed tees or pins or even entirely revamped a specific hole. But for the most part, hole dimensions are consistent (as much as I could control).
+*It is good to note that some Events and Layouts have changed names over the years. Likewise, some Holes have been drastically altered between 2021-2024. While data cleaning, I decided to standardize each Layout to help in the aggregating of statistics. There are some discrepancies as courses have changed tees or pins or even entirely revamped a specific hole. But for the most part, hole dimensions are consistent (as much as I could control).
 
 ## Top 5 Hardest Holes
 
@@ -105,9 +103,13 @@ This hole is unique because, after 2021 adjustments, the course decided to rever
 
 Shocker. With 4 of the top 5 hardest holes on the entire DGPT in the past 4 years, this course is a gauntlet. Wooded. Technical. Long. Unforgiving. Illinois. The whole 9 yards.
 
-To think that players will typically score, on average, 0.25 points higher than par on a given round at Northwood Black is pretty insane. Granted, watching JomezPro has inadvertedly caused me to expect negative scores from any professional on any course. However, the only followed cards are your lead cards, which are shooting sometimes 10-down per round. 
+To think that players will typically score, on average, 0.25 points higher than par on a given round at Northwood Black is pretty insane. Granted, watching JomezPro has inadvertedly caused me to expect negative scores from any professional on any course. However, the only followed cards are your lead cards on Jomez, which are shooting sometimes 10-down per round. 
 
-To put the whole field into perspective, the average-to-par across the 4 year span is -0.06, meaning that, on average, any given player on the DGPT, playing any course during any year, will shoot 0.06 points less than par. But for Northwood Black to have almost +0.10 points on average on the second-hardest course is a significant occurrence. 
+To put the whole field into perspective, then, the average-to-par across the 4 year span in the entire dataframe is -0.06. This means that, on average, any given player on the DGPT, playing any course during any yearbetween 2021 and 2024, will shoot 0.06 points less than par. 
+
+But for Northwood Black to have almost +0.10 points on average over the second-hardest course is a significant occurrence. The average player would expect their score to increase by over 0.3 points when flying out to Illinois for the Discraft Ledgestone Open. 
+
+Good thing we aren't evaluating how much my average score would increase...
 
 ## Top Easiest Courses
 
