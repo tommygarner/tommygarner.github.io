@@ -114,6 +114,6 @@ This is largely due to the amount of times each course has been played. The Blac
 
 ## Thank you for reading! 
 
-*I hope you enjoyed my ramble about disc golf*
+*I hope you enjoyed my ramble about disc golf.*
 
-*I hope I've convinced you to try out a JomezPro video next time you're searching YouTube for a video to watch while you eat your food!*
+*My hope is that I've convinced you to try out a JomezPro video next time you're searching for a YouTube to watch while you eat your food!*
