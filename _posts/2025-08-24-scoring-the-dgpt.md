@@ -31,6 +31,7 @@ This website [Statmando]([url](https://statmando.com/stats/tour-holes-2024-mpo))
 The table this project drew inspiration from is from the Statmando's StatZone, a specific page on the site that contains data on individual holes from Major and Elite series events in the 2024 MPO division. This would classify as hole-by-hole data, including data analysis metrics like Avg to Par, under and over Par percentages.
 
 ## Top 5 Hardest Holes
+
 | Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
 |---|---|---|---|---|---|---|---|
 | Discraft Ledgestone Open | Northwood Black | 12 | 5 | 1050 | 1.41 | 281 | 2023 |
@@ -52,6 +53,7 @@ In the 2023 Discraft Ledgestone Open, this hole claimed its most victims. Only 3
 Funny enough, this hole also takes the 2nd and 4th places in the most difficult holes seen on the DGPT since 2021. If it wasn't for a course change in 2024, I'd have no doubt this hole would've taken 4 of the top 5 spots, and the course maybe all 5 spots, on this list.
 
 ## Top 5 Easiest Holes
+
 | Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
 |---|---|---|---|---|---|---|---|
 | Las Vegas Challenge | Innova Discs | 16 | 5 | 888 | -0.86 | 194 | 2021 |
@@ -75,6 +77,7 @@ Relative to par, the 2021 Las Vegas Challenge saw almost every player receive a 
 This hole is unique because, after 2021 adjustments, the course decided to revert its changes and par score, likely because of the dramatic scores seen across the field. Therefore, 2022 and 2023 metrics show that this hole was reduced back to a par 4 along with some pin and tee changes with more water in play.
 
 ## Top Hardest Courses
+
 | Event | Layout | Avg to Par |
 |---|---|---|
 | Discraft Ledgestone Open | Northwood Black | 0.245185 |
@@ -92,6 +95,7 @@ To think that players will typically score, on average, 0.25 points higher than 
 To put the whole field into perspective, the average-to-par across the 4 year span is -0.06, meaning that, on average, any given player on the DGPT, playing any course during any year, will shoot 0.06 points less than par. But for Northwood Black to have almost +0.10 points on average on the second-hardest course is a significant ocurrence. 
 
 ## Top Easiest Courses
+
 | Event | Layout | Avg to Par |
 |---|---|---|
 | PDGA Champions Cup | WR Jackson Memorial Course | -0.195278 |
