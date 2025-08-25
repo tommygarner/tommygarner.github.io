@@ -33,20 +33,79 @@ The table this project drew inspiration from is from the Statmando's StatZone, a
 ## Top 5 Hardest Holes
 | Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
 |---|---|---|---|---|---|---|---|
-| Discraft Ledgestone Open | Black Long | 12* | 5 | 1050 | 1.41 | 281 | 2023 |
-| Discraft Ledgestone Open | Black | 14 | 5 | 893 | 1.31 | 324 | 2021 |
-| PDGA Professional Disc Golf World Championships | New London Worlds MPO | 6 | 5 | 1215 | 1.18 | 411 | 2024 |
-| PCS Open | PCS Open 2023 MPO | 12 | 4 | 696 | 1.11 | 297 | 2023 |
-| PDGA Champions Cup | MPO 2024 Champs Cup | 12 | 5 | 1050 | 0.95 | 285 | 2024 |
+| Discraft Ledgestone Open | Northwood Black | 12 | 5 | 1050 | 1.41 | 281 | 2023 |
+| Discraft Ledgestone Open | Northwood Black | 12 | 5 | 1050 | 1.34 | 324 | 2021 |
+| Discraft Ledgestone Open | Northwood Black | 14 | 5 | 893 | 1.31 | 324 | 2021 |
+| Discraft Ledgestone Open | Northwood Black | 12 | 5 | 1050 | 1.27 | 291 | 2022 |
+| PDGA Professional Disc Golf World Championships | New London | 6 | 5 | 1215 | 1.18 | 411 | 2024 |
 
-**Hole 12 at the Northwood Black course was also the 2nd and 4th hardest hole by oP% in the 2021 AND 2022 Discraft Ledgestone Open. For the sake of unique holes, we will omit the duplicate record, but this definitely factors into decisionmaking*
+**#1 Discraft Ledgestone Open - Northwood Black - Hole 12**
 
-**#1 Discraft Ledgestone Open - Black - Hole 14**
-
-Par 5, 893ft at *79.01% over Par*
+Par 5, 1,050ft at *1.41 Avg to Par*
 
 <iframe width="560" height="315" src="https://youtube.com/embed/OpvKldRbmL8?start=1100" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-This hole features a tee-shot through a highly-technical and wooded straight. However, that's only the beginning, because the dogleg left is nearly a 90-degree turn with littered trees throughout the fairway. Essentially, getting any kick left or right off the tee-shot is an instant nightmare.
+This hole looks like it sucks. A wooded tee shot that needs to get ~400ft down the fairway for even a chance at par. A narrow upshot over a low water crossing that has a generous landing zone. And the final approach into another technical wooded area. And to top it all off, a lowered basket. 
 
-In the 2021 Discraft Ledgestone Open, 79.01% of players shot over 5 on this hole. 18.83% of players shot 5. And 2.16% of players actually birdied this hole. So you're saying there's a chance!
+In the 2023 Discraft Ledgestone Open, this hole claimed its most victims. Only 3 people birdied (or better, but will be a miracle if we ever see it) on this hole. That's about 1%. In contrast, 74% of the field bogeyed or worse, and 25% of players managed to get par. 
+
+Funny enough, this hole also takes the 2nd and 4th places in the most difficult holes seen on the DGPT since 2021. If it wasn't for a course change in 2024, I'd have no doubt this hole would've taken 4 of the top 5 spots, and the course maybe all 5 spots, on this list.
+
+## Top 5 Easiest Holes
+| Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
+|---|---|---|---|---|---|---|---|
+| Las Vegas Challenge | Innova Discs | 16 | 5 | 888 | -0.86 | 194 | 2021 |
+| Waco Annual Charity Open | BEast | 13 | 4 | 555 | -0.79 | 112 | 2024 |
+| Northwest DGC | Blue Lake Park | 9 | 4 | 515 | -0.77 | 220 | 2022 |
+| LWS Open at Idlewild | Idlewild DGC | 8 | 5 | 576 | -0.77 | 296 | 2023 |
+| Waco Annual Charity Open | BEast | 15 | 4 | 609 | -0.76 | 112 | 2024 |
+
+**#1 Las Vegas Challenge - Innova Discs - Hole 12**
+
+Par 5, 888ft at *-0.86 Avg to Par*
+
+<iframe width="560" height="315" src="https://youtube.com/embed/bnPSUkgJ9U4?start=1497" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+Now for the easiest course on the whole tour: The Innova Discs Course during the 2021 Las Vegas Challenge. 
+
+Minus an initial handful of trees along the teepad, once you escape, there is nothing stopping players from ripping the disc any way they'd like. Heizer or Anny. The fairway is wide open except for a small pond to the right. However, the 2021 pin position was pushed back into a safe green. So players could have a lot of fun with this hole.
+
+Relative to par, the 2021 Las Vegas Challenge saw almost every player receive a birdie, where everyone at least at a great look. Only 6% of players bogeyed or worse on this hole, while 17% received a par of 5, and 77% of players received a birdie or better.
+
+This hole is unique because, after 2021 adjustments, the course decided to revert its changes and par score, likely because of the dramatic scores seen across the field. Therefore, 2022 and 2023 metrics show that this hole was reduced back to a par 4 along with some pin and tee changes with more water in play.
+
+## Top Hardest Courses
+| Event | Layout | Avg to Par |
+|---|---|---|
+| Discraft Ledgestone Open | Northwood Black | 0.245185 |
+| PDGA Champions Cup | Northwood Park | 0.162778 |
+| PCS Open | Overas Diskgolfpark | 0.095556 |
+| Dynamic Discs Open | Emporia Country Club | 0.084259 |
+| PDGA Professional Disc Golf World Championships | New London | 0.079444 |
+
+**#1 Northwood Black, Morton, IL**
+
+Shocker. With 4 of the top 5 hardest holes on the entire DGPT in the past 4 years, this course is a gauntlet. Wooded. Technical. Long. Unforgiving. Illinois. The whole 9 yards.
+
+To think that players will typically score, on average, 0.25 points higher than par on a given round at Northwood Black is pretty insane. Granted, watching JomezPro has inadvertedly caused me to expect negative scores from any professional on any course. However, the only followed cards are your lead cards, which are shooting sometimes 10-down per round. 
+
+To put the whole field into perspective, the average-to-par across the 4 year span is -0.06, meaning that, on average, any given player on the DGPT, playing any course during any year, will shoot 0.06 points less than par. But for Northwood Black to have almost +0.10 points on average on the second-hardest course is a significant ocurrence. 
+
+## Top Easiest Courses
+| Event | Layout | Avg to Par |
+|---|---|---|
+| PDGA Champions Cup | WR Jackson Memorial Course | -0.195278 |
+| Las Vegas Challenge | Innova Discs | -0.194630 |
+| Green Mountain Championship | Brewster Ridge | -0.188519 |
+| Las Vegas Challenge | Infinite Discs | -0.181389 |
+| The Preserve Championship | Black Bear | -0.177222 |
+
+**#1 W.R. Jackson Memorial Course, Appling, GA**
+
+The W.R. Jackson Memorial Course is an interesting case because many consider the course a "championship-level wooded course". However, in 2022, the course had an average-to-par score of -0.22, and in 2023, the field scored -0.17 less than par for the course. 
+
+In fact, upon researching this topic, many consider The Preserve Championship being the easiest course on the DGPT. By breaking down scores by year, however, the Black Bear layout received a -0.17 'Avg to Par' score in 2021, -0.13 in 2022, -0.29 in 2023, and -0.18 in 2024.
+
+This is largely due to the amount of times each course has been played. The Black Bear layout has been played more than 2x as much as the W.R. Jackson Memorial Course. Therefore, with more opportunities to play in the future, we will be able to see the average-to-par statistics converge to their true means, possibly revealing the fans' intution of Black Bear being the easiest course statistically on the DGPT.
+
+## Thank you for reading! I hope you enjoyed my ramble about disc golf, and I hope I've convinced you to try out a JomezPro video next time you're searching YouTube for a video to watch while you eat your food!
