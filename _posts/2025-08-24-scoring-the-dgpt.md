@@ -43,7 +43,7 @@ The table this project drew inspiration from is from the Statmando's StatZone, a
 
 Par 5, 1,050ft at *1.41 Avg to Par*
 
-<iframe width="560" height="315" src="https://youtube.com/embed/OpvKldRbmL8?start=1100" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://youtube.com/embed/OpvKldRbmL8?start=498" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 This hole looks like it sucks. A wooded tee shot that needs to get ~400ft down the fairway for even a chance at par. A narrow upshot over a low water crossing that has a generous landing zone. And the final approach into another technical wooded area. And to top it all off, a lowered basket. 
 
