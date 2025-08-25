@@ -112,4 +112,8 @@ In fact, upon researching this topic, many consider The Preserve Championship be
 
 This is largely due to the amount of times each course has been played. The Black Bear layout has been played more than 2x as much as the W.R. Jackson Memorial Course. Therefore, with more opportunities to play in the future, we will be able to see the average-to-par statistics converge to their true means, possibly revealing the fans' intution of Black Bear being the easiest course statistically on the DGPT.
 
-## Thank you for reading! I hope you enjoyed my ramble about disc golf, and I hope I've convinced you to try out a JomezPro video next time you're searching YouTube for a video to watch while you eat your food!
+## Thank you for reading! 
+
+*I hope you enjoyed my ramble about disc golf*
+
+*I hope I've convinced you to try out a JomezPro video next time you're searching YouTube for a video to watch while you eat your food!*
