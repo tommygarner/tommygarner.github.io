@@ -1,0 +1,1 @@
+This project is largely based upon optimization principles of finding the most optimal NBA schedule. Code and files in this repo will be based on web scraping techniques such as using Selenium and BeautifulSoup
