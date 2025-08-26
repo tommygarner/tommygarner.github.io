@@ -69,25 +69,29 @@ Funny enough, this hole also takes the 2nd and 4th places in the most difficult 
 
 | Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
 |---|---|---|---|---|---|---|---|
+| The Open at Austin | Harvey Penick | 5 | 4 | 520 | -0.89 | 109 | 2024 |
 | Las Vegas Challenge | Innova Discs | 16 | 5 | 888 | -0.86 | 194 | 2021 |
-| Waco Annual Charity Open | BEast | 13 | 4 | 555 | -0.79 | 112 | 2024 |
-| Northwest DGC | Blue Lake Park | 9 | 4 | 515 | -0.77 | 220 | 2022 |
-| LWS Open at Idlewild | Idlewild DGC | 8 | 5 | 576 | -0.77 | 296 | 2023 |
-| Waco Annual Charity Open | BEast | 15 | 4 | 609 | -0.76 | 112 | 2024 |
+| Green Mountain Championship | 2024 DGPT Playoffs: GMC Fox Run MPO | 10 | 3 | 315 | -0.85 | 88 | 2024 |
+| Green Mountain Championship | 2024 DGPT Playoffs: GMC Fox Run MPO | 6 | 3 | 265 | -0.84 | 88 | 2024 |
+| Green Mountain Championship | 2024 DGPT Playoffs: GMC Fox Run MPO Rd4 | 6 | 3 | 265 | -0.79 | 87 | 2024 |
 
-**#1 Las Vegas Challenge - Innova Discs - Hole 12**
+**#1 The Open at Austin - Harvey Penick - Hole 5**
 
-Par 5, 888ft at *-0.86 Avg to Par*
+Par 4, 520ft at *-0.89 Avg to Par*
 
-<iframe width="560" height="315" src="https://youtube.com/embed/bnPSUkgJ9U4?start=1497" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://youtube.com/embed/XrSRVafYhhI?start=1263" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-Now for the easiest course on the whole tour: The Innova Discs Course during the 2021 Las Vegas Challenge. 
+Now for the easiest hole on the 'whole' tour: The Open at Austin's Hole 5 at Harvey Penick. 
 
-Minus an initial handful of trees along the teepad, once you escape, there is nothing stopping players from ripping the disc any way they'd like. Heizer or Anny. The fairway is wide open except for a small pond to the right. However, the 2021 pin position was pushed back into a safe green. So players could have a lot of fun with this hole.
+Hole 5 at Harvey Penick looks challenging on paper with OBs taking up majority of the fairway. However, the hole is relatively short for a par 4. For context, across all par 4s in the available data, this hole is less than 100ft shorter than the average par 4. 
 
-Relative to par, the 2021 Las Vegas Challenge saw almost every player receive a birdie, where everyone at least at a great look. Only 6% of players bogeyed or worse on this hole, while 17% received a par of 5, and 77% of players received a birdie or better.
+In 2023, hole 5 was previously recorded as a par 3 at 482ft. But in 2024, the course decided to make some changes including forcing players to carry over an OB area for their second shots. There are a couple of trees immediately coming out of the teeshot, and the basket also includes some small trees to limit C2 putting.
 
-This hole is unique because, after 2021 adjustments, the course decided to revert its changes and par score, likely because of the dramatic scores seen across the field. Therefore, 2022 and 2023 metrics show that this hole was reduced back to a par 4 along with some pin and tee changes with more water in play.
+However, from the included snippet, you can see that many players pushed to carry over the OB on their teeshots, essentially allowing them to 'run' their second shots for eagles. If a player instead chose to lay up in the landing zone, their approach shot more often than not landed within C2, still rewarding them with a chance for birdie.
+
+Relative to par, The Open at Austin saw almost every player receive a par, bird, or better! Only 2.75% of players received a bogey or worse on this hole, while 13.76% received a par and 83.5% of the field birdied or better.
+
+Out of the many disc golf events I have watched online, I would've never guessed that the only event I've attended was the one with the easiest hole since 2021!
 
 ## Top Hardest Courses
 
