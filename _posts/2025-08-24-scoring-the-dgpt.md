@@ -93,6 +93,8 @@ Relative to par, The Open at Austin saw almost every player receive a par, bird,
 
 Out of the many disc golf events I have watched online, I would've never guessed that the only event I've attended was the one with the easiest hole since 2021!
 
+The major caveat in this table is the sample size. 3 of the 5 holes have been played less than 100 times, meaning they were likely featured for only one round. So, it must be noted to take this with a grain of salt, as with more opportunities for holes to be played (and remain unchanged), we can better find determine this target objective.
+
 ## Top Hardest Courses
 
 | Event | Layout | Avg to Par |
