@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: Crowdsourced Recommender System for Music Albums
 categories: [Data Science, NLP]
 tags: [python, machine-learning, nlp, recommender-system]
