@@ -13,8 +13,8 @@ Here are some of my favorite recent projects. Each one is a detailed write-up of
 
 * **[Scoring the DGPT](https://tommygarner.github.io/2025/08/24/scoring-the-dgpt.html)**
     * *What is the hardest course on the Disc Golf Pro Tour? Solving the problem analytically.*
-* **[Project 2 Title](URL_to_Project_2_Page)**
-    * *A brief, one-sentence description of Project 2.*
+* **[Crowdsourced Album Recommender System](https://tommygarner.github.io/2026/09/26/recommender-system.html))**
+    * *Building a music album recommender using web scraping and custom word embeddings.*
 * **[Test Data Analysis Project](/projects/test-data-analysis-project.html)**
     * *A brief, one-sentence description of Project 3.*
 
