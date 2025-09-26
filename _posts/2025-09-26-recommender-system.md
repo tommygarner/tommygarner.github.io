@@ -36,7 +36,7 @@ def clean_reviews(text):
 
 ## Recommendation Methodology
 
-Three distinct recommendation methods were explored and compared to find the most effective approach for attribute-based recommendations.
+Three distinct recommendation methods were explored and compared to find the most effective approach for attribute-based recommendations. **Our three-attribute end-user query was based on writing: content, instrumentation: guitars, and mood: spacy.**
 
 ### 1. TF-IDF + Sentiment Analysis
 
