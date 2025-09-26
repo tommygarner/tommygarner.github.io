@@ -1,7 +1,6 @@
 ---
 layout: post
 title: Crowdsourced Recommender System for Music Albums
-date: 2025-09-26
 categories: [Data Science, NLP]
 tags: [python, machine-learning, nlp, recommender-system]
 ---
