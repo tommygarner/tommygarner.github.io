@@ -3,27 +3,45 @@ layout: default
 title: Home
 ---
 
-# Hi, I'm Tommy Garner!
+# Hi, I'm Tommy Garner
 
-I love to solve complex problems, and I'm currently trying to create a Github Pages to host these projects and blogs as I continue learning. I'm enrolled at the Univeristy of Texas at Austin's Masters of Science in Business Analytics program, so a lot of my work will feature academic projects along with passion projects as I try out new tools.
+I'm a graduate student in the **MS Business Analytics** program at UT Austin, passionate about solving complex problems through machine learning, data science, and full-stack development. I build end-to-end data applications—from web scraping and feature engineering to model deployment and interactive dashboards.
 
 ## Featured Projects
 
-Here are some of my favorite recent projects. Each one is a detailed write-up of my work, including code, visuals, and my thoughts.
+### [Scoring the DGPT](https://tommygarner.github.io/2025/08/24/scoring-the-dgpt.html)
+What is the hardest course on the Disc Golf Pro Tour? I tackled this question analytically using statistical modeling to quantify course difficulty across tournaments.
 
-* **[Scoring the DGPT](https://tommygarner.github.io/2025/08/24/scoring-the-dgpt.html)**
-    * *What is the hardest course on the Disc Golf Pro Tour? Solving the problem analytically.*
-* **[Album Recommendendation System](https://tommygarner.github.io/2025/09/26/recommender-system.html)**
-    * *Building a music album recommender using crowdsourced information via web scraping and custom word embeddings.*
-* **[Test Data Analysis Project](/projects/test-data-analysis-project.html)**
-    * *A brief, one-sentence description of Project 3.*
+### [Album Recommendation System](https://tommygarner.github.io/2025/09/26/recommender-system.html)
+Built a music album recommender by web scraping crowdsourced reviews and developing custom word embeddings to capture nuanced listening preferences.
 
-[See all projects →](URL_to_your_projects_page_if_you_create_one)
+### [Job Posting Fraud Detection](https://github.com/tommygarner/job-postings-fraud)
+Developed a classification system using MiniBERT and missingness-based feature engineering to identify fraudulent job listings, with SHAP/LIME interpretability analysis.
+
+### [Event Ticket Demand Forecasting](https://github.com/tommygarner/setlist)
+Built time-series forecasting models (ARIMA with multiple regressors) on 10,000+ live events using R, BigQuery, and Streamlit to predict concert ticket resale dynamics.
+
+[View all projects →](https://github.com/tommygarner)
 
 ## About Me
 
-*(Write a short paragraph about yourself here. Mention your interests, skills, or what you're currently working on.)*
+I specialize in **machine learning** (ensemble methods, deep learning, NLP), **optimization** (Gurobi, scipy), and **full-stack development** (Python, SQL, Streamlit, Supabase, APIs). My work spans fraud detection, time-series forecasting, sentiment analysis, and building interactive data applications [memory:1][memory:6][memory:14].
+
+When I'm not coding, you'll find me at concerts exploring live music, at the gym, or experimenting with new recipes in the kitchen [memory:1].
+
+## Skills & Tools
+
+**Languages:** Python, R, SQL, JavaScript  
+**ML & Analytics:** Scikit-learn, TensorFlow, LSTM/MLP, SHAP/LIME, Time Series (ARIMA/Fable)  
+**Data Stack:** Snowflake, BigQuery, Pandas, bigrquery  
+**Development:** Streamlit, GitHub, Google Colab, VS Code, Supabase, API integration  
+
+## Get in Touch
+
+📧 [tgarn0113@gmail.com](mailto:tgarn0113@gmail.com)  
+💼 [LinkedIn](https://linkedin.com/in/tommy-garner)  
+💻 [GitHub](https://github.com/tommygarner)
 
 ---
 
-*This site is built with [Jekyll](https://jekyllrb.com/) and hosted on [GitHub Pages](https://docs.github.com/en/pages).*
+*Built with [Jekyll](https://jekyllrb.com/) • Hosted on [GitHub Pages](https://pages.github.com/)*
