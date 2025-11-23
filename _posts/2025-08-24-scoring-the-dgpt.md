@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: "Scoring the DGPT: Finding the Hardest Course in Pro Disc Golf"
 date: 2025-08-24
 description: "Using analytics to determine which DGPT courses and holes are the most difficult on the Pro Tour"
