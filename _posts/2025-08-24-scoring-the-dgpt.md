@@ -1,6 +1,8 @@
 ---
 layout: post
-title: "Scoring the DGPT"
+title: "Scoring the DGPT: Finding the Hardest Course in Pro Disc Golf"
+date: 2025-08-24
+description: "Using analytics to determine which DGPT courses and holes are the most difficult on the Pro Tour"
 ---
 
 ## Introduction
@@ -43,6 +45,8 @@ Statmando has been collecting hole-by-hole data since 2021 for the MPO division.
 
 *It is good to note that some Events and Layouts have changed names over the years. Likewise, some Holes have been drastically altered between 2021-2024. While data cleaning, I decided to standardize each Layout to help in the aggregating of statistics. There are some discrepancies as courses have changed tees or pins or even entirely revamped a specific hole. But for the most part, hole dimensions are consistent (as much as I could control).
 
+---
+
 ## Top 5 Hardest Holes
 
 | Event | Layout | Hole # | Hole Par | Length | Avg to Par | Times Played | Year |
@@ -64,6 +68,8 @@ This hole looks like it sucks. A wooded tee shot that needs to get ~400ft down t
 In the 2023 Discraft Ledgestone Open, this hole claimed its most victims. Only 3 people birdied (or better, but will be a miracle if we ever see it) on this hole. That's about 1%. In contrast, 74% of the field bogeyed or worse, and 25% of players managed to get par. 
 
 Funny enough, this hole also takes the 2nd and 4th places in the most difficult holes seen on the DGPT since 2021. If it wasn't for a course change in 2024, I'd have no doubt this hole would've taken 4 of the top 5 spots, and the course maybe all 5 spots, on this list.
+
+---
 
 ## Top 5 Easiest Holes
 
@@ -95,6 +101,8 @@ Out of the many disc golf events I have watched online, I would've never guessed
 
 The major caveat in this table is the sample size. 3 of the 5 holes have been played less than 100 times, meaning they were likely featured for only one round. So, it must be noted to take this with a grain of salt, as with more opportunities for holes to be played (and remain unchanged), we can better find determine this target objective.
 
+---
+
 ## Top Hardest Courses
 
 | Event | Layout | Avg to Par |
@@ -117,6 +125,8 @@ But for Northwood Black to have almost +0.10 points on average over the second-h
 
 Good thing we aren't evaluating how much my average score would increase...
 
+---
+
 ## Top Easiest Courses
 
 | Event | Layout | Avg to Par |
@@ -135,10 +145,17 @@ In fact, upon researching this topic, many consider The Preserve Championship be
 
 This is largely due to the amount of times each course has been played. The Black Bear layout has been played more than 2x as much as the W.R. Jackson Memorial Course. Therefore, with more opportunities to play in the future, we will be able to see the average-to-par statistics converge to their true means, possibly revealing the fans' intution of Black Bear being the easiest course statistically on the DGPT.
 
+---
+
 ## Thank you for reading! 
 
 *I hope you enjoyed my ramble about disc golf.*
 
-*My hope is that I've convinced you to try out a JomezPro video next time you're searching for a YouTube to watch while you eat your food.*
+*My hope is that I've convinced you to try out a JomezPro video next time you're searching YouTube while you eat your food.*
 
 -Tommy G
+
+---
+**Tools used:** Python, Pandas, Web scraping  
+**Data source:** [Statmando](https://statmando.com)  
+[View project on GitHub →](https://github.com/tommygarner)
