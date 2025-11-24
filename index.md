@@ -5,7 +5,7 @@ title: Home
 
 # Tommy Garner
 
-I'm a graduate student in the **MS Business Analytics** program at UT Austin, passionate about solving complex problems through machine learning, data science, and full-stack development. I build end-to-end data applications—from web scraping and feature engineering to model deployment and interactive dashboards.
+I'm a graduate student in the **MS Business Analytics** program at UT Austin, passionate about solving complex problems through machine learning, data science, and full-stack development. I am building end-to-end data applications like exploring web scraping and feature engineering to model deployment and interactive dashboards.
 
 ## Featured Projects
 
