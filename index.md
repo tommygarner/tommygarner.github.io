@@ -18,7 +18,7 @@ Built a music album recommender by web scraping crowdsourced reviews and develop
 ### [Job Posting Fraud Detection](https://github.com/tommygarner/job-postings-fraud)
 Developed a classification system using MiniBERT and missingness-based feature engineering to identify fraudulent job listings, with SHAP/LIME interpretability analysis.
 
-### [The Setlist](https://github.com/tommygarner/setlist)
+### [The Setlist]()
 Built a personalized concert recommendation app that matches your music taste with upcoming shows. Features include Tinder-style artist swiping, Spotify integration for auto-syncing favorites, and real-time concert data from Ticketmaster and SeatGeek APIs. Deployed with Streamlit and Python.
 
 [View all projects →](https://github.com/tommygarner)
