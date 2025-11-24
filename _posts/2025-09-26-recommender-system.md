@@ -176,5 +176,5 @@ If I were to take this project further, I would have gathered much more reviews 
 
 * **Programming Language:** Python
 * **Libraries:** `Pandas`, `NumPy`, `scikit-learn`, `BeautifulSoup`, `undetected_chromedriver`, `argostranslate`, `spaCy`, `Gensim`
-* **[📓 View Full Notebook on GitHub](https://github.com/tommygarner/tommygarner.github.io/blob/main/projects/music/Assignment_2_gr_9.ipynb)** | **[💻 Interactive Notebook (nbviewer)](https://nbviewer.org/github/tommygarner/tommygarner.github.io/blob/main/projects/music/Assignment_2_gr_9.ipynb)**
+* **[GitHub](https://github.com/tommygarner/tommygarner.github.io/blob/main/projects/music/Assignment_2_gr_9.ipynb)**
 
