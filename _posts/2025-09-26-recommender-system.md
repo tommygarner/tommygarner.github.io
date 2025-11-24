@@ -146,9 +146,7 @@ sim_emb = cosine_similarity([query_vec], doc_embeddings)
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/49e17608-1bbe-42f9-a3a9-cddefa1e9c74" />
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/5e144e3f-3d57-4840-9bc6-6b8e67fe1d6f" />
 <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/53731f38-f13c-4345-a97d-7597435f79b4" />
-
-
-
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/40905562-a4d0-4fd4-9032-732ab3b78f5e" />
 
 To test each approach, I queried all 3 recommendation systems with the same user requrest and found the top 3 albums. You can see that each model suggests almost entirely different songs with unique scores based on our recommendation logic.
 
