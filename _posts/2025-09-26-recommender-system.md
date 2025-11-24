@@ -11,7 +11,7 @@ Our team wanted to explore how recommender systems could help expose "long-tail"
 
 ---
 
-## Scraping the Crowd, 
+## Scraping the Crowd
 
 The project began with building a robust web scraper to collect over 8,000 album reviews from rateyourmusic.com, a large crowdsourced music database where fans share opinions and reviews on albums across hundreds of genres. 
 
@@ -68,41 +68,107 @@ final_score = alpha * sim + (1 - alpha) * sentiment_scores
 
 ### 2. Semantic Matching: Pre-trained Word Embeddings (spaCy)
 
-Using spaCy's pre-trained word vectors, this approach recommended albums by finding the closest semantic match to the user's query. This allowed for more conceptual recommendations beyond direct keyword matching.
+Next I wanted to begin modeling with word vectors, so I decided to incorporate spaCy's pre-trained word vectors. By turning each album's reviews and the user's query into embeddings, I recommended albums whose reviews conceptually matched the query in vector space, even if the exact wording was different. This model makes up for the limitation of the previous TF-IDF model. However, these pre-trained word embeddings are built upon spaCy's corpus, which is the `en_core_web_md` model containing over 20k unique word vectors in 300-dimension space.
+
+These embeddings are trained on commonly written web English such as blogs, news, or product reviews. But what if we could make these embeddings specific to our context?
+
+```
+import spacy
+
+# Load pre-trained spaCy model with word vectors
+nlp = spacy.load('en_core_web_md')
+
+# Get query embedding
+query_embedding = nlp(user_query).vector
+
+# Get album review embeddings
+review_embeddings = [nlp(review).vector for review in album_reviews]
+
+# Compute cosine similarity
+from sklearn.metrics.pairwise import cosine_similarity
+similarities = cosine_similarity([query_embedding], review_embeddings)
+```
 
 ### 3. Context-Aware Recommendations: Custom Word Embeddings (Word2Vec)
 
-The most effective method involved training a custom `Word2Vec` model on the scraped album review corpus. This model learned the specific nuances and relationships between musical terms used in the reviews, leading to highly relevant and context-specific recommendations.
+This model was the most effective as the embeddings were created based on our domain-specific reviews corpus. I trained a Word2Vec model directly on these 8k user reviews, learning the relationships, slang, and other expressions particular to music fans. This contextual model was able to make approximate connections in vector space, where albums are suggested by reviewer vocabular and meaning. 
 
-```python
+This model proved to be most accurate as it caught most of the nuances the previous models could not, but it also requires a large corpus of text to train on, and possible 8k reviews wasn't enough!
+
+```
 from gensim.models import Word2Vec
+import numpy as np
 
-# Assume 'tokenized_reviews' is a list of tokenized sentences
-model = Word2Vec(sentences=tokenized_reviews, 
-                 vector_size=100, 
-                 window=5, 
-                 min_count=1, 
-                 workers=4)
+# 1. Train custom Word2Vec on tokenized reviews
+w2v = Word2Vec(sentences=tokenized_reviews, 
+               vector_size=100, 
+               window=5, 
+               min_count=2, 
+               workers=4)
 
-# Example of finding similar words based on the custom model
-similar_words = model.wv.most_similar('guitar')
+# 2. Create TF-IDF weighted document embeddings
+def doc_embedding_weighted(text: str):
+    toks = tokenize_unigrams(text)
+    weights, vecs = [], []
+    
+    for t in toks:
+        if t in w2v.wv and t in idf_map:
+            weights.append(idf_map[t])
+            vecs.append(w2v.wv[t])
+    
+    if not vecs:
+        return None
+    W = np.asarray(weights, float)
+    V = np.vstack(vecs)
+    return (V * W[:,None]).sum(axis=0) / (W.sum() + 1e-9)
+
+# 3. Build query vector from attribute keywords
+query_vec = np.average(np.vstack(vecs), axis=0, weights=np.array(weights))
+
+# 4. Compute similarity
+sim_emb = cosine_similarity([query_vec], doc_embeddings)
 ```
 
-## Analysis & Conclusion
+## Results
 
-| method | album_name | artist | n_reviews | avg_rating | tfidf + sent score | similarity_spacy | similarity_emb |
-|---|---|---|---|---|---|---|---|
-| TF-IDF+sent | The Thief Next to Jesus | Ka | 9 | 3.888889 | 0.357302 | NaN | NaN |
-| TF-IDF+sent | Dots and Loops | Stereolab | 8 | 4.437500 | 0.354284 | NaN | NaN |
-| TF-IDF+sent | Bleeds | Wednesday | 16 | 3.875000 | 0.351459 | NaN | NaN |
-| spaCy-pretrained | Winged Victory | Willi Carlisle | 4 | 3.500000 | NaN | 0.623368 | NaN |
-| spaCy-pretrained | Night Reign | Arooj Aftab | 9 | 3.666667 | NaN | 0.618952 | NaN |
-| spaCy-pretrained | A Single Flower | We Lost the Sea | 4 | 4.250000 | NaN | 0.616543 | NaN |
-| Custom-W2V | XII: A gyönyörű álmok ezután jönnek | Thy Catafalque | 9 | 4.000000 | NaN | NaN | 0.884650 |
-| Custom-W2V | Blue Heeler in Ugly Snowlight, Grey on Gray on... | Kitchen | 3 | 4.000000 | NaN | NaN | 0.883030 |
-| Custom-W2V | Winged Victory | Willi Carlisle | 4 | 3.500000 | NaN | NaN | 0.880547 |
+| Method | Album | Artist | Reviews | Avg Rating | Score |
+|--------|-------|--------|---------|------------|-------|
+| TF-IDF+sent | The Thief Next to Jesus | Ka | 9 | 3.89 | 0.357 |
+| TF-IDF+sent | Dots and Loops | Stereolab | 8 | 4.44 | 0.354 |
+| TF-IDF+sent | Bleeds | Wednesday | 16 | 3.88 | 0.351 |
+| spaCy-pretrained | Winged Victory | Willi Carlisle | 4 | 3.50 | 0.623 |
+| spaCy-pretrained | Night Reign | Arooj Aftab | 9 | 3.67 | 0.619 |
+| spaCy-pretrained | A Single Flower | We Lost the Sea | 4 | 4.25 | 0.617 |
+| Custom-W2V | XII: A gyönyörű álmok ezután jönnek | Thy Catafalque | 9 | 4.00 | 0.885 |
+| Custom-W2V | Blue Heeler in Ugly Snowlight... | Kitchen | 3 | 4.00 | 0.883 |
+| Custom-W2V | Winged Victory | Willi Carlisle | 4 | 3.50 | 0.881 |
 
-A comparative analysis of the three methods demonstrated that the custom `Word2Vec` model provided the most accurate and context-aware recommendations. It successfully captured the unique vocabulary of music reviews, outperforming generic models that were not trained on this specific domain. Furthermore, the project showed how using mean-centered word vectors could improve the discrimination of similarity scores, leading to a more refined ranking of recommended albums.
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/49e17608-1bbe-42f9-a3a9-cddefa1e9c74" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/5e144e3f-3d57-4840-9bc6-6b8e67fe1d6f" />
+<img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/53731f38-f13c-4345-a97d-7597435f79b4" />
+
+
+
+
+To test each approach, I queried all 3 recommendation systems with the same user requrest and found the top 3 albums. You can see that each model suggests almost entirely different songs with unique scores based on our recommendation logic.
+
+**TF-IDF + Sentiment:**
+-  Struggled clearly, showing genre diveristy. Ka and Wednesday are strong artists but don't pair conceptually with the user's query. These artists are more hip-hop and slowcore than guitar-driven or spacy mood. The keyword-matching algo worked, but the model didn't understand context as well as the others. 
+
+**spaCy:**
+-  spaCy's model was more semantic in modeling concepts that the keyword pairing missed. We Lost the Sea and Kitchen fit the "spacy" vibe, as these artists are known by post-rock instrumentals and ambient jazz, respectively. Winged Victory is the top recommended album in this model (and shows up in the next), yet has a different similarity score than the custom embeddings model.
+
+**W2V:**
+-  The domain-trained model performed great and was able to score much higher than the pre-trained embedding model. Thy Catafalque is known for expansive and guitar-heavy progressive metal. Willie Carlisle's Winged Victory again shows up as recommended. As previously mentioned, the custom Word2Vec model produces a wider range in score, meaning this model can more confidently rank the recommendations because this model understands the music-specific language patterns.
+
+---
+
+## Final Takeaways
+I learned that domain adaptation matters in this album-specific context. Training embeddings to music-specific context allows us to understand the nuanced vocabulary of fans, which benefits end users who are given more confident recommendations for their music discovery! 
+
+Likewise, our W2V model recommended Hungarian avant-garde metal, an album that probably never would've entered the user's rotation of music had it not been for the discovery tool.
+
+If I were to take this project further, I would have gathered much more reviews for training, since the above results show that our model relies on albums with only 3 or 4 reviews. Ideally, I'd like to use albums with > 10 reviews, but that would require finding a more popular site and making sure that these albums don't live in the head of the long tail, which negates the whole point of music discovery.
 
 ---
 
