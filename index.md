@@ -25,16 +25,16 @@ Built a personalized concert recommendation app that matches your music taste wi
 
 ## About Me
 
-I specialize in **machine learning** (ensemble methods, deep learning, NLP), **optimization** (Gurobi, scipy), and **full-stack development** (Python, SQL, Streamlit, Supabase, APIs). My work spans fraud detection, time-series forecasting, sentiment analysis, and building interactive data applications [memory:1][memory:6][memory:14].
+I'm a graduate student in **Business Analytics at UT Austin** learning to apply the machine learning, full-stack development, and creative problem-solving in my classes. I love projects that combine the technical side of my studies and my interests in music and sports. 
 
-When I'm not coding, you'll find me at concerts exploring live music, at the gym, or experimenting with new recipes in the kitchen [memory:1].
+When I'm not coding, you'll find me at concerts exploring live music, playing guitar myself, or playing basketball with good friends.
 
 ## Skills & Tools
 
-**Languages:** Python, R, SQL, JavaScript  
+**Languages:** Python, R, SQL  
 **ML & Analytics:** Scikit-learn, TensorFlow, LSTM/MLP, SHAP/LIME, Time Series (ARIMA/Fable)  
 **Data Stack:** Snowflake, BigQuery, Pandas, bigrquery  
-**Development:** Streamlit, GitHub, Google Colab, VS Code, Supabase, API integration  
+**Development:** Streamlit, GitHub, Google Colab, Supabase, API integration  
 
 ## Get in Touch
 
