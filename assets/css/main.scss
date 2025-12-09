@@ -41,3 +41,9 @@
     "vendor/font-awesome/solid",
     "vendor/font-awesome/brands"
 ;
+
+.author__avatar img {
+  max-width: 180px;   // shrink width
+  max-height: 180px;  // cap height so it’s not too tall
+  object-fit: cover;  // crop instead of squish
+}
