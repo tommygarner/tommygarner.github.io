@@ -1,7 +1,7 @@
 ---
-title: "Blog Posts"
+title: "Blog"
 permalink: /posts/
-layout: posts
+layout: archive
 author_profile: true
 ---
 
