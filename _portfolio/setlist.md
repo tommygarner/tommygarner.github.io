@@ -9,6 +9,7 @@ tags:
   - live entertainment
   - python
   - streamlit
+  - supabase
 ---
 
 The Setlist is a personalized concert recommendation app that connects listeners’ Spotify libraries with real‑time concert data. The app pulls a user’s favorite artists from Spotify, enriches them with metadata, and then queries Ticketmaster and SeatGeek APIs to find matching shows in selected markets.
