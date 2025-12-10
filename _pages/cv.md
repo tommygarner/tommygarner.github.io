@@ -1,6 +1,6 @@
 ---
 layout: archive
-title: "CV"
+title: "Resume"
 permalink: /cv/
 author_profile: true
 redirect_from:
@@ -9,56 +9,17 @@ redirect_from:
 
 {% include base_path %}
 
-Education
-======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+## Download
 
-Work experience
-======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+You can download my full resume here: [Tommy Garner – Resume (PDF)]({{ base_path }}/files/Tommy_Garner_Resume.pdf)
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+## Snapshot
 
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-  
-Skills
-======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+**Education**  
+- M.S. in Business Analytics, The University of Texas at Austin (May 2026)
+- B.B.A. in Business Analytics, The University of Texas at Austin
 
-Publications
-======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Talks
-======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
-  
-Teaching
-======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
+**Experience**  
+- Graduate projects in live entertainment analytics, including ticket demand forecasting with Ticketmaster and secondary‑market data, fraud detection on job listings, and music recommendation systems.  
+- Prior work at iHeartMedia building Power BI dashboards that integrated promotional, content, and engagement data to support B2B sales and local clients.
+- Volunteer work for SIL Global integrating new API, QuickSight Dashboards, and gathering client requirements for new KPIs
