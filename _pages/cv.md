@@ -11,7 +11,7 @@ redirect_from:
 
 ## Download
 
-You can download my full resume here: [Tommy Garner – Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume.pdf)
+You can download my full resume here: [Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume.pdf)
 
 ## Snapshot
 
