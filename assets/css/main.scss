@@ -38,3 +38,10 @@
     "vendor/font-awesome/solid",
     "vendor/font-awesome/brands"
 ;
+
+.author__avatar img {
+  max-width: 170px;
+  max-height: 170px;
+  object-fit: cover;
+}
+
