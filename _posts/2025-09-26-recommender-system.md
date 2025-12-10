@@ -8,6 +8,7 @@ tags:
   - music
   - recommender system
   - NLP
+excerpt: "Built a crowdsourced, hybrid album recommender that combines listener signals, audio features, and metadata to surface new music people are likely to enjoy."
 ---
 
 
