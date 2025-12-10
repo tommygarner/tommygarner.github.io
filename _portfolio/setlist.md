@@ -2,7 +2,7 @@
 title: "The Setlist – Personalized Concert Recommender"
 collection: portfolio
 excerpt: "Streamlit app that matches your Spotify taste with upcoming concerts using Ticketmaster and SeatGeek APIs."
-date: 2025-12
+date: 2025-12-01
 github: "https://github.com/tommygarner/The-Setlist"   # swap to the actual repo URL
 tags:
   - recommender systems
