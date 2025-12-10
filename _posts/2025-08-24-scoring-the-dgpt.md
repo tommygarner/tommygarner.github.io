@@ -8,6 +8,7 @@ tags:
   - disc golf
   - sports analytics
   - data storytelling
+excerpt: "Using Statmando’s hole‑by‑hole stats to measure which DGPT courses and holes are truly the hardest and easiest on tour."
 ---
 
 ## Introduction
