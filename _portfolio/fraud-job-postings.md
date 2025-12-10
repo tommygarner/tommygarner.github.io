@@ -3,7 +3,7 @@ title: "Fraud Detection on Job Postings"
 collection: portfolio
 excerpt: "Built a supervised learning pipeline to flag fraudulent job postings using text, metadata, and behavioral features, with a focus on interpretable model decisions."
 date: 2025-11-29
-github: "https://github.com/tommygarner/job-postings-fraud
+github: "https://github.com/tommygarner/job-postings-fraud"
 tags:
   - fraud detection
   - classification
