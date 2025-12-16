@@ -14,13 +14,23 @@ excerpt: "Concert tickets are more expensive than ever. This post investigates h
 ---
 
 ## Introduction
-While hanging out in the dentist lobby before my checkup, I came across a Business Insider post that caught my attention: [*"Why Concert Tickets are so Expensive -- and Who's to Blame"*](https://www.businessinsider.com/why-concert-tickets-are-so-expensive-and-whos-to-blame-2025-12). This video gives a high-level overview of the tension between fans, artists, promoters, and ticketing platforms. 
+While hanging out in the dentist lobby before my checkup, I came across a Business Insider post that caught my attention: [*"Why Concert Tickets are so Expensive -- and Who's to Blame"*](https://www.businessinsider.com/why-concert-tickets-are-so-expensive-and-whos-to-blame-2025-12). 
 
-As I prepare for recruitment in the spring, I thought this would be a great opportunity to write about the market structure of the ticketing industry to both learn myself and communicate how we ended up where we are.
+The popular narrative typically points the finger at ticketing platforms for high prices and other inconveniences when purchasing online. However, as I researched the industry's market structure, it became clear that the reality is complex and involves incentives where every artist, promoter, venue, and reseller is acting rationally within a faulty system.
 
-## Where we are currently
-The BI video report provided a tense, almost circular blame-game between fans, artists, and primary and secondary sellers.
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/830c4e46-b767-4a1a-8ff9-84271509697b" />
+*Figure 1: The circular nature of blame-shifting in the live entertainment ecosystem*
 
-<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/1424420a-0301-4688-9014-7849445662b4" />
+## Stakeholder Incentives
 
-Fans are frustrated because the average ticket price has skyrocketed from XXX in 20XX to XXX in 2025. Artists share in their fans' frustration because it's harder than every to get a ticket to a show, and call out Ticketmaster and Live Nation, as well as other ticketing platforms. Ticketmaster and Live Nation defer to the seconary market, where they cite the real inflation happens, while resale platforms blame Ticketmaster for their ticketing contracts and control over many aspects of the live entertainment industry, preventing any competition.
+To understand the surge in prices, we ahve to look at what drives revenue for each player in the industry.
+
+### 1. The Artists
+The BI video notes how, up until the 2000s, tours promoted albums. Now, albums promote tours. Where artists received majority of their revenue from physical copies of their music, they now only receive fractions of pennies per stream. Live events have inherently become the primary income source for musicians[^1].
+
+Artists must balance maximizing gross revenue per show to support their production costs with maintaining a "fan-friendly" brand. This becomes interesting when you discover that it is the artists who actually set the price of their concerts while publicly blaming platforms for the high prices that their own guarantees require.
+
+### 2. The Promoter
+
+### References:
+[^1]: [Business Insider. "Why concert tickets are so expensive — and who's to blame." Dec 2025.](https://www.businessinsider.com/why-concert-tickets-are-so-expensive-and-whos-to-blame-2025-12)
