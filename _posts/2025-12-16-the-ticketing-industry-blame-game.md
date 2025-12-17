@@ -18,8 +18,8 @@ While waiting in the dentist lobby before my checkup, I came across a Business I
 
 The popular narrative typically points the finger at ticketing platforms for high prices and other inconveniences when purchasing online. However, as I researched the industry's market structure, it became clear that the reality is complex and involves incentives where every artist, promoter, venue, and reseller is acting rationally within a faulty system.
 
-<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/cf358d2c-374c-432a-aaa1-accef31593d5" />
-*Figure 1: The circular nature of blame-shifting in the live entertainment ecosystem*
+<img width="2200" height="1002" alt="image" src="https://github.com/user-attachments/assets/67401f6a-5e64-4bcb-8ad5-9871054b58bd" />
+*Figure 1: How money and control flow between fans, artists, promoters, venues, and ticketing platforms. Source: "Patent Capital: United States v. Live Nation-Ticketmaster"*
 
 ## Stakeholder Incentives
 
@@ -56,6 +56,9 @@ How do exclusive contracts work? When a venue needs a ticketing system, companie
 
 It's important to note the ongoing antitrust argument against Ticketmaster. The DOJ's 2024 lawsuit alleges that these contracts handcuff venues in a way that prevents competitors from signing similar deals [^5]. Because Live Nation controls so many major tours, venues also fear that if they switch to a competing ticketing platform, they might lose access to lucrative Live Nation shows [^6]. 
 
+<img width="1456" height="806" alt="image" src="https://github.com/user-attachments/assets/7853862f-c0c2-4dd6-af4d-d24fb669f277" />
+*Figure 2: The breakdown of margins when it comes to a ticket. Source: "Patent Capital: United States v. Live Nation-Ticketmaster"*
+
 ### 5. Secondary Sellers
 The secondary ticket market exists to bridge the gap between supply and demand (your StubHub, Vivid Seats, and SeatGeek resale marketplace platforms). When primary tickets are priced below market value, brokers and bots have historically stepped in to buy in bulk and resell at a markup.
 
@@ -64,7 +67,10 @@ While researching the resale market, I found some numbers that put into perspect
 - Average resale markups can be anywhere from 27.76% (StubHub) to 37.66% (SeatGeek), not to mention fees layered on top of the often inflated ticket price [^8]
 - Some examples of bot-driven scalping's scale came when O2 blocked over 50,000 ticket bots in six weeks or when one ticket broker was able to get 30,000 "Hamilton" tickets in 2015-2016 [^9].
 
-While considerable resale is fan-to-fan, the bulk of secondary inventory is acquired by these automated bots that circumvent purchase limits and verification systems. In Live Nation's 2024 Annual Report, they claim that these tickets are then flipped at markups of 200-500% or more [^9]!
+<img width="801" height="548" alt="image" src="https://github.com/user-attachments/assets/62cdebe1-2bdc-4980-8c48-ce33def5c6c8" />
+*Figure 3: Fee structure by ticketing platform. Source: "OVID: Major Ticket Services That Charge the Most in Fees"*
+
+While considerable resale is fan-to-fan, the bulk of secondary inventory is acquired by these automated bots that circumvent purchase limits and verification systems. In Live Nation's 2024 Annual Report, they claim that these tickets are then flipped at markups of 200-500% or more [^9]! However, it's also important to understand that the secondary market can offer opportunity for consumer savings as well, depending on the supply and demand signals.
 
 ### 6. The Fans
 Fans sit at the receiving end of this complex structure, where they experience sticker shock from hidden fees, volatility in dynamic pricing, and competition against bots when trying to buy tickets to their favorite artist coming into town.
