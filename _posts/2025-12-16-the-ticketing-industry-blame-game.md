@@ -50,7 +50,7 @@ This [Philip Svensson article](https://quartr.com/insights/edge/master-of-ticket
 So, it's important to understand that the fees and prices someone sees at checkout aren't all set by Ticketmaster or any other ticketing platform. Ticketmaster simply provides the infrastructure for selling and distribution of this digital inventory. Yes, Ticketmaster can recommend prices to artist management and does receive marginal profit from service charges, but the primary seller has no decision-making in setting these prices.
 
 ### 4. Primary Sellers
-Industry Research confirms that Ticketmaster's acutal cut per ticket is a ballpark 5-7% of the total transaction, and an actual profit margin of 2% per ticket[^4]. The next question, then, is "How does Ticketmaster make money?" These primary sellers like AXS, Ticketmaster, and SeatGeek, operate under exclusive contracts with venues that dictate fee strcutures.
+Industry Research confirms that Ticketmaster's acutal cut per ticket is a ballpark 5-7% of the total ticket transaction, and an actual profit margin of 2% per ticket[^4]. The next question, then, is "How does Ticketmaster make money?" These primary sellers like AXS, Ticketmaster, and SeatGeek, operate under exclusive contracts with venues that dictate fee strcutures.
 
 How do exclusive contracts work? When a venue needs a ticketing system, companies bid for the rights. Ticketmaster often wins these bids due to a combination of its technology and capital. Ticketmaster then frequently pays venues millions of dollars in upfront advances against future fees [^2]. In exchange for an exclusive 3-15 year contract, the venue keeps a large portion of the service fee as a rebate. 
 
@@ -71,11 +71,13 @@ Fans sit at the receiving end of this complex structure, where they experience s
 
 The disconnect is less about the absolute price (since supply and demand will always push prices up for major tours) and more about lack of transparency and fairness in how tickets are distributed and priced.
 
+Taking all of this into account, these incentives create an ecosystem where almost every is acting rationally to gain profit from a performance, yet the outcome still feels irrational and unfair for fans.
+
 ## Where the Current Structure Falls Short
 The reason for this market disconnect isn't because prices are high, but that the ticketing industry lacks transparency and trust. 
 
 ### 1. The "Junk Fee" Act
-For decades, both primary and secondary platforms hid a variety of fees from fans until the final checkout screen, where prices would increase anywhere from %XX-%XX on top of face value.
+For decades, both primary and secondary platforms hid a variety of fees from fans until the final checkout screen, where prices would increase an average of 20.69% of a ticket's face value [^8].
 
 The FTC's "Junk Fee" Rule now mandates "all-in pricing," requiring platforms to display this total cost upfront to consumers. While this solves the sticker shock, it doesn't lower the price. This legislation just makes the high price visible sooner, helping fans make better decisions and increasing transparency. This legislation is effective May 12, 2025.[^10]
 
@@ -92,10 +94,13 @@ Dynamic pricing is essentially changing ticket prices in real-time as a response
 When a fan enters a queue seeing $150 and reaches checkout to find the same seat is now worth double, it feels much like a bait-and-switch. The UK's Competition and Markets Authority has already pushed for "pressure selling" rules[^12]. These would require ticketing platforms to provide a 24-hour notice of dynamic pricing tiers to potential buyers, for example. 
 
 ## Solutions
-Data guy, data decisions
-* Cap resale price at primary price
-* Better demand forecasting
-* ...any other?
+This post has focused on understanding the current market structure of live entertainment. My next piece looks at how data can make the ticket-buying experience better for both fans and the business, while explicitly accounting for how fair the outcome feels to consumers.
+
+- **Smarter initial pricing and segmentation.** Use demand forecasting and secondary‑market data to set face values closer to the true market price, by section and by city. If prices start closer to equilibrium, platforms can rely less on aggressive last‑minute dynamic pricing spikes as a blunt tool against bots and scalpers.
+- **Capped, fan‑first resale exchanges.** Experiments like Olivia Dean’s *The Art of Loving Live* tour show how capped resale can keep tickets accessible. On that tour, Ticketmaster committed to a fan‑friendly framework with a 20% resale cap, a no‑fee face‑value exchange, and verified resale only. Models like this prevent secondary prices from reaching astronomical levels while still allowing flexibility for fans who genuinely need to resell[^13].
+- **Improved classification tools.** Instead of trying to classify bots, building systems that could classify fans using behavioral and identity signals might prove more effective. Considering listening history, prior attendance, or transaction history, this could make access controls more accurate, reduce false positives that lock out real fans, and complement the BOTS Act.
+
+Together, these approaches treat high prices and distrust not just as political problems but as data problems that can be improved with better modeling, better incentives, and clearer legislative guardrails.
 
 ### References:
 [^1]: [Business Insider. "Why concert tickets are so expensive — and who's to blame." Dec 2025.](https://www.businessinsider.com/why-concert-tickets-are-so-expensive-and-whos-to-blame-2025-12)
@@ -107,6 +112,7 @@ Data guy, data decisions
 [^7]: [Zion Market Research. "Global Secondary Tickets Market."](https://www.zionmarketresearch.com/report/secondary-tickets-market)
 [^8]: [OVID. "Major Ticket Services That Charge the Most in Fees." Feb 2025.](https://www.ovidlife.com/ticket-services-charging-the-most-in-fees/)
 [^9]: [DataDome. "Ticket Scalping: What It Is, How It Affects Your Business, and What You Can Do About It." Sep 2025.](https://datadome.co/learning-center/how-to-stop-online-bot-ticket-scalping-and-other-ticketing-industry-bot-threats/)
-[^10]: [Federal Trade Commission. "The Rule on Unfair or Deceptive Fees: Frequently Asked Questions"](https://www.ftc.gov/business-guidance/resources/rule-unfair-or-deceptive-fees-frequently-asked-questions)
-[^11]: [Wiley Law. "Executive Order on Ticket Resale Market Calls for Greater FTC Enforcement"](https://www.wiley.law/alert-Executive-Order-on-Ticket-Resale-Market-Calls-for-Greater-FTC-Enforcement)
-[^12]: [RPC Legal. "CMA Secures Undertakings from Ticketmaster on Dynamic Pricing Following Oasis Investigation"](https://www.rpclegal.com/snapshots/consumer/autumn-2025/cma-secures-undertakings-from-ticketmaster-on-dynamic-pricing-following-oasis-investigation/)
+[^10]: [Federal Trade Commission. "The Rule on Unfair or Deceptive Fees: Frequently Asked Questions."](https://www.ftc.gov/business-guidance/resources/rule-unfair-or-deceptive-fees-frequently-asked-questions)
+[^11]: [Wiley Law. "Executive Order on Ticket Resale Market Calls for Greater FTC Enforcement." Apr 2025.](https://www.wiley.law/alert-Executive-Order-on-Ticket-Resale-Market-Calls-for-Greater-FTC-Enforcement)
+[^12]: [RPC Legal. "CMA Secures Undertakings from Ticketmaster on Dynamic Pricing Following Oasis Investigation". Nov 2025](https://www.rpclegal.com/snapshots/consumer/autumn-2025/cma-secures-undertakings-from-ticketmaster-on-dynamic-pricing-following-oasis-investigation/)
+[^13]: [Ticketmaster Business. "Ticketmaster Supports Olivia Dean’s Commitment to Fair Ticket Pricing and Takes Action to Cap Resale for ‘The Art of Loving Live’ Tour on Its Site." Nov 2025.](https://business.ticketmaster.com/press-release/ticketmaster-supports-olivia-deans-commitment-to-fair-ticket-pricing-and-takes-action-to-cap-resale-for-the-art-of-loving-live-tour-on-its-site/)
