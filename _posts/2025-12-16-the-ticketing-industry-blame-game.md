@@ -26,7 +26,7 @@ The popular narrative typically points the finger at ticketing platforms for hig
 To understand the surge in prices, we have to look at what drives revenue for each player in the industry.
 
 ### 1. The Artists
-The BI video notes how, up until the 2000s, tours promoted albums. Now, albums promote tours. Where artists received majority of their revenue from physical copies of their music, they now only receive fractions of pennies per stream. Live events have inherently become the primary income source for musicians[^1].
+The BI video notes how, up until the 2000s, tours promoted albums. Now, albums promote tours. Where artists received the majority of their revenue from physical copies of their music, they now only receive fractions of pennies per stream. Live events have inherently become the primary income source for musicians[^1].
 
 Artists must balance maximizing gross revenue per show to support their production costs with maintaining a "fan-friendly" brand. This becomes interesting when you discover that it is the artists who actually set the price of their concerts while publicly blaming platforms for the high prices that their own guarantees require.
 
@@ -35,22 +35,22 @@ Concert promoters, such as Live Nation or AEG, take on the financial risk of put
 
 Common deal structures would include:
 -  **Flat Guarantee:** The artist receives a fixed fee regardless of ticket sales
--  **Guarantee Plus Percentage:** The artists gets a base guarantee plus a split of *net profits* after expenses are couped
--  **Versus Deal:** The artist receives the greater between the guaranteee or a percentage of *gross* ticket revenue
+-  **Guarantee Plus Percentage:** The artists gets a base guarantee plus a split of *net profits* after expenses are recouped
+-  **Versus Deal:** The artist receives the greater between the guarantee or a percentage of *gross* ticket revenue
 
 A 2024 analysis by Dan Wall, Live Nation's EVP of Corporate and Regulatory Affairs, highlights the thin margins in this model. Wall explains that for most major concerts, roughly 90% to 95% of the ticket's face value goes to the artist, leaving the promoter with a single-digit percentage to cover all their costs and generate a profit[^2].
 
-This reality pushes the cost burden elsewhere. Since the ticket prices flows to the talent, the actual costs of running the show must be covered by service fees and other revenue streams like parking or F&B. These fees are typically set by and shared with the venue, but promoters do see some share of these revenues too.
+This reality pushes the cost burden elsewhere. Since the ticket price flows to the talent, the actual costs of running the show must be covered by service fees and other revenue streams like parking or F&B. These fees are typically set by and shared with the venue, but promoters do see some share of these revenues too.
 
 ### 3. The Venues
-Venues have massive operating costs such as staff, security, utilities, maintenance, and insurance. So, for major arenas, nighly rental costs can be anywhere from $50,000 to $150,000. To offset these expenses, venues will rely on those other revenue streams like parking and F&B, but even moreso, venues receive a large share of the service charges fans find at checkout.
+Venues have massive operating costs such as staff, security, utilities, maintenance, and insurance. So, for major arenas, nightly rental costs can be anywhere from $50,000 to $150,000. To offset these expenses, venues will rely on those other revenue streams like parking and F&B, but even more so, venues receive a large share of the service charges fans find at checkout.
 
 This [Philip Svensson article](https://quartr.com/insights/edge/master-of-tickets-breaking-down-live-nation-entertainment) goes into great depth on the live entertainment industry and is a highly recommended read, as he also breaks down the history of the music industry and landmark moments that led to Live Nation Entertainment. In the article, Svensson explains how the service charge is distributed per ticket, where "roughly two-thirds accrues to the venue, while the ticket company gets approximately one-fourth of the fee[^3]." 
 
-So, it's important to understand that the fees and prices someone sees at checkout aren't all set by Ticketmaster or any other ticketing platform. Ticketmaster simply provides the infrastructure for selling and distribution of this digital inventory. Yes, Ticketmaster can recommend prices to artist management and does receive marginal profit from service charges, but the primary seller has no decision-making in setting these prices.
+So, it's important to understand that the fees and prices someone sees at checkout aren't all set by Ticketmaster or any other ticketing platform. Ticketmaster primarily provides the infrastructure for selling and distributing this digital inventory. While primary platforms may advise on pricing strategy and earn a marginal share of fees, face values and most fee levels are ultimately set by artists and venues.
 
 ### 4. Primary Sellers
-Industry Research confirms that Ticketmaster's acutal cut per ticket is a ballpark 5-7% of the total ticket transaction, and an actual profit margin of 2% per ticket[^4]. The next question, then, is "How does Ticketmaster make money?" These primary sellers like AXS, Ticketmaster, and SeatGeek, operate under exclusive contracts with venues that dictate fee strcutures.
+Industry research confirms that Ticketmaster's actual cut per ticket is a ballpark 5-7% of the total ticket transaction, and an actual profit margin of 2% per ticket[^4]. The next question, then, is "How does Ticketmaster make money?" These primary sellers like AXS, Ticketmaster, and SeatGeek, operate under exclusive contracts with venues that dictate fee structures.
 
 How do exclusive contracts work? When a venue needs a ticketing system, companies bid for the rights. Ticketmaster often wins these bids due to a combination of its technology and capital. Ticketmaster then frequently pays venues millions of dollars in upfront advances against future fees [^2]. In exchange for an exclusive 3-15 year contract, the venue keeps a large portion of the service fee as a rebate. 
 
@@ -71,13 +71,13 @@ Fans sit at the receiving end of this complex structure, where they experience s
 
 The disconnect is less about the absolute price (since supply and demand will always push prices up for major tours) and more about lack of transparency and fairness in how tickets are distributed and priced.
 
-Taking all of this into account, these incentives create an ecosystem where almost every is acting rationally to gain profit from a performance, yet the outcome still feels irrational and unfair for fans.
+Taking all of this into account, these incentives create an ecosystem where almost everyone is acting rationally to earn a return from a performance, yet the outcome still feels irrational and unfair for fans.
 
 ## Where the Current Structure Falls Short
-The reason for this market disconnect isn't because prices are high, but that the ticketing industry lacks transparency and trust. 
+Against that backdrop, recent regulation and enforcement efforts have tried to restore some transparency.
 
 ### 1. The "Junk Fee" Act
-For decades, both primary and secondary platforms hid a variety of fees from fans until the final checkout screen, where prices would increase an average of 20.69% of a ticket's face value [^8].
+For decades, both primary and secondary platforms hid a variety of fees from fans until the final checkout screen, where prices would increase by roughly 21% over face value [^8].
 
 The FTC's "Junk Fee" Rule now mandates "all-in pricing," requiring platforms to display this total cost upfront to consumers. While this solves the sticker shock, it doesn't lower the price. This legislation just makes the high price visible sooner, helping fans make better decisions and increasing transparency. This legislation is effective May 12, 2025.[^10]
 
@@ -96,9 +96,9 @@ When a fan enters a queue seeing $150 and reaches checkout to find the same seat
 ## Solutions
 This post has focused on understanding the current market structure of live entertainment. My next piece looks at how data can make the ticket-buying experience better for both fans and the business, while explicitly accounting for how fair the outcome feels to consumers.
 
-- **Smarter initial pricing and segmentation.** Use demand forecasting and secondary‑market data to set face values closer to the true market price, by section and by city. If prices start closer to equilibrium, platforms can rely less on aggressive last‑minute dynamic pricing spikes as a blunt tool against bots and scalpers.
+- **Smarter initial pricing and segmentation.** Use demand forecasting and secondary‑market data to set face values closer to the true market price, by section and by city. If prices start closer to equilibrium, platforms can rely less on aggressive last‑minute dynamic pricing spikes as a blunt tool against bots and scalpers. This is where demand models and price-elasticity estimates, built from both primary and resale data, become critical.
 - **Capped, fan‑first resale exchanges.** Experiments like Olivia Dean’s *The Art of Loving Live* tour show how capped resale can keep tickets accessible. On that tour, Ticketmaster committed to a fan‑friendly framework with a 20% resale cap, a no‑fee face‑value exchange, and verified resale only. Models like this prevent secondary prices from reaching astronomical levels while still allowing flexibility for fans who genuinely need to resell[^13].
-- **Improved classification tools.** Instead of trying to classify bots, building systems that could classify fans using behavioral and identity signals might prove more effective. Considering listening history, prior attendance, or transaction history, this could make access controls more accurate, reduce false positives that lock out real fans, and complement the BOTS Act.
+- **Improved classification tools.** Instead of trying to classify bots, building systems that could classify fans using behavioral and identity signals might prove more effective. Framing this as a supervised learning problem around fan likelihood rather than just bot vs. human opens up a richer feature space by considering listening history, prior attendance, or transaction history, for example. This could make access controls more accurate, reduce false positives that lock out real fans while complementing the BOTS Act.
 
 Together, these approaches treat high prices and distrust not just as political problems but as data problems that can be improved with better modeling, better incentives, and clearer legislative guardrails.
 
