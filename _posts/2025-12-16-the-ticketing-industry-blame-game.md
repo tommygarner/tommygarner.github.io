@@ -99,6 +99,9 @@ Dynamic pricing is essentially changing ticket prices in real-time as a response
 
 When a fan enters a queue seeing $150 and reaches checkout to find the same seat is now worth double, it feels much like a bait-and-switch. The UK's Competition and Markets Authority has already pushed for "pressure selling" rules[^12]. These would require ticketing platforms to provide a 24-hour notice of dynamic pricing tiers to potential buyers, for example. 
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2ea4033a-ba39-4480-b8f7-d800387c24d4" />
+*Figure 4: Dynamic pricing in action. Source: "GoBearcats.com. Dynamic Pricing FAQs."*
+
 ## Solutions
 This post has focused on understanding the current market structure of live entertainment. My next piece looks at how data can make the ticket-buying experience better for both fans and the business, while explicitly accounting for how fair the outcome feels to consumers.
 
