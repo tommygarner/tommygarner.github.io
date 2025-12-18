@@ -37,6 +37,7 @@ excerpt: "How market-specific models reduce RMSE from 93 to 19-43 tickets by lea
 ## 2.1 Raw Ingestion
 
 ## 2.2 Dimensional Modeling
+
 | Table | Grain | Key Columns | Purpose |
 |-------|-------|-------------|---------|
 | `dim_events` | 1 per `event_id_stubhub` | `event_name`, `event_date`, `venue_name`, `venue_capacity` | Latest snapshot metadata per event [file:7] |
