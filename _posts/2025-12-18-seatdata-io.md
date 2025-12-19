@@ -4,6 +4,8 @@ title: "Market-Segmented Demand Forecasting Secondary Ticket Sales"
 date: 2025-12-17
 description: "Using SeatData.io Secondary Ticket Sales and Machine Learning Models to Predict Total Sales for the Subsequent Week"
 author_profile: true
+toc: true
+toc_sticky: true
 tags:
   - machine learning
   - database management
@@ -44,7 +46,7 @@ excerpt: "How market-specific models reduce RMSE from 93 to 19-43 tickets by lea
 | `dim_venues` | 1 per venue | `venue_key = HASH(name, city, state)` | Deterministic venue deduplication [file:7] |
 | `dim_event_categories` | 1 per event | `event_category_detailed` (38 labels), `focus_bucket` (6 buckets) | Taxonomy built via regex ladder on normalized names [file:7] |
 
-### Dimensional Tables
+### Dimension Tables
 
 ### Fact Tables
 - **`fact_event_snapshots`**: Cleaned copy of raw snapshots, partitioned by `imported_at`, clustered by `event_id_stubhub` for time-travel queries [file:7]
@@ -70,4 +72,73 @@ excerpt: "How market-specific models reduce RMSE from 93 to 19-43 tickets by lea
 | Inventory (`listings_active`) | Event-level median → 0 | Zero indicates sold out or not listed [file:6] |
 | Sales (`sales_total_7d`, etc.) | Fill with 0 | Zero-inflation is domain truth (most events have no sales on most days) [file:6] |
 
-## 3.2 Derived Features
+## 3.2 Transforming Features
+
+## 3.3 Target Variables
+
+---
+
+# 4. Baseline Global Models
+
+## 4.1 Model Selections
+
+### Classification
+
+### Regression
+
+## 4.2 Naive
+
+## 4.3 Tree-Based Models
+
+### Hyperparameter Search
+
+## 4.4 Neural Network
+
+## 4.5 Performances
+
+### Per-Bucket Error (in Tickets)
+
+---
+
+# 5. Market-Segmented Models
+
+## 5.1 Focus Bucket Definition
+
+## 5.2 Pipeline Per Bucket
+
+## 5.3 Model Selection
+
+## 5.4 Comparison to Global Models
+
+---
+
+# 6. Evaluation
+
+## 6.1 Back Transformation
+
+## 6.2 Performances
+
+## 6.3 Error Distributions
+
+## 6.4 RMSE by Bucket
+
+---
+
+# 7. Insights
+
+## 7.1 Why Segmentation Works
+
+## 7.2 Limits
+
+## 7.3 Other Architectures to Try Next
+
+--- 
+
+# 8. Insights
+
+---
+
+# Appendix
+
+# Inspiration
+@nrankin0: https://medium.com/@nmrankin0/using-machine-learning-and-cloud-computing-to-forecast-the-resale-of-concert-tickets-293c2f15c13b
