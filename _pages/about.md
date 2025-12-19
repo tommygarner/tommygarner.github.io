@@ -44,5 +44,7 @@ I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my tim
   <img src="/images/IMG_5205.JPG" alt="Turk">
   <img src="/images/IMG_1477.JPG" alt="Spurs 2014 Champs">
   <img src="/images/IMG_3562.JPG" alt="Hogwarts Orlando Universal">
+  <img src="/images/IMG_4639.JPG" alt="Guitar with Turk">
+  <img src="/images/IMG_5328.JPG" alt="Disc Golf with Fletcher">
   <img src="/images/IMG_5275.JPG" alt="Casual Photo">
 </div>
