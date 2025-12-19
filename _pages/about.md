@@ -37,10 +37,12 @@ I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my tim
 </style>
 
 <div class="image-collage">
-  <img src="/images/IMG_1915.jpg" alt="Japan">
-  <img src="/images/IMG_2420.jpg" alt="Brook and the Bluff">
-  <img src="/images/IMG_2582.jpg" alt="iHeart ACL">
-  <img src="/images/IMG_2761.jpg" alt="iHeart Red River, 1300ZONE">
-  <img src="/images/IMG_5205.jpg" alt="Turk">
-  <img src="/images/IMG_5275.jpg" alt="Casual Photo">
+  <img src="/images/IMG_1915.JPG" alt="Japan">
+  <img src="/images/IMG_2420.JPG" alt="Brook and the Bluff">
+  <img src="/images/IMG_2582.JPG" alt="iHeart ACL">
+  <img src="/images/IMG_2761.JPG" alt="iHeart Red River, 1300ZONE">
+  <img src="/images/IMG_5205.JPG" alt="Turk">
+  <img src="/images/IMG_1477.JPG" alt="Spurs 2014 Champs">
+  <img src="/images/IMG_3562.JPG" alt="Hogwarts Orlando Universal">
+  <img src="/images/IMG_5275.JPG" alt="Casual Photo">
 </div>
