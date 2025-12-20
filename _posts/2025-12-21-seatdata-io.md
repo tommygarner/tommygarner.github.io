@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Market-Segmented Demand Forecasting Secondary Ticket Sales"
-date: 2025-12-19
+date: 2025-12-21
 description: "Using SeatData.io Secondary Ticket Sales and Machine Learning Models to Predict Total Sales for the Subsequent Week"
 author_profile: true
 toc: true
@@ -17,7 +17,7 @@ tags:
   - python
   - sql
   - tensorflow
-excerpt: "How market-specific models reduce RMSE from 93 to 19-43 tickets by learning within isolated focus buckets."
+excerpt: "How segmentation can outperform generalization in prediction machine learning while understanding price-elasticity differences and market-specific secondary ticket transaction patterns."
 ---
 
 ## Abstract
@@ -27,10 +27,24 @@ excerpt: "How market-specific models reduce RMSE from 93 to 19-43 tickets by lea
 ---
 
 ## 1. Introduction
+I love live entertainment, and I enjoy statistics and modeling. I want to see the two intersect and, after a couple of coffee chats with analysts in the industry, they suggested that I tackle demand forecasting ticket sales.
+
+I wanted to take this challenge on not only to use for recruiting in the Spring upon graduation, but also to become more familiar with the ticketing industry. I wanted to understand how ticket sales move as different time features change. So, I decided to dive headfirst into this project and learn along the way. It also helps to use the new ML preprocessing and modeling techniques I'm learning in my classes towards an industry I truly enjoy.
 
 ### 1.1 Problem Statement
+However, demand modeling is not so simple. Data sources in this industry are closely guarded. Public information about ticket sales, prices, and other demand signals are also very difficult to find.
+
+The reasoning behind this is likely due to the BOTS Act (and it's recent enforcement) in the secondary ticket market to prevent people from automating scraping and scalping ticket inventory. So, the industry doesn't want this information in the hands of just anyone.
 
 ### 1.2 My Approach
+While artist teams set primary ticket prices for a concert, for example, the secondary market is where you really see the true ticket price converge when it comes to decentralized economics. Every individual seller sets their own price, often guided by pricing recommendations from their secondary ticketing platform.
+
+With accurate modeling, the potential impact is huge:
+* Marketing can decide when to drop ad spend to push a show
+* Business Insights can forecast expected sales in the primary market by watching secondary proxy demand
+* Finance can have confidence intervals on expected revenue with better known demand signals
+
+You get the picture! My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hopefully)!
 
 ---
 
