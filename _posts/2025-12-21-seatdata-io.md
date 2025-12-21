@@ -112,7 +112,7 @@ In order to determine the dimension tables I would need for this project, I had 
 | `fact_event_snapshots` | 1 per event per day | 'event_id_stubhub`, `imported_at` | Storage for time-series metrics like price and inventory |
 | `mart_event_snapshot_panel` | 1 row per event per day | `event_id_stubhub`, `days_to_event`, `price_spread_ratio` | Includes engineered and joined metrics to pull straight into Python notebooks |
 
-#### Dimension Tables
+### 2.4 Dimension Tables
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
 - **`dim_venues`**: By using the function ``TO_HEX(SHA256(CONCAT(`venue_name`, `venue_city`, `venue_state`)))``, I created a surrogate key with the `TRIM` and `LOWER` functions. This lets my database join tables to speed up querying much faster than on long strings of text
 - **`dim_events_categorized`**: This table required a lot of work on the front-end, since I wanted to explore the relationships of demand forecasting by different event types. Below I outline my methodology for creating these categories by using each `event_name` and `venue_name`:
@@ -123,12 +123,13 @@ In order to determine the dimension tables I would need for this project, I had 
         - Then, a team sports logic identified team names of every major league (NBA, NFL, MLB, NHL, MLS) and placed them in their respective buckets
         - Lastly, if the `event_name` didn't give it away, the script then evaluates the `venue_name` as a final push to categorize events, such as an event at a House of Blues would be sent to the Concerts - Other category
  
-> `WHEN REGEXP_CONTAINS(language code, r'\b(justin bieber|dijon)\b')
-> THEN 'Concert - Pop'`
+> `WHEN REGEXP_CONTAINS(language code, r'\b(justin bieber|dijon)\b') THEN 'Concert - Pop'`
 
-    - Above shows a shell of code that summarizes how these `CASE` logics functioned. These statements were able to handle n_grams of `event_name` matches in the list provided while also being able to handle some language translation.
-    - These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions.
-    - Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis. I would combine these into seven buckets:
+Above shows a shell of code that summarizes how these `CASE` logics functioned. These statements were able to handle n_grams of `event_name` matches in the list provided while also being able to handle some language translation.
+
+These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions.
+
+Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis. I would combine these into seven buckets:
 
 | Main Category      | Description                         | Event Count | Percentage |
 |--------------------|-------------------------------------|-------------|------------|
@@ -140,14 +141,14 @@ In order to determine the dimension tables I would need for this project, I had 
 | Minor/Other Sports | Tennis, UFC, Rodeo, NCAA            | 3,515       | 3%         |
 | Festivals          | Coachella, Lollapalooza, ACL        | 516         | 1%         |
 
-    - I landed on these major categories because I thought there was enough differentiation between them and their target consumers/fans that would be telling for my project. For example, I'm expecting to see professional sports tickets move very differently than concert tickets, and will explore this later!
+I landed on these major categories because I thought there was enough differentiation between them and their target consumers/fans that would be telling for my project. For example, I'm expecting to see professional sports tickets move very differently than concert tickets, and will explore this later!
 
-#### Fact Table
+### 2.5 Fact Table
 The `fact_event_snapshots` table acts as the central storage table for all quantitative data. Unlike dimension tables which store descriptive elements, this table is designed to grow alongside the influx of new data as I append more CSV snapshots.
 
-This table is partioned by `imported_at` to help me query specific time ranges easily from this fact table. Additionally, the table is clustered by 'event_id_stubhub`, organizing events within their own time-series. The table is also a cleaned copy of the raw `event_ticket_snapshots` source but is organized in a way that can be easily joined to my dimensional tables for creating a data mart for my specific project use.
+This table is partioned by `imported_at` to help me query specific time ranges easily from this fact table. Additionally, the table is clustered by `event_id_stubhub`, organizing events within their own time-series. The table is also a cleaned copy of the raw `event_ticket_snapshots` source but is organized in a way that can be easily joined to my dimensional tables for creating a data mart for my specific project use.
 
-### 2.4 Data Mart
+### 2.6 Data Mart
 Speaking of which, I then created a data mart within BigQuery to pull from when I begin looking at the data more closely and feature engineering and modeling. `mart_event_snapshot_panel` joins the `dim_event_categories` with the central fact table as well as event and venue metadata. 
 
 I also decided to introduced engineered features such as `price_spread_ratio` using `SAFE_DIVIDE(get_in, listings_median)` to capture the relationship between the lowest and median listing price on StubHub. I thought this feature might help future models understand the relationship of demand to price for the related event, where a low ratio suggests that resellers might be trying to get rid of inventory for dirt cheap instead of taking the $0 salvage value of missing the event entirely. If the `price_spread_ratio` was close to 1.0, that might suggest the secondary market has a competitive and relatively stable price to actual demand.
@@ -167,7 +168,46 @@ With the data mart structured, I then moved onto my EDA step to validate the dat
 
 ### 3.1 Initial Data Diagnostics and Cleaning
 Before diving into demand and trends in my data, I used several functions to investigate the quality of my snapshot records and their attribute distributions
-  - `df.info()`
+  - `.info()` and `.describe()` allowed me to check for null values and verify that my type casting from my ingestion script worked across the entire database in BigQuery. Distributions of both 1-day and 7-day sales were missing no values, and only `listings_median` was missing about 15% of the time, which might be because of low ticket volume (1-2 tickets that day), where a median cannot be calculated reliably
+  - I also looked for the October 4th gap mentioned by SeatData.io to understand how it affected my rolling windows for sales totals
+  - Finally, I evaluated the volume of unique events across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket. I took a swing with Festivals, which had only 500 unique events and about 12,000 rows. Otherwise, every other bucket had more than 2,000 events with over 71,000 rows in their respective categories. 
+
+### 3.2 Bucket EDA
+I decided to then understand demand, price and inventory statistics by each `focus bucket` to see how different markets move daily by aggregating these numbers with each day in my database. Below shows the trend of 1-day sales over time by bucket.
+
+<img width="989" height="490" alt="image" src="https://github.com/user-attachments/assets/ea4b29f4-9109-4b17-a0c7-e41069f50765" />
+*Figure 2: 1-day sales aggregated by `focus_bucket`
+
+Some initial insights I found from this data included:
+  - Major sports has many ticket transactions (with an average of around 7,000 tickets sold on StubHub per day) compared to the next tier of Concerts and Other Events
+  - Major sports also is the most volatile, with major swings in the hundreds of tickets
+  - Interestingly, Minor sports has about 1/4th of the ticket volume moving on StubHub than does Major sports
+  - There is a day of massive dips in ticket transactions for all categories excluding Festivals, but transactions do not reach zero. After researching this discrepancy, the day was November 4th, 2025. I found a couple of reasons why this major dip would occur in the secondary market:
+      - Major events ended: The World Series wrapped up on November 2nd, when the Dodgers beat the Blue Jays in Game 7, which marked the end of the MLB postseason. The playoffs had been a major driver of secondary ticket sales throughout October. Similarly, the Breeders' Cup (horse racing) wrapped up on the 1st, and the NASCAR Cup Series Championship finished on the 2nd
+      - College Basketball season opening: over 200 games fired off the college basketball season opening day on November 3rd. However, these tickets were likely purchased months in advance by fans looking forward to go to the games instead of reselling them
+      - Election Day: probably the biggest influence to the lack of ticket transactions on this day had to do with Election Day, where many people are heading to polls to cast their votes. Many either make plans to wait in line to vote either during their work shift or afterwards, which likely prevented people from looking to spend discretionary income on tickets
+
+<img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/abe4a919-4e3a-453c-8a41-90f5b608066c" />
+*Figure 3: Total active listings in each category over time*
+
+I found that the total active listings in each category was fairly stable throughout the duration of data collection, where there was maybe a gradual decline as most events kicked up in the November, December months. I did not choose to investigate this further, but was shocked that millions of tickets are listed online just on StubHub alone. It is interesting to think how many of those are also listed on other ticketing sites, or how long the average ticket is listed on a site before it's either taken off or sold.
+
+<img width="1180" height="584" alt="image" src="https://github.com/user-attachments/assets/03c60edc-1c8f-47ba-ac7a-b377dba5da1b" />
+*Figure 4: The median get-in (minimum ticket price) in each category over time*
+
+Next, I looked at how the median minimum ticket price in each category moved throughout the months of October to mid-December. The reason I chose median as opposed to average is because there were some extreme values that made interpretation difficult.
+
+Median `get_in` prices are somewhat stable across different categories with reasonable barrier to entries. In this chart, it's clear that there are three tiers to ticket price minimums:
+1. Sports have the lowest barrier to entry in the resale market around $30-$40. Sports also had the most transactions in the secondary market, which implies that many sports fan scour resale platforms for the best deals to get into different games. Also to note, huge stadiums might influence these lower prices, since these tickets are likely located in the upper decks with poor views of the action
+2. Concerts, Comedy, Broadway & Theater, and Festivals have the highest barriers to entry anywhere between $60-$90. These make sense since they are more unique experiences that are more rare than sporting events, where a home team could play tens of times in their home arena/stadium. In these categories, acts are likely on tour, and fans don't know the next time their favorite act will come back into town, so they are much more willing to pay a higher price
+  - Festivals, interestingly enough, have the most volatility when it comes to minimum ticket prices. However, remembering back to the spread of these buckets and their events in the first place, festivals only make up 500 unique events and have the least amount of transactions and active listings per day. Therefore, these median swings are likely out of small sample sizes as shown in the following graph:
+
+<img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/b1e58ace-2695-4f29-bafa-ecf69da2975b" />
+*Figure 5: A close-up at the number of active listings per day for Festivals.*
+
+3. The Other Events category sits in the middle in-between the high and low barrier to entry categories. This might represent the true average amount of money an individual would expect to spend to get in the doors of their chosen event
+
+
 
 ## 4. Feature Engineering
 
@@ -180,6 +220,11 @@ Before diving into demand and trends in my data, I used several functions to inv
 | Sales (`sales_total_7d`, etc.) | Fill with 0 | Zero-inflation is domain truth (most events have no sales on most days) [file:6] |
 
 ### 3.2 Transforming Features
+Creating a `dow` feature
+
+<img width="1509" height="1535" alt="image" src="https://github.com/user-attachments/assets/78d56391-c938-4360-a955-f1f47f121c85" />
+*Figure 5: Boxplot showing 1-day sale totals by Day of the Week*
+
 
 ### 3.3 Target Variables
 
