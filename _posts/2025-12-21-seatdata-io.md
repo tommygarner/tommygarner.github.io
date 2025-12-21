@@ -84,7 +84,7 @@ Next, I wanted to perform a bit of preprocessing on my CSVs before they landed i
 * **Data integrity**: replacing newlines and dropping any rows that were missing `event_id_stubhub` or `event_name`
 * **Deduplicating**: removing any duplicated rows sharing the same `event_id_stubhub`, `event_date`, and `venue_name` with duplicated ticket sale information in the same CSV
 
-Next, since I had a difficult season of midterms and finals throughout the data collection process, I wanted to set up a gating function that prevented me from accidentally uploading a duplicated snapshot to BigQuery. So, I created a `check_snapshot_exists` function that checks the BigQuery table for that `imported_date` before finally pushing the prepped CSV to my table.
+Next, since I had a difficult season of midterms and finals throughout the data collection process and accrued many snapshots in my inbox, I wanted to set up a gating function that prevented me from accidentally uploading a duplicated CSV to BigQuery. So, I created a `check_snapshot_exists` function that checks the BigQuery table for that `imported_date` before finally pushing the prepped CSV to my table.
 
 Before data landed in my table, these snapshots first landed in a Google Cloud Services staging layer as a data lake. This allowed me to have a durable backup source in case any transformations in the BigQuery table went wrong. That way, BigQuery could find this data via `LoadJobConfig`, which would make ingestion much faster and more stable for these large files than data streams like `to_gbq`. 
 
@@ -109,6 +109,8 @@ In order to determine the dimension tables I would need for this project, I had 
 | `dim_events` | 1 per `event_id_stubhub` | `event_name`, `event_date`, `event_time`, `venue_name`, `venue_capacity` | Latest snapshot metadata per event |
 | `dim_venues` | 1 per venue | `venue_key` | Venue hexadecimal key faster for joins |
 | `dim_events_categorized` | 1 per `event_id_stubhub` | `event_category` (38 labels), `event_id_stubhub`, `focus_bucket` (6 buckets) | Granular categories built via regex ladder |
+| `fact_event_snapshots` | 1 per event per day | 'event_id_stubhub`, `imported_at` | Storage for time-series metrics like price and inventory |
+| `mart_event_snapshot_panel` | 1 row per event per day | `event_id_stubhub`, `days_to_event`, `price_spread_ratio` | Includes engineered and joined metrics to pull straight into Python notebooks |
 
 #### Dimension Tables
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
@@ -118,7 +120,7 @@ In order to determine the dimension tables I would need for this project, I had 
     - Next, I built my `raw_categorization` CTE with the help of Gemini 3. This is a massive script that uses Regular Expressions (Regex) to sort events into detailed groupings. Building this CTE required parsing through the patterns of strings in `event_name` and editing `CASE` logic with more examples of artists until my Other Events category had diminishing returns. There is a specific priority order that I used to build this CTE that matters when categorizing these events:
         - First, non-event filters identified ticket listings for parking passes, shuttle access, or VIP upgrades. Removing these rows from modeling would be helpful in reducing the noise these would insert into my ticket price averages, for example
         - Next, a niche recognition logic for categories like Theater - Vegas/Cirque, Jam/Bluegrass, and Electronic/EDM based on artists that came up while investigating my Other Events missed bucket
-        - Then, a team sports logic identified team names of every major league (NBA, NFL, MLB, NHL) and placed them in their respective buckets
+        - Then, a team sports logic identified team names of every major league (NBA, NFL, MLB, NHL, MLS) and placed them in their respective buckets
         - Lastly, if the `event_name` didn't give it away, the script then evaluates the `venue_name` as a final push to categorize events, such as an event at a House of Blues would be sent to the Concerts - Other category
  
 > `WHEN REGEXP_CONTAINS(language code, r'\b(justin bieber|dijon)\b')
@@ -126,24 +128,48 @@ In order to determine the dimension tables I would need for this project, I had 
 
     - Above shows a shell of code that summarizes how these `CASE` logics functioned. These statements were able to handle n_grams of `event_name` matches in the list provided while also being able to handle some language translation.
     - These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions.
-    - Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis
+    - Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis. I would combine these into seven buckets:
 
-#### Fact Tables
-- **`fact_event_snapshots`**: Cleaned copy of raw snapshots, partitioned by `imported_at`, clustered by `event_id_stubhub` for time-travel queries [file:7]
+| Main Category      | Description                         | Event Count | Percentage |
+|--------------------|-------------------------------------|-------------|------------|
+| Concert            | Rock, Pop, Electronic               | 38,223      | 38%        |
+| Broadway & Theater | Hamilton, Lion King, MJ The Musical | 24,439      | 24%        |
+| Other              | Museums, Meow Wolf                  | 16,851      | 17%        |
+| Comedy             | Stand-up, Improv, Comedy Specials   | 9,021       | 9%         |
+| Major Sports       | NBA, NFL, MLB, NHL, MLS             | 7,814       | 8%         |
+| Minor/Other Sports | Tennis, UFC, Rodeo, NCAA            | 3,515       | 3%         |
+| Festivals          | Coachella, Lollapalooza, ACL        | 516         | 1%         |
+
+    - I landed on these major categories because I thought there was enough differentiation between them and their target consumers/fans that would be telling for my project. For example, I'm expecting to see professional sports tickets move very differently than concert tickets, and will explore this later!
+
+#### Fact Table
+The `fact_event_snapshots` table acts as the central storage table for all quantitative data. Unlike dimension tables which store descriptive elements, this table is designed to grow alongside the influx of new data as I append more CSV snapshots.
+
+This table is partioned by `imported_at` to help me query specific time ranges easily from this fact table. Additionally, the table is clustered by 'event_id_stubhub`, organizing events within their own time-series. The table is also a cleaned copy of the raw `event_ticket_snapshots` source but is organized in a way that can be easily joined to my dimensional tables for creating a data mart for my specific project use.
 
 ### 2.4 Data Mart
-**`mart_event_snapshot_panel`**: grain = (event × snapshot-day) within ±65 days of event date [file:7]
+Speaking of which, I then created a data mart within BigQuery to pull from when I begin looking at the data more closely and feature engineering and modeling. `mart_event_snapshot_panel` joins the `dim_event_categories` with the central fact table as well as event and venue metadata. 
 
-**Key columns:**
-- **Identifiers**: `event_id_stubhub`, `snapshot_date`, `days_to_event`
-- **Demand features**: `get_in`, `listings_median`, `listings_active`, `sales_total_{1d,3d,7d,14d,30d,90d}`
-- **Categories**: `focus_bucket`, `event_category_detailed`
+I also decided to introduced engineered features such as `price_spread_ratio` using `SAFE_DIVIDE(get_in, listings_median)` to capture the relationship between the lowest and median listing price on StubHub. I thought this feature might help future models understand the relationship of demand to price for the related event, where a low ratio suggests that resellers might be trying to get rid of inventory for dirt cheap instead of taking the $0 salvage value of missing the event entirely. If the `price_spread_ratio` was close to 1.0, that might suggest the secondary market has a competitive and relatively stable price to actual demand.
 
-**Design rationale:** Enables per-event time-series queries, bucket-level aggregations, and rolling window feature engineering without repeated joins or window functions at query time [file:7].
+I also feature engineering the `days_to_event` variable, which calculates the amount of days between the `event_date` and `imported_at` date. While I don't have enough aggregated events and days to see how different `focus_bucket`s truly move as events reach their days, I still included this feature in modeling to see how my limited sample size would communicate this dynamic.
+
+Below is the Data Flow Diagram of my database:
+
+<img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
+*Figure 1: Data Flow Diagram for my SeatData.io Warehouse*
 
 ---
 
-## 3. Feature Engineering
+## 3. Exploratory Data Analysis
+
+With the data mart structured, I then moved onto my EDA step to validate the data and investigate patterns of my SeatData.io snapshots. This phase was important for me to gain an understanding of the secondary ticket market and its features while also helping me decide which direction I wanted to take my first project with this data.
+
+### 3.1 Initial Data Diagnostics and Cleaning
+Before diving into demand and trends in my data, I used several functions to investigate the quality of my snapshot records and their attribute distributions
+  - `df.info()`
+
+## 4. Feature Engineering
 
 ### 3.1 Imputation Strategy
 
