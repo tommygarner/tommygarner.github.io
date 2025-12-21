@@ -114,7 +114,16 @@ In order to determine the dimension tables I would need for this project, I had 
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
 - **`dim_venues`**: By using the function ``TO_HEX(SHA256(CONCAT(`venue_name`, `venue_city`, `venue_state`)))``, I created a surrogate key with the `TRIM` and `LOWER` functions. This lets my database join tables to speed up querying much faster than on long strings of text
 - **`dim_events_categorized`**: This table required a lot of work on the front-end, since I wanted to explore the relationships of demand forecasting by different event types. Below I outline my methodology for creating these categories by using each `event_name` and `venue_name`:
-    - I began with a `base` CTE before categorizing anything
+    - I began with a `base` CTE before categorizing anything. This step allowed me to clean punctuation and standardize `event_name` similar to NLP steps. I used `REGEX_REPLACE` to remove punctuation entirely and `NORMALIZE_AND_CASEFOLD` to ensure that all-caps names would be treated the same as lowercased and the same as different letter accents, such as é and e.
+    - Next, I built my `raw_categorization` CTE with the help of Gemini 3. This is a massive script that uses Regular Expressions (Regex) to sort events into detailed groupings. Building this CTE required parsing through the patterns of strings in `event_name` and editing `CASE` logic with more examples of artists until my Other Events category had diminishing returns. There is a specific priority order that I used to build this CTE that matters when categorizing these events:
+        - First, non-event filters identified ticket listings for parking passes, shuttle access, or VIP upgrades. Removing these rows from modeling would be helpful in reducing the noise these would insert into my ticket price averages, for example
+        - Next, a niche recognition logic for categories like Theater - Vegas/Cirque, Jam/Bluegrass, and Electronic/EDM based on artists that came up while investigating my Other Events missed bucket
+        - Then, a team sports logic identified team names of every major league (NBA, NFL, MLB, NHL) and placed them in their respective buckets
+        - Lastly, if the `event_name` didn't give it away, the script then evaluates the `venue_name` as a final push to categorize events, such as an event at a House of Blues would be sent to the Concerts - Other category
+    - Below shows a shell of code that summarizes how these `CASE` logics worked:
+ 
+> `WHEN REGEXP_CONTAINS(language code, r'\b(justin bieber|dijon)\b')
+> THEN 'Concert - Pop'`
 
 #### Fact Tables
 - **`fact_event_snapshots`**: Cleaned copy of raw snapshots, partitioned by `imported_at`, clustered by `event_id_stubhub` for time-travel queries [file:7]
