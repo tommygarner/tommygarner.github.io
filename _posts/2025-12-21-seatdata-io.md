@@ -108,7 +108,7 @@ In order to determine the dimension tables I would need for this project, I had 
 |-------|-------|-------------|---------|
 | `dim_events` | 1 per `event_id_stubhub` | `event_name`, `event_date`, `event_time`, `venue_name`, `venue_capacity` | Latest snapshot metadata per event |
 | `dim_venues` | 1 per venue | `venue_key` | Venue hexadecimal key faster for joins |
-| `dim_events_categorized` | 1 per event | `event_category_detailed` (38 labels), `focus_bucket` (6 buckets) | Taxonomy built via regex ladder on normalized names |
+| `dim_events_categorized` | 1 per `event_id_stubhub` | `event_category` (38 labels), `event_id_stubhub`, `focus_bucket` (6 buckets) | Granular categories built via regex ladder |
 
 #### Dimension Tables
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
@@ -120,10 +120,13 @@ In order to determine the dimension tables I would need for this project, I had 
         - Next, a niche recognition logic for categories like Theater - Vegas/Cirque, Jam/Bluegrass, and Electronic/EDM based on artists that came up while investigating my Other Events missed bucket
         - Then, a team sports logic identified team names of every major league (NBA, NFL, MLB, NHL) and placed them in their respective buckets
         - Lastly, if the `event_name` didn't give it away, the script then evaluates the `venue_name` as a final push to categorize events, such as an event at a House of Blues would be sent to the Concerts - Other category
-    - Below shows a shell of code that summarizes how these `CASE` logics worked:
  
 > `WHEN REGEXP_CONTAINS(language code, r'\b(justin bieber|dijon)\b')
 > THEN 'Concert - Pop'`
+
+    - Above shows a shell of code that summarizes how these `CASE` logics functioned. These statements were able to handle n_grams of `event_name` matches in the list provided while also being able to handle some language translation.
+    - These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions.
+    - Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis
 
 #### Fact Tables
 - **`fact_event_snapshots`**: Cleaned copy of raw snapshots, partitioned by `imported_at`, clustered by `event_id_stubhub` for time-travel queries [file:7]
