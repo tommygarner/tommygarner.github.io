@@ -328,7 +328,7 @@ So, finally, I decided to conditionally impute the remaining missing values with
 After double-checking my now-filled `venue_capacity` distribution, I found some extreme outliers, such as Dickies Arena having a 240K capacity(???), so after correcting this figure to its estimated 14K figure, I was able to investigate the distribution of capacities:
 
 <img width="551" height="428" alt="image" src="https://github.com/user-attachments/assets/bfe97fb8-4789-4c2b-bd9a-2f56ae12a2b7" />
-*Figure 11: Distribution of the `venue_capacity` variable after imputation*
+*Figure 12: Distribution of the `venue_capacity` variable after imputation*
 
 Extremely right-skewed data, where there are still some extreme values for motorsports, and many venues holding no more than 2,500ish people. This tailed distribution would become a familiar sight as I looked at specific variables, and the `np.log1p` function would become a best friend as I prepared the data for modeling.
 
@@ -337,19 +337,19 @@ Extremely right-skewed data, where there are still some extreme values for motor
 This log function is not simply the natural log, but it includes a safety net. It calculates $$ln(1+x)$$. We need this because our data contains zeroes. Taking the log of a zero results in an undefined value, so this error handling helps the `np.log1p(0)` become just 0, preventing our model from crashing.
 
 <img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/0d9ca6be-44ad-4501-b308-8b05f2e2082f" />
-*Figure 12: Distribution of `venue_capacity_log` variable after imputation*
+*Figure 13: Distribution of `venue_capacity_log` variable after imputation*
 
 This distribution is much closer to normal and will be better for our models to use in predicting, instead of associating outlier capacities with the same week-long sales total since there aren't enough samples.
 
 The `sales_total_7d_next` variable had a similar problem:
 
 <img width="556" height="428" alt="image" src="https://github.com/user-attachments/assets/5559fd2b-b7f5-4a31-9d6e-42b653e1f0c1" />
-*Figure 13: Distribution of `sales_total_7d_next`*
+*Figure 14: Distribution of `sales_total_7d_next`*
 
 And I got to see the `np.log1p` error handling play out in this case, where many records have no transactions within a weeks' time:
 
 <img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/7bc9c0f2-1628-4da9-87ec-70f4d2bd1129" />
-*Figure 14: Distribution of `sales_total_7d_next_log`
+*Figure 15: Distribution of `sales_total_7d_next_log`*
 
 With this large discrepancy in total events with no ticket transactions in the following week and some, this could become a classification problem in its own right, predicting if any sales will occur in the next week for a show. GPT suggested that I add this layer on top of my demand forecasting prediction project, essentially answering:
 
