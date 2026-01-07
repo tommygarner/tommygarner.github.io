@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "Market-Segmented Demand Forecasting Secondary Ticket Sales"
-date: 2025-12-21
+date: 2026-01-07
 description: "Using SeatData.io Secondary Ticket Sales and Machine Learning Models to Predict Total Sales for the Subsequent Week"
 author_profile: true
 toc: true
