@@ -199,20 +199,25 @@ Next, I looked at how the median minimum ticket price in each category moved thr
 
 Median `get_in` prices are somewhat stable across different categories with reasonable barrier to entries. In this chart, it's clear that there are three tiers to ticket price minimums:
 1. Sports have the lowest barrier to entry in the resale market around $30-$40. Sports also had the most transactions in the secondary market, which implies that many sports fan scour resale platforms for the best deals to get into different games. Also to note, huge stadiums might influence these lower prices, since these tickets are likely located in the upper decks with poor views of the action
-2. Concerts, Comedy, Broadway & Theater, and Festivals have the highest barriers to entry anywhere between $60-$90. These make sense since they are more unique experiences that are more rare than sporting events, where a home team could play tens of times in their home arena/stadium. In these categories, acts are likely on tour, and fans don't know the next time their favorite act will come back into town, so they are much more willing to pay a higher price
+2. The Other Events category sits in the middle in-between the high and low barrier to entry categories. This might represent the true average amount of money an individual would expect to spend to get in the doors of their chosen event
+3. Concerts, Comedy, Broadway & Theater, and Festivals have the highest barriers to entry anywhere between $60-$90. These make sense since they are more unique experiences that are more rare than sporting events, where a home team could play tens of times in their home arena/stadium. In these categories, acts are likely on tour, and fans don't know the next time their favorite act will come back into town, so they are much more willing to pay a higher price
   - Festivals, interestingly enough, have the most volatility when it comes to minimum ticket prices. However, remembering back to the spread of these buckets and their events in the first place, festivals only make up 500 unique events and have the least amount of transactions and active listings per day. Therefore, these median swings are likely out of small sample sizes as shown in the following graph, where the greatest spike in median `get_in` price occurs when only 10,000 active listings live on StubHub:
 
 <img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/b1e58ace-2695-4f29-bafa-ecf69da2975b" />
 *Figure 5: A close-up at the number of active listings per day for Festivals.*
 
-3. The Other Events category sits in the middle in-between the high and low barrier to entry categories. This might represent the true average amount of money an individual would expect to spend to get in the doors of their chosen event
-
-Finally, I looked at the distributions of these features by each `focus_bucket`. I first tried to understand how 1-day sales volume is represented in each bucket.
+Next, I looked at the distributions of these features by each `focus_bucket`. I first tried to understand how 1-day sales volume is represented in each bucket.
 
 <img width="1009" height="636" alt="image" src="https://github.com/user-attachments/assets/e2149fd3-cd36-4907-befd-6b924e1ac6fb" />
 *Figure 6: The distribution of aggregated sales totals per day among each category*
 
 The above boxplot shows the spread of total transactions in the resale marekt by category, showing again that StubHub is a happening place for major sports fans to both sell and buy inventory. Concerts and Other Events also have 2,000+ transactions per day on the platform. Meanwhile, Broadway & Theater, Comedy, and Festivals do not see many transactions per day on this ticketing site.
+
+**Finally, I wanted to understand price-elasticity in my data by understanding sales volume as the event draws closer. By plotting `sales_total_1d` against a feature-engineered `days_to_event`, I was able to evaluate this relationship for a sample of events per category.**
+
+To conclude, I want to wrap up with some high-level takeaways from my EDA to summarize what I've already learned about the data at this point:
+-  Secondary ticket listings should be evaluated by their median statistics, since 1) there are small sample sizes of listings per event, which 2) can add noise to analysis by dragging up the mean `get_in` price, as I saw with Comedy for example
+-  **StubHub is a focus platform for those who want to sell or buy sports tickets primarily. There is a unique transaction history of tickets as sporting events get closer to gametime**
 
 Now, I wanted to do some feature engineering in order to continue my exploring of the data, since I wanted to know how price and demand move as the event draws closer.
 
@@ -230,13 +235,36 @@ Now, I wanted to do some feature engineering in order to continue my exploring o
 ### 3.2 Transforming Features
 One of the features I created was translating the `imported_at` date to a day-of-the-week variable `dow`. This helped me understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
 
+<img width="791" height="384" alt="image" src="https://github.com/user-attachments/assets/f63c47b7-3254-47a3-9e99-f639684c8dcf" />
+*Figure 7: A distribution of `days_to_event` by category*
+
+This stacked bar chart helped me understand where events stood upon beginning my EDA and feature engineering steps. Around mid-December, a majority of my event snapshots stood in the month to two-month out bins, whereas the remaining 50% of events in my database lived in the month-to-go timeframe. 
+
+This feature would help separate different price and demand trends in upcoming steps of understanding dynamics in the resale market further.
+
 <img width="1509" height="1535" alt="image" src="https://github.com/user-attachments/assets/78d56391-c938-4360-a955-f1f47f121c85" />
-*Figure 5: Boxplot showing 1-day sale totals by Day of the Week*
+*Figure 8: Boxplot showing 1-day sale totals by Day of the Week*
 
 Demand clearly shows patterns throughout each `focus_bucket`. Where Sunday lives on the far left and Saturday on the far right, you can see a increase in most categories as the weekend approaches. Another interesting takeaway from this graphic is that Tuesday shows volatility in demand, which might be influenced by several factors among researching:
   - Tuesday is a common ticket on-sale day across the live entertainment industry for arena tours and major concert announcements. These on-sales experience lots of price and demand volatility as many rush to secure tickets
   - According to box office managers with 20+ years of experience, venues will typically release held-back inventory in the mid-week, usually landing on Tuesdays. This inventory includes production holds (tickets held back until the stage is built), sponsor allocations (corporate ticket packages not fully utilized by marketing partners get released back to the box office), and artist guest lists (unused complimentary tickets allocated to performers)
   - With most concerts occurring Thursday-Saturday, early in the week serves as a good amount of time to list inventory a full 48-72 hours before the prime time weekend plans are made. Resellers can then respond to visible demand signals by driving price up or down depending on adjacent sales
+
+<img width="788" height="390" alt="image" src="https://github.com/user-attachments/assets/569cb212-4500-4916-8cc1-64262b9cf27f" />
+*Figure 9: Median `get_in` price as the event draws closer by category*
+
+Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the three tiers of pricing. However, it appears that prices are somewhat stable and unaffected as time progresses. If anything, you could maybe say there is a slight decrease in the minimum ticket price, as sellers are likely dropping prices on StubHub to reduce the likelihood of unsold inventory with no salvage opportunity after the event.
+
+<img width="979" height="484" alt="image" src="https://github.com/user-attachments/assets/f6c84d32-613c-4e46-b833-620e71bdb2ff" />
+*Figure 10: Average daily sales per category by `days_to_event` bins* 
+
+However, looking at the market volume in these categories per day as the event/performance draws near tells a unique story: StubHub is a great place to dump tickets off for sporting events, especially the week before (or day of!) the game. All other categories see a minor increase in transaction volume, and all categories see very little tickets change hands two months prior to the event.
+
+<img width="978" height="484" alt="image" src="https://github.com/user-attachments/assets/b8b8b1fb-b643-44c9-8477-0b33d26f7f39" />
+*Figure 11: Average active listings per category by `days_to_event` bins*
+
+As most sales occur in the final week leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average number of listings per event drop on that final day possible. This shows the risk of putting up last-minute inventory only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
+
 
 ### 3.3 Target Variables
 
