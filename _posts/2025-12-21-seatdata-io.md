@@ -224,16 +224,23 @@ Now, I wanted to do some feature engineering in order to continue my exploring o
 
 ## 4. Feature Engineering
 
-### 4.1 Imputation Strategy
+My feature engineering notebook was motivated by some initial questions I came across as I explored the data:
+-  How does demand react to price amongst StubHub consumers?
+-  How does price react to demand amongst sellers?
+-  Is there any relationship between the `event_date` drawing closer and demand? price?
 
-| Feature Type | Imputation Rule | Justification |
-|--------------|----------------|---------------|
-| Price features (`get_in`, `listings_median`) | Event-level median → global median | Preserves relative pricing within event lifecycle [file:6] |
-| Inventory (`listings_active`) | Event-level median → 0 | Zero indicates sold out or not listed [file:6] |
-| Sales (`sales_total_7d`, etc.) | Fill with 0 | Zero-inflation is domain truth (most events have no sales on most days) [file:6] |
+This section will explore these questions while creating new variables to help index the data and prepare my data mart for modeling.
 
-### 3.2 Transforming Features
-One of the features I created was translating the `imported_at` date to a day-of-the-week variable `dow`. This helped me understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
+### 4.1 Filtering the Mart
+
+After pulling my data mart into a Python Colab notebook, I wanted to ensure that the data I grabbed only events that hadn't expired yet with `days_to_event > 0`. Most of the filtering has been performed in the EDA SQL queries and database engineering, so thankfully the data mart is prepared to get started.
+
+### 4.2 Creating New Features
+A feature I was suggested to create by Gemini 3 was the `price_spread_ratio`, which is a `SAFE_DIVIDE` of the `get_in` price and the `listings_median`. Essentially, this ratio helps us understand the relationship between the lowest and middle values of tickets per event.
+
+A high ratio would tell us that there is similar pricing across the board for an event, whereas a lower ratio describes either a great deal or a great suspicion compared to the rest of inventory for that event. Somewhere in the middle represents the minimum ticket price for that event sitting low enough for a potential customer to pull the trigger and buy the tickets. 
+
+Another one of the features I created was translating the `imported_at` date to a day-of-the-week variable `dow`. This helped me understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
 
 <img width="791" height="384" alt="image" src="https://github.com/user-attachments/assets/f63c47b7-3254-47a3-9e99-f639684c8dcf" />
 *Figure 7: A distribution of `days_to_event` by category*
@@ -265,8 +272,117 @@ However, looking at the market volume in these categories per day as the event/p
 
 As most sales occur in the final week leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average number of listings per event drop on that final day possible. This shows the risk of putting up last-minute inventory only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
 
+I also asked Claude Sonnet 4.5 for other variables that would be helpful in understanding price-elasticity in my data. The GPT suggested I do the following with my SQL query to pull from my data mart:
 
-### 3.3 Target Variables
+1) Create an `inv_per_day` variable by `SAFE_DIVIDE` the active listings and days until the event to understand how many tickets are still available relative to the days remaining, also preventing the calculation from failing if there are no more days remaining
+2) Create lagged features using the `LAG()` function, which I will discuss in the next section. These features look backwards and serve as the most recent data our model will use to determine its predictions
+3) Create the target variable `sales_total_7d_next` by summing 1-day sales totals beginning for tomorrow through seven days from today. This is extremely important to reduce data leakage where there could have been overlap in data the model both sees and predicts
+4) Create delta calculations that observe changes in week-total sales and active listings to understand how each events' market is behaving
+
+With that, I want to talk about why I lagged features and the intuition from my Supply Chain and Demand Forecasting course this Fall.
+
+### 4.3 Lagging Features
+
+This course introduced me to several demand forecasting concepts such as Naive forecasting and ARIMA modeling that all consider lagged (historical) variables. The core idea across these techniques is that the best predictor of future behavior is often recent/past behavior. Since this project focuses on predicting the next week's worth of sales, 
+I needed to give my model an understanding of what happened leading up to today.
+
+To achieve this, I lagged features. By using `t` as the current snapshot date, I can lag sales and inventory seen in the previous day with `t-1` and in the previous week with `t-7` and so on. Using SQL's `LAG` function on week-long sales totals and active listings `OVER` partitioned `event_ids`, I created columns that show the model the previous week's performance alongside the current day's stats. This allows future models to detect trends like the momentum of sales, rather than just seeing static numbers.
+
+### 4.4 Imputing Missing Data
+
+I decided to add the `venue_capacity` to help the model understand how available inventory influences sales relative to how much the venue can hold. 1,000 tickets available on StubHub for an NFL arena is extremely different than 1,000 available tickets for a college basketball game or concert.
+
+However, this proved to be challenging, since just under 50% of events had missing capacities listed. I knew this variable would help our models make better predictions, so I focused on sourcing data and logical assumptions to help me fill in the gaps.
+
+First, I used another ticket source called TouringData.org[https://touringdata.org/] to help bring in missing capacity values. This Patreon contains aggregated ticket revenue and inventory statistics for many shows and will post daily CSVs. Periodically, they will post files that contain all shows up to that point within the year, and so I relied on both their completed 2024 and 2025 documents for my missing capacities.
+
+To do this, I mounted my Google Drive into Google Colab, defined my folder path, and read both documents into my directory using Pandas. After this, I concatenated both files and standardized venue names and cities, using these as my primary mapping keys between my SeatData.io and TouringData.org sources. This meant the usual `.str.lower()` lowercasing, `.str.strip()` removing leading and trailing whitespace, and `.fillna('')` handling missing cities or venue names. These names and cities are then placed into a `venue_capacity_map` dictionary.
+
+Then, I created a helper function that first checks the existing data in my data mart to see if the row is missing `venue_capacity`. If there is already existing data, I skip the row. However, if the row is missing that feature, a lookup key is created with `(row['join_name'], row['join_city'])` and then searched to return the `venue_capacity` from my dictionary created from TouringData.org's documents.
+
+Upon my first attempt, 42K capacities were imputed from the additional source. However, I was stilling missing 900K. So, I decided to introduce fuzzy matching with my key and dictionary pairs to improve this imputation. What fuzzy matching does is look for approximately similar spelled names and pair them together, instead of looking for exact matches. This includes typos, different languages, and special characters.
+
+My `fuzzy_match_venue` function first looks only for venues within the city found in that row by using if, then logic: `if not venue or not city or city not in master_by_city: return None`. So, if I was missing Madison Square Garden's capacity, this function prevents me from accidentally matching with Madison Square Park in Georgia. Then, it collects potential candidates in a list.
+
+The function then compares my `venue_name` against the filtered list of candidates using the `scorer=fuzz.token_set_ratio` scoring. Using NLP, this will focus on token pairings between my venues and potential candidates, where The Staples Center from SeatData.io will match Staples Center, Los Angeles" because of the shared core tokens, resulting in a nearly perfect score. And I accept only matches that are found 85% confident to prevent false positives. Finally, it will impute that venues capacity to my data.
+
+This round helped me find an additional 100K venue capacities, which was great! Yet, I still had 33% of rows with missing venue data and no more additional sources to duplicate this strategy, since APIs I looked into did not share this data with rate limits I needed for my scope.
+
+So, secondary to my data aggregating strategy, I decided to use logical imputation to impute the remaining capacities. The following are assumptions I made after researching conservative average venue sizes:
+
+| Venue Type      | Estimated Average Capacity |
+|-----------------|----------------------------|
+| Stadium         | 60000                      |
+| Arena           | 15000                      |
+| Amphitheater    | 10000                      |
+| Theater/Theatre | 2500                       |
+| Ballroom        | 1500                       |
+| Club            | 500                        |
+| Cafe            | 150                        |
+| Bar             | 100                        |
+
+After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the `venue_name` and the `event_name`, since some event titles included the location of the performance. This strategy brought me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
+
+So, finally, I decided to conditionally impute the remaining missing values with the median `venue_capacity` of that focus bucket. Doing this would not misrepresent the data's middle values for this variable, and assumed that the remaining Festivals, for example, had similar capacities to the rest of the festivals in my data. This was an aggressive assumption looking back on it, but I would need the complete variable for later modeling and wanted to be as fair as possible.
+
+After double-checking my now-filled `venue_capacity` distribution, I found some extreme outliers, such as Dickies Arena having a 240K capacity(???), so after correcting this figure to its estimated 14K figure, I was able to investigate the distribution of capacities:
+
+<img width="551" height="428" alt="image" src="https://github.com/user-attachments/assets/bfe97fb8-4789-4c2b-bd9a-2f56ae12a2b7" />
+*Figure 11: Distribution of the `venue_capacity` variable after imputation*
+
+Extremely right-skewed data, where there are still some extreme values for motorsports, and many venues holding no more than 2,500ish people. This tailed distribution would become a familiar sight as I looked at specific variables, and the `np.log1p` function would become a best friend as I prepared the data for modeling.
+
+### 4.5 Transforming Variables
+
+This log function is not simply the natural log, but it includes a safety net. It calculates $$ln(1+x)$$. We need this because our data contains zeroes. Taking the log of a zero results in an undefined value, so this error handling helps the `np.log1p(0)` become just 0, preventing our model from crashing.
+
+<img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/0d9ca6be-44ad-4501-b308-8b05f2e2082f" />
+*Figure 12: Distribution of `venue_capacity_log` variable after imputation*
+
+This distribution is much closer to normal and will be better for our models to use in predicting, instead of associating outlier capacities with the same week-long sales total since there aren't enough samples.
+
+The `sales_total_7d_next` variable had a similar problem:
+
+<img width="556" height="428" alt="image" src="https://github.com/user-attachments/assets/5559fd2b-b7f5-4a31-9d6e-42b653e1f0c1" />
+*Figure 13: Distribution of `sales_total_7d_next`*
+
+And I got to see the `np.log1p` error handling play out in this case, where many records have no transactions within a weeks' time:
+
+<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/7bc9c0f2-1628-4da9-87ec-70f4d2bd1129" />
+*Figure 14: Distribution of `sales_total_7d_next_log`
+
+With this large discrepancy in total events with no ticket transactions in the following week and some, this could become a classification problem in its own right, predicting if any sales will occur in the next week for a show. GPT suggested that I add this layer on top of my demand forecasting prediction project, essentially answering:
+
+1) Will there be any sales in the next week for this event? (Classification)
+2) If so, how many? (Prediction)
+
+So, I created the binary variable `any_sales_7d_next` and understood the class weights to be around 60% of events with no sales in the next week and 40% with at least one sale in the next week. 
+
+I then log-transformed other volume and price featuers in the dataset, such as `sales_total_7d`, `get_in`, `listings_median`, and `listings_active` since their distributions also showed heavy right-skews.
+
+Finally, I took the `dow` (day-of-week) variable and created the binary `event_weekend` feature that recognizes either the 6th or 7th (...) day as the weekend, marking Friday and Saturday nights. These are very popular nights for events where people can afford a late night at a concert or sports game without penalty to waking up early the following morning.
+
+### 4.6 Remaining NaNs
+
+Lastly, I evaluated the missingness of my data and summarize below my thought process for the final remaining missing features:
+
+| Variable                    | Percentage Missing | Imputation Strategy                                                                                                                                                                                            |
+|-----------------------------|--------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `listings_median`           | 10%                | First attempted to impute with the median of that event by `event_id_stubhub`. If all NaNs for that event, imputing with the global median listing value. Cannot afford 0s which would create undefined ratios |
+| `listings_median_log`       | 10%                | Same applies as above                                                                                                                                                                                          |
+| `price_spread_ratio`        | 10%                | Lastly recalculated with the missing `listing_median` values                                                                                                                                                   |
+| `listings_active_prev`      | 5%                 | NaNs likely because these rows are the very first record. So using today's value as yesterdays in backfill                                                                                                     |
+| `listings_active_change_7d` | 5%                 | As per above, the delta value becomes zero                                                                                                                                                                     |
+| `sales_total_change_7d`     | 3%                 | As per `listings_active_prev` situation, followed similar logic                                                                                                                                                |
+| `sales_total_7d_prev`       | 3%                 | As per `listings_active_prev` situation, followed similar logic                                                                                                                                                |
+| `inv_per_day`               | 2%                 | Recalculated after imputing `listings_active` feature                                                                                                                                                          |
+| `listings_active`           | 2%                 | Assuming that missing values actually mean 0 active listings                                                                                                                                                   |
+| `listings_active_log`       | 2%                 | After imputing `listings_active`, using `.clip(lower=1)` if `days_to_event` is small or 0 to prevent undefined calculations                                                                                    |
+
+After this, my data had no more missing values and I was finally ready to push this back to BigQuery and begin modeling. 
+
+Some takeaways from this section:
+-  
 
 ---
 
