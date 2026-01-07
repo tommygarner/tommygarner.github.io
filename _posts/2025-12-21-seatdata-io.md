@@ -391,17 +391,78 @@ Some takeaways from this section:
 
 ---
 
-## 4. Baseline Global Models
+## 5. Modeling
 
-### 4.1 Model Selections
+Now with my understanding of StubHub's secondary ticket transaction data and my feature engineered variables, I'm ready to move onto the ML piece to answer two primary questions:
 
-#### Classification
+1) **Classification**: Are there any sales in the next week for this event?
+2) **Regression**: If I predict yes, how many sales will occur in the next week for this event?
 
-#### Regression
+So, I began with setting up my variables with dummy coding, train and test splits, and deciding which modeling algorithms I wanted to use based on previous coursework and experimentation.
 
-### 4.2 Naive
+*It's important to note, this first round of modeling did not facet by `focus_bucket`. I chose to investigate if modeling all of the data (with dummy coding) universally would result in tight predictions.*
 
-### 4.3 Tree-Based Models
+### 5.1 Dummy Coding
+
+Dummy variables separate columns into categorical variables with buckets as columns, with k-1 columns. So, trading my `days_to_event` numerical data into bins using Pandas' `.get(dummies)` function helped me represent my events in six possible buckets, ranging from one week span to three-week span and beyond.
+
+### 5.2 Building X and y
+
+Next, I wanted to build my X and y variables to easily pass through my models. X would include any column in my data that did not include the target variable or any leakage variables (`any_sales_7d_next`, `sales_total_7d_next_log`). This also includes string variables like `venue_name` and `event_id_stubhub`, where a model could potentially just memorize that The Moody Center will always have high sales volume. So we want to get these identifiers out.
+
+### 5.3 Train/Test Splits
+
+Any normal ML project would consider around 70/20/10 train, test, and validation splits for their data. However, doing so would jumble around different dates for our events, possibly trying to predict previous dates sandwiched between training dates, and some events would totally be excluded in testing! This will not work for time-series data, and so I took a different approach.
+
+<img width="1344" height="960" alt="image" src="https://github.com/user-attachments/assets/ccc2b491-fd4b-4a66-a523-8602a4e78a17" />
+*Figure 17: An example of train/test split with time-series data*
+
+Instead, I had to define a cutoff date that my training cannot see beyond, thus using the unseen days as the test set. I decided to use the last two weeks of data for my events as the test set by converting the `snapshot_date` with `.to_datetime` and creating the cutoff date with `model_data['snapshot_date`].max() - pd.Timedelta(days=14)`. Then, I separated training data (`<= cutoff_date`) from testing (`> cutoff_date`). To further prevent any data leakage, I also dropped `snapshot_date` at this point, while also some modeling methods would require inputs as floats and not date formats.
+
+Next, I had separate my y outputs in the classification and regression problems, since classification problems are trying to predict a binary 0/1 outcome and regression problems are trying to predict the number of (log) ticket sales for the following week, assuming there will be!
+
+I did this by first defining `y_class` as only the `any_sales_7d_next` column in my data (both 0 and 1 values). Then, `y_reg` would become the locations (`.loc`) where there are sales in the next week (`model_data[any_sales_7d_next] == 1`) and only the `sales_total_7d_next_log` value in that row. Same locations, different output to predict. X would follow a similar method, where X_reg is only the locations where there are sales in the next week, and includes all our feature columns. 
+
+Then I defined my train and test X and y feature spaces according to each problem. `X_train_c` would include my feature columns before the cutoff date (as would `X_train_r` for regression). `X_test_c` would include the feature space after the cutoff date. `y_train_c` included the `any_sales_7d_next` values before the cutoff date, and `y_test_c` would have the records after those two weeks held out for testing. I did the same thing with my regression train/test split, however the prediction output would be different, as I discussed earlier. Same locations, different target outputs.
+
+### 5.4 Model Selections
+
+Now, the fun part. I began to decide which models I wanted to try for both problems, classification and regression. 
+
+Up to this point, I knew my data was both wide and long, with many variable types. This was telling for tree-based learning, which is efficient and fast with this type of data. However, in my courses I have also been learning and experimenting with models such as Naive and Neural Networks, so I wanted to try these out as well and compare, in the end, which model performed the best for this specific data. 
+
+Also, I had to consider and predict which models would be best for which data problem, since I had split this up into both classification and regression. Except for Naive, which could only predict outputs, the remaining models I tried were able to attempt both problems with the same input feature space, which simplified my decision beforehand.
+
+Now, I will begin detailing how I built each model and the inspiration behind trying these methods.
+
+### 5.5 Naive
+
+My Naive model became my baseline predictor. I learned about Naive modeling in my Supply Chain and Demand Forecasting course this Fall, and the method essentially assumes that the best predictor of tomorrow's demand is today's demand. Naive assumes no volatility, which some focus buckets did have. However, this initial modeling notebook sought out to predict using the model against all `focus_buckets`, so while Theater/Broadway and Festivals, with low and constant sales volumes, might have low errors, Sports categories would suffer from this method conceptually.
+
+To build this model, I could simply take the previous value as my prediction for the next value with `y_pred_naive` as `X_test_r.iloc[:, list(X_reg.columns).index("sales_total_7d_log")]`. This takes the test features (of X) and finds the column that holds the current `sales_total_7d_next_log` and returns that value as the prediction.
+
+The reason this model is my baseline predictor is because, if other models cannot outperform a model that is a lagged value behind, then it is not worth looking at any further. Naive predictions will always chase the true value, in this case by one week distance. We're looking for better predictions!
+
+### 5.6 Tree-Based Models
+
+GPTs love to suggest tree-based models like Gradient Boosting (GB), XGBoost, and Light GBM. They're the fastest and somewhat effective techniques that don't require much data munging, and they can handle both classification and regression cases. I was also encouraged by Claude Sonnet 4.5 to try these out, but first want to explain what tree-based learning is at a super high level.
+
+Regular decision trees is the most basic form of these models. Trees essentially split data based on a filtering question, such as "Is this event a Major Sport?" or "Is the price greater than or equal to $45?". Decision trees are easy to interpret, but prone to overfitting data, memorizing patterns of training data and struggling to predict/generalize new records. 
+
+<img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/0becc4c0-17c6-49bf-847a-15e391d819d9" />
+*Figure 18: A single decision tree example*
+
+Gradient Boosting attempts to fix the overfitting problem by creating many trees instead of just one. This is also a sequential training method, where each tree is predicting the error of the previous tree. By the time all trees are summed up, the model is able to capture more because each tree covers the mistakes of the one before it.
+
+<img width="617" height="337" alt="image" src="https://github.com/user-attachments/assets/3310e6a7-4261-4cf1-9994-e206b8fa8db9" />
+*Figure 19: An example of sequential gradient boosting trees*
+
+XGBoost and LightGBM introduce some tailored advantages on top of Gradient Boosting. XGBoost contains regularization, which penalizes trees that get too complex (approaching overfitting and memorization) and is able to handle missing values or zeros. LightGBM is designed for massive datasets and grows its trees vertically, as opposed to XGBoost's horizontal growth. LightGBM focuses only on the leaf with the highest error and ignores other leaves. These two methods speed up training significantly and use less computational energy. 
+
+<img width="756" height="287" alt="image" src="https://github.com/user-attachments/assets/f1835955-edd3-4db0-b8d4-b5051d6460bb" />
+*Figure 20: Horizontal (XGBoost) vs. Vertical (LightGBM) decision tree training*
+
+Sklearn contains the packages for these tree-based models, and so I used `GradientBoostingClassifier.fit()`, `XGBClassifier().fit`, and `LGBMClassifier.fit()` on both `X_train_c` and `X_train_r` (and their Regressor, y_train counterparts). 
 
 #### Hyperparameter Search
 
