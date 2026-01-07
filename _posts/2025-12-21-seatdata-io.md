@@ -382,7 +382,9 @@ Lastly, I evaluated the missingness of my data and summarize below my thought pr
 After this, my data had no more missing values and I was finally ready to push this back to BigQuery and begin modeling. 
 
 Some takeaways from this section:
--  
+-  **Filled Venue Capacity is Context**: My model understanding that 100 ticket sales in a 500-person club signals a viral event whereas those 100 sales in a stadium event is nothing at all. Future models will now be able to tell this apart after the imputation on `venue_capacity`, which was missing nearly half of entries
+-  **Solving Sparsity**: Sales numbers in my data is extremely sparse, with many days having zero transactions. Both by log-transforming these sales figures and splitting up the target into a classification and regression problem, I've created a modeling strategy that won't be overwhelmed by zeros
+-  **Lagging Features**: The idea of giving my later models a memory of the previous week will hopefully benefit predictions by giving prediction models more access to historical data, such as the previous week. Now, a model can understand momentum for an event and adjust predictions accordingly, rather than simply seeing today's sales volume
 
 ---
 
