@@ -527,37 +527,58 @@ Now, I was ready to move on to building the framework of these Neural Networks.
 
 Neural Networks can be as shallow or deep as you'd like, considering balancing bias and variance, overfitting, the input feature space, and the problem type. That is why this step is really important. Setting up hidden layers in a way that encourages the model to learn but not memorize is the entire trick that I've learned so far in fitting Neural Nets. 
 
-Using tensorflow, I wanted to play around with different combinations of hidden layers, neuron counts, activation functions, and other techniques suggested to me by Claude. Below is the architecture I landed on for both my classification and regression networks.
+Using tensorflow, I wanted to play around with different combinations of hidden layers, neuron counts, activation functions, and other techniques suggested to me by Claude. Below is the architecture I landed on for both my classification and regression networks with some explanation of terms.
 
-**Classification**:
-<div class="mermaid">
-graph TD
-    Input[Input Layer <br> Shape: 29 Features] --> BN1
-    
-    subgraph Hidden_Block_1 [Hidden Block 1]
-    BN1[Batch Normalization] --> Dense1[Dense Layer <br> 128 Neurons <br> ReLU Activation <br> L2 Reg: 0.0001]
-    Dense1 --> BN2[Batch Normalization]
-    BN2 --> Drop1[Dropout <br> Rate: 0.3]
-    end
-    
-    Drop1 --> Hidden_Block_2
-    
-    subgraph Hidden_Block_2 [Hidden Block 2]
-    Hidden_Block_2 --> Dense2[Dense Layer <br> 64 Neurons <br> ReLU Activation <br> L2 Reg: 0.0001]
-    Dense2 --> BN3[Batch Normalization]
-    BN3 --> Drop2[Dropout <br> Rate: 0.2]
-    end
-    
-    Drop2 --> Output[Output Layer <br> 1 Neuron <br> Sigmoid Activation]
+<img width="736" height="393" alt="image" src="https://github.com/user-attachments/assets/b416d0e8-2840-4b6b-835c-15744aa83001" />
+*Figure 24: My Feed-Forward Neural Network architecture used for classification and regression*
 
-    style Input fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    style Output fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    style Dense1 fill:#fff9c4,stroke:#fbc02d
-    style Dense2 fill:#fff9c4,stroke:#fbc02d
-    style Drop1 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
-    style Drop2 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
-</div>
-*Figure 23: My Feed-Forward Neural Network architecture used for classification*
+My Neural Network for regression included a third hidden layer with 32 neurons, and between my classification and regression output neurons, I used different activation functions to get my desired target output. Here are some more options I landed on after tinkering and trying again new architectures:
+
+-  `activation=`: this allows me to define activation functions, which introduces nonlinearity to model learning to handle complex patterns in my data, and then passing to the next layer
+    -  I used three different activation functions in these two Neural Networks, two of which are familiar (`'sigmoid'` on the output layer during Classification, and `'linear'` to output a prediction on sales in my Regressor) and one which is new, `'relu'`
+    -  ReLU helps avoid vanishing gradients by outputing the input if positive and outputing zero if negative. I used this activation function in each hidden layer
+-  `regularizers.l2`: introduces regularization into hidden layers, and specifically, ridge regression, which prevents any single neuron from having too much influence and forcing the model to look at all the features rather than just one. Ridge regression decays weights of neurons towards zero, as opposed to Lasso which forces weights to zero, all added to the loss function as a penalty
+-  `layers.BatchNormalization()`: between each layer I normalized gradients to prevent either vanishing/exploding gradients, which helps the Neural Net converge faster
+
+#### Compiling Models
+
+Then, I complied these models using `tf.keras.optimizers.Adam()`, which is a learning rate optimization method that automates the step size of our model's gradient descent. I didn't want my model to get stuck in a shallow valley (local minima), so Adam is able to adapta learning rate with the concept of momentum, taking larger steps and smaller steps in succession.
+
+I also defined each loss function for my classifier and regressor in this step. My Classification problem used `loss='binary_crossentropy'`, since the output is a probability that there will be any sales in the next week between 0 and 1. This loss function penalizes the model for predicting a high probability for an event with no actual sales. For Regression I was suggested to use Huber Loss, which is a new concept to me that I had to investigate before using.
+
+<img width="892" height="669" alt="image" src="https://github.com/user-attachments/assets/1852070b-534c-4776-9a38-8a39425c4709" />
+*Figure 25: The Huber loss function*
+
+Huber Loss helps specifically with long right tails and outliers, which my sales target had. The graph above shows how Huber Loss treats small errors like MSE and large errors like MAE. I defined a threshold at 0.75 where the Huber Loss function would flip from MSE to MAE using `tf.keras.losses.Huber(delta=0.75)`. 
+
+Finally, I wanted to standardize the metrics I use to compare these Neural Nets against my trees and Naive models, so I defined metrics for these models to log while training and stored them in the tensorflow models. Classification stored both `'auc'` and `'pr_auc'`, while Regression logged the `'mse'` that would later be used to calculate RMSE.
+
+#### Training Options
+
+Fitting Neural Networks require some final definitions, like how long I'd want to train for, the size of data I want my model to see, and how to handle validation data. 
+
+Here is where I pass through my `X_train_c_scaled` (and r_scaled) and `y_train_c.astype('float32')` (and regression counterpart). I had landed on this data type because Tensorflow and Keras are built to run on this data type, which saved me from TypeErrors during training. I also defined my `validation_data` with `X_test` and `y_test` for each model. 
+
+Then, I told my Neural Net the dimensions of training I wanted. This included 300 epochs, which represent a complete pass through the dataset, and a batch size of 2,048, which tells our Neural Net how many rows of data to look at before updating weights.
+
+Now, hitting "go" on these Neural Networks now would run training until all 300 epochs are complete, likely leading to overfitting. So I needed to setup some guardrails that balanced underfitting and overfitting this data.
+
+A **Learning Rate Schedule** works with my Adam optimizer. Using `ReduceLROnPlateau` helps my Gradient Descent by not overshooting valleys with too-large of steps, but gradually decreasing steps as it observes the validation metric, in this case, maximizing `val_auc` for Classification and minimizing `val_mse` for Regression. I've also defined a minimum learning rate these schedules can reach at 1e-4, and with `patience` can tell the model how to decrease the learning rate `factor` after my choice of epochs (passes through my data). 
+
+<img width="1034" height="388" alt="image" src="https://github.com/user-attachments/assets/f2df722b-9d4d-426f-b98b-d9954e686b49" />
+*Figure 26: Learning Rate relative to finding minima*
+
+**Early Stopping** is another method I used to immediately stop training once I recognize any overfitting. By keeping an eye on my model's `'val_auc'` or `'val_mse'` I can stop training my Neural Network once I see this begin to gradually decline. I decided that, after 20 epochs, if these metrics were to decline/incline respectively, I would `restore_best_weights` of the epoch that minimized each question's loss function, and quit training on my data.
+
+<img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/682aeff4-a724-477c-a8b0-2a619aadee27" />
+*Figure 27: Early Stopping visualized to prevent overfitting*
+
+Altogether, I was able to train my Neural Networks and find their predictions using the `.ravel()` function, which reshapes the output into a one-dimensional array (where before, it output as a tuble in the shape n_samples, 1). This would prepare my predictions for the `np.sqrt(mean_squared_error())` of my actual and predicted values, aligning my metrics for comparison.
+
+
+### 5.8 Naive + Neural Network
+
+I also got ambitious to combine both the Naive logic with Neural Network predictions, assuming that there was still some correlation between this week's sales and next week's sales. So, with the same architecture as before in my Regression network, I found the locat
 
 ### 5.8 Performances
 
