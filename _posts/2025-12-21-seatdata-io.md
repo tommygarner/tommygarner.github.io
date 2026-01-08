@@ -530,6 +530,7 @@ Neural Networks can be as shallow or deep as you'd like, considering balancing b
 Using tensorflow, I wanted to play around with different combinations of hidden layers, neuron counts, activation functions, and other techniques suggested to me by Claude. Below is the architecture I landed on for both my classification and regression networks.
 
 **Classification**:
+<div class="mermaid">
 graph TD
     Input[Input Layer <br> Shape: 29 Features] --> BN1
     
@@ -555,6 +556,8 @@ graph TD
     style Dense2 fill:#fff9c4,stroke:#fbc02d
     style Drop1 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
     style Drop2 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
+</div>
+*Figure 23: My Feed-Forward Neural Network architecture used for classification*
 
 ### 5.8 Performances
 
