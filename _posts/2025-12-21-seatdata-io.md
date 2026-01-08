@@ -580,11 +580,13 @@ Altogether, I was able to train my Neural Networks and find their predictions us
 
 I also got ambitious to combine both the Naive logic with Neural Network predictions. Since the Naive model (assuming next week's sales equals this week's sales) was already my baseline, I wanted to investigate if it would be more efficient to have my Neural Network learn instead upon the changes between each week.
 
+{% raw %}
 \[
 \hat{y} = x_{\text{naive}} + f_\theta(x)
 \]
+{% endraw %}
 
-Where \(x_{\text{naive}}\) is current 7-day log sales and \(f_\theta(x)\) is the Neural Net's learned correction (delta) to adjust the Naive guess
+Where {% raw %}\(x_{\text{naive}}\){% endraw %} is current 7‑day log sales and {% raw %}\(f_\theta(x)\){% endraw %} is the Neural Net’s learned correction (delta) to adjust the Naive guess.
 
 <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/eafa53e4-1f0c-42c1-a1f6-dfb538a75270" />
 *Figure 28: Naive + Neural Network architecture visualized*
