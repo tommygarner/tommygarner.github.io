@@ -450,11 +450,13 @@ GPTs love to suggest tree-based models like Gradient Boosting (GB), XGBoost, and
 Regular decision trees is the most basic form of these models. Trees essentially split data based on a filtering question, such as "Is this event a Major Sport?" or "Is the price greater than or equal to $45?". Decision trees are easy to interpret, but prone to overfitting data, memorizing patterns of training data and struggling to predict/generalize new records. 
 
 <img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/0becc4c0-17c6-49bf-847a-15e391d819d9" />
+
 *Figure 18: A single decision tree example*
 
 Gradient Boosting attempts to fix the overfitting problem by creating many trees instead of just one. This is also a sequential training method, where each tree is predicting the error of the previous tree. By the time all trees are summed up, the model is able to capture more because each tree covers the mistakes of the one before it.
 
 <img width="617" height="337" alt="image" src="https://github.com/user-attachments/assets/3310e6a7-4261-4cf1-9994-e206b8fa8db9" />
+
 *Figure 19: An example of sequential gradient boosting trees*
 
 XGBoost and LightGBM introduce some tailored advantages on top of Gradient Boosting. XGBoost contains regularization, which penalizes trees that get too complex (approaching overfitting and memorization) and is able to handle missing values or zeros. LightGBM is designed for massive datasets and grows its trees vertically, as opposed to XGBoost's horizontal growth. LightGBM focuses only on the leaf with the highest error and ignores other leaves. These two methods speed up training significantly and use less computational energy. 
