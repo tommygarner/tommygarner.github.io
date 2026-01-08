@@ -464,11 +464,65 @@ XGBoost and LightGBM introduce some tailored advantages on top of Gradient Boost
 <img width="756" height="287" alt="image" src="https://github.com/user-attachments/assets/f1835955-edd3-4db0-b8d4-b5051d6460bb" />
 *Figure 20: Horizontal (XGBoost) vs. Vertical (LightGBM) decision tree training*
 
-Sklearn contains the packages for these tree-based models, and so I used `GradientBoostingClassifier.fit()`, `XGBClassifier().fit`, and `LGBMClassifier.fit()` on both `X_train_c` and `X_train_r` (and their Regressor, y_train counterparts). 
+These tree-based models can handle both classification and prediction problems, and I eventually chose to fit each method in each scenario.
+Sklearn contains the packages for these tree-based models, and so I used `GradientBoostingClassifier.fit()`, `XGBClassifier().fit`, and `LGBMClassifier.fit()` on both `X_train_c` and `y_train_c` (and their Regressor, X_train_r and y_train_r counterparts). 
 
 #### Hyperparameter Search
 
+These tree-based models also had the option of defining hyperparameters when training. Hyperparameters are the options you can define in a machine learning algorithm before you start training. 
+
+In my case, I decided to fit the base Gradient Boosting model to our data, and then evaluate a set of hyperparamters with XGBoost and LightGBM to compare performances. These hyperparameters were suggested by Gemini 3, but I want to briefly explain how they work and what I learned after looking into each option:
+
+-  `objective`: This defines the output space of a tree-based model
+    -  `'binary:logistic'`: Used for Classifiers to output a probability between 0 and 1, similar to Logistic Regression
+    -  `'reg:squarederror'`: Used for Regressors to minimize the squared difference between the predicted sales and actual sales, in this case
+-  `eval_metric`: In ML, the goal of any model is to minimize a loss function. This option tells our tree models what to minimize when training
+    -  `'auc'`: the Area Under the Curve is used in Classification problems. This measures how well my model can distinguish between no sales and some sales, where 0.5 is a random guess, and 1 is perfect
+    -  `'rmse'`: Root Mean Squared Error is used for my regressors, determining how far off residuals are. This measure keeps my error in the same units as my target variable and helps me later on with interpreting results
+-  `tree_method = 'hist'`: To speed up training, I was suggested to used this 'histogram-based' method, which groups values into bins before finding the best split, rather than searching every unique value in my data
+-  `n_estimators = 400`: Here I defined both the XGBoost and LightGBM to build 400 sequential trees
+-  `max_depth = 4`: This hyperparameter limits the maximum number of splits within each tree. Keeping this number low prevents overfitting
+-  `learning_rate = 0.05`: A learning rate helps dilute the influence of the current tree on the final outcome. Learning rates usually stay between 0.1-0.001 and help models generalize better by making many more trees, in this scenario
+-  `subsample` and `colsample_by_tree`: Both of these settings simulate a randomization of my data. The `subsample` setting allows me to define the percentage of events my trees are allowed to see in training, while `colsample_by_tree` can define how many feature columns each tree is allowed to see
+    -  Doing this also aims to prevent overfitting and forces each tree to predict based on different data than the previous trees. By the end of training, the hope is that the overall model can generalize on the test set after seeing different variations of training data
+ 
+#### Hyperparameter Search
+
+With that, GPT also introduced me to what it called a 'grid search'. By defining a list of different hyperparameter settings, like three learning rates I'd like to test, I can run a search between those values to find the settings where our loss function is minimized. 
+
+I decided to attempt this search with my XGBoost Classifier and Regressor, calling these "tuned" variants, since these were the fastest to train on my data. However, running this full Grid Search would be computationally heavy for my scope, which included 6 options for `n_estimators`, 5 options each for `max_depth`, `learning_rate`, and 4 options for `subsample` and `colsample_by_tree`. This results in 2,400 unique combinations, which would be too ridiculous to train just for a portfolio project.
+
+Instead, I used RandomizedSearchCV. This method won't check every single intersection of my hyperparameter list, but gives me the knobs to tell my search when to stop.
+
+<img width="316" height="160" alt="image" src="https://github.com/user-attachments/assets/11fbe7e1-7d82-42de-86e9-8762dbe38293" />
+*Figure 21: Conceptual idea behind Grid Search (a) and Random Search (b)*
+
+Specifically, I set `n_iter=50`, which asks the algorithm to randomly select only 50 unique combinations. I also implemented cross-validation with three folds during this search. So, for each of the 50 combinations, an XGBoost was trained on three separate slices of my data, so that each combo of hyperparameters sees new data each time to prevent lucky draws.
+
+Now, I'd like to introduce the next model I selected that I thought might be more challenging and fun to try on this data.
+
 ### 4.4 Neural Network
+
+In my Advanced Machine Learning and Optimization courses this Fall, we have been learning about Neural Nets, models that train weights and biases in a structure not too distant from the human brain, and use a concept called Gradient Descent in minimizing the loss function. 
+
+<img width="1318" height="862" alt="image" src="https://github.com/user-attachments/assets/27c096cf-36d8-44a6-9f7d-de49c4d34b03" />
+*Figure 22: A simplified diagram of Neural Network structure*
+
+Neural Networks are great in that they can also be used in classification and regression problems and are able to find minima of very complicated loss function landscapes. Honestly, I wanted more practice with building one with this data, and thought it would be a great opportunity to try out. 
+
+#### Preparing Data
+
+This model cannot take the same inputs as tree-based learning, though. Trees make splits on features regardless of their ranges, but Neural Nets are distorted if features are not scaled down. If Gradient Descent is similar to trying to find the lowest point in a valley, data that is not scaled confuses our model's descent, where one step in the `get_in` price is a small increment, and another step in the `listings_active` feature could be a large distance. So, before starting to build, I had to scale my X input features with sklearn.preprocessing to be consistent. 
+
+To fix this, I used sklearn's StandardScaler, which implements a Z-score normalization, with mean 0 and standard deviation of 1, to transform my data so every feature became normalized. 
+
+During this prcoess, I learned that there was a major opportunity for data leakage between training and testing data. If I scaled both train and testing data at one, my training data would be influenced by the mean and variance of the future (test data). So, I used `.fit_transform()` for my training data only, which first calculated mean and standard deviation before transforming, to simulate what the model would know up to that point. Then I used `.transform()` on my test data, applying the training set's rules to my test set. 
+
+Now, I was ready to move on to building the framework of these Neural Networks.
+
+#### Architecture
+
+
 
 ### 4.5 Performances
 
