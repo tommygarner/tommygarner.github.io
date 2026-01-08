@@ -578,7 +578,11 @@ Altogether, I was able to train my Neural Networks and find their predictions us
 
 ### 5.8 Naive + Neural Network
 
-I also got ambitious to combine both the Naive logic with Neural Network predictions, assuming that there was still some correlation between this week's sales and next week's sales. So, with the same architecture as before in my Regression network, I found the locat
+I also got ambitious to combine both the Naive logic with Neural Network predictions. Since the Naive model (assuming next week's sales equals this week's sales) was already my baseline, I wanted to investigate if it would be more efficient to have my Neural Network learn instead upon the changes between each week.
+
+$ \hat{y} = x_{\text{naive}} + f_\theta(x) $
+
+Where $x_{\text{naive}}$ is current 7-day log sales and $f_\theta(x)$ is the Neural Net's learned correction (delta) to adjust the Naive guess.
 
 ### 5.8 Performances
 
