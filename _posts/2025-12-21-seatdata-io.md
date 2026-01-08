@@ -580,11 +580,47 @@ Altogether, I was able to train my Neural Networks and find their predictions us
 
 I also got ambitious to combine both the Naive logic with Neural Network predictions. Since the Naive model (assuming next week's sales equals this week's sales) was already my baseline, I wanted to investigate if it would be more efficient to have my Neural Network learn instead upon the changes between each week.
 
-$ \hat{y} = x_{\text{naive}} + f_\theta(x) $
+\[
+\hat{y} = x_{\text{naive}} + f_\theta(x)
+\]
 
-Where $x_{\text{naive}}$ is current 7-day log sales and $f_\theta(x)$ is the Neural Net's learned correction (delta) to adjust the Naive guess.
+Where \(x_{\text{naive}}\) is current 7-day log sales and \(f_\theta(x)\) is the Neural Net's learned correction (delta) to adjust the Naive guess
 
-### 5.8 Performances
+<img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/eafa53e4-1f0c-42c1-a1f6-dfb538a75270" />
+*Figure 28: Naive + Neural Network architecture visualized*
+
+All this changed in my Regression Neural Network was including this naive term and, instead of predicting the sales for the next week, predicting the change in this week's sales to next, while adding that Naive term to the output layer. This is called a skip connection, which creates a path that bypasses dense hidden layers to carry that Naive term directly to the end.
+
+In code, I was able to find the Naive term with a Lambda layer (`layers.Lambda()`) with the index of the naive term. This allowed me to hold onto that value before starting training. Then, merging the output layer with my Naive term using `layers.Add()`, I converge both paths together in my architecture and began training with the same options as before.
+
+Finally, it was time to evaluate my results.
+
+### 5.9 Performances
+
+**Classification**
+
+| Model              | AUC      | PR       |
+|--------------------|----------|----------|
+| **Neural Network** | 0.919790 | 0.806871 |
+| Light GBM          | 0.919481 | 0.807930 |
+| XGBoost            | 0.919468 | 0.807311 |
+| GradientBoosting   | 0.917353 | 0.804151 |
+| Tuned XGBoost      | 0.914157 | 0.799772 |
+
+<img width="691" height="547" alt="image" src="https://github.com/user-attachments/assets/72aedf02-5dc5-4b46-878f-0894e825d8fc" />
+*Figure 29: Comparing models using the ROC Curve*
+
+**Regression**
+
+| Model                  | RMSE     |
+|------------------------|----------|
+| **Neural Network**     | 0.556967 |
+| XGBoost                | 0.568408 |
+| Light XGB              | 0.568688 |
+| GradientBoosting       | 0.576019 |
+| Tuned XGBoost          | 0.581394 |
+| Naive + Neural Network | 0.581394 |
+| Naive                  | 2.874046 |
 
 #### Per-Bucket Error (in Tickets)
 
