@@ -467,7 +467,7 @@ XGBoost and LightGBM introduce some tailored advantages on top of Gradient Boost
 These tree-based models can handle both classification and prediction problems, and I eventually chose to fit each method in each scenario.
 Sklearn contains the packages for these tree-based models, and so I used `GradientBoostingClassifier.fit()`, `XGBClassifier().fit`, and `LGBMClassifier.fit()` on both `X_train_c` and `y_train_c` (and their Regressor, X_train_r and y_train_r counterparts). 
 
-#### Hyperparameter Search
+#### Hyperparameters
 
 These tree-based models also had the option of defining hyperparameters when training. Hyperparameters are the options you can define in a machine learning algorithm before you start training. 
 
@@ -494,14 +494,14 @@ I decided to attempt this search with my XGBoost Classifier and Regressor, calli
 
 Instead, I used RandomizedSearchCV. This method won't check every single intersection of my hyperparameter list, but gives me the knobs to tell my search when to stop.
 
-<img width="316" height="160" alt="image" src="https://github.com/user-attachments/assets/11fbe7e1-7d82-42de-86e9-8762dbe38293" />
+<img width="1088" height="588" alt="image" src="https://github.com/user-attachments/assets/bac15c61-bc7e-44ed-9506-6e92525c5c42" />
 *Figure 21: Conceptual idea behind Grid Search (a) and Random Search (b)*
 
 Specifically, I set `n_iter=50`, which asks the algorithm to randomly select only 50 unique combinations. I also implemented cross-validation with three folds during this search. So, for each of the 50 combinations, an XGBoost was trained on three separate slices of my data, so that each combo of hyperparameters sees new data each time to prevent lucky draws.
 
 Now, I'd like to introduce the next model I selected that I thought might be more challenging and fun to try on this data.
 
-### 4.4 Neural Network
+### 5.7 Neural Network
 
 In my Advanced Machine Learning and Optimization courses this Fall, we have been learning about Neural Nets, models that train weights and biases in a structure not too distant from the human brain, and use a concept called Gradient Descent in minimizing the loss function. 
 
@@ -514,6 +514,9 @@ Neural Networks are great in that they can also be used in classification and re
 
 This model cannot take the same inputs as tree-based learning, though. Trees make splits on features regardless of their ranges, but Neural Nets are distorted if features are not scaled down. If Gradient Descent is similar to trying to find the lowest point in a valley, data that is not scaled confuses our model's descent, where one step in the `get_in` price is a small increment, and another step in the `listings_active` feature could be a large distance. So, before starting to build, I had to scale my X input features with sklearn.preprocessing to be consistent. 
 
+<img width="686" height="386" alt="image" src="https://github.com/user-attachments/assets/e54c7318-9515-4b7f-bf95-e0eabb9aa6c0" />
+*Figure 23: A visual example of Gradient Descent*
+
 To fix this, I used sklearn's StandardScaler, which implements a Z-score normalization, with mean 0 and standard deviation of 1, to transform my data so every feature became normalized. 
 
 During this prcoess, I learned that there was a major opportunity for data leakage between training and testing data. If I scaled both train and testing data at one, my training data would be influenced by the mean and variance of the future (test data). So, I used `.fit_transform()` for my training data only, which first calculated mean and standard deviation before transforming, to simulate what the model would know up to that point. Then I used `.transform()` on my test data, applying the training set's rules to my test set. 
@@ -522,9 +525,38 @@ Now, I was ready to move on to building the framework of these Neural Networks.
 
 #### Architecture
 
+Neural Networks can be as shallow or deep as you'd like, considering balancing bias and variance, overfitting, the input feature space, and the problem type. That is why this step is really important. Setting up hidden layers in a way that encourages the model to learn but not memorize is the entire trick that I've learned so far in fitting Neural Nets. 
 
+Using tensorflow, I wanted to play around with different combinations of hidden layers, neuron counts, activation functions, and other techniques suggested to me by Claude. Below is the architecture I landed on for both my classification and regression networks.
 
-### 4.5 Performances
+**Classification**:
+graph TD
+    Input[Input Layer <br> Shape: 29 Features] --> BN1
+    
+    subgraph Hidden_Block_1 [Hidden Block 1]
+    BN1[Batch Normalization] --> Dense1[Dense Layer <br> 128 Neurons <br> ReLU Activation <br> L2 Reg: 0.0001]
+    Dense1 --> BN2[Batch Normalization]
+    BN2 --> Drop1[Dropout <br> Rate: 0.3]
+    end
+    
+    Drop1 --> Hidden_Block_2
+    
+    subgraph Hidden_Block_2 [Hidden Block 2]
+    Hidden_Block_2 --> Dense2[Dense Layer <br> 64 Neurons <br> ReLU Activation <br> L2 Reg: 0.0001]
+    Dense2 --> BN3[Batch Normalization]
+    BN3 --> Drop2[Dropout <br> Rate: 0.2]
+    end
+    
+    Drop2 --> Output[Output Layer <br> 1 Neuron <br> Sigmoid Activation]
+
+    style Input fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style Output fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Dense1 fill:#fff9c4,stroke:#fbc02d
+    style Dense2 fill:#fff9c4,stroke:#fbc02d
+    style Drop1 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
+    style Drop2 fill:#ffebee,stroke:#c62828,stroke-dasharray: 5 5
+
+### 5.8 Performances
 
 #### Per-Bucket Error (in Tickets)
 
