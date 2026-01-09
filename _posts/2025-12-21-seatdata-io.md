@@ -597,32 +597,40 @@ Finally, it was time to evaluate my results.
 
 ### 5.9 Performances
 
+To fairly compare all my models, I evaluated them in two ways: their ability to classify if an event would sell at all (AUC) and their accuracy in predicting the number of tickets sold in the following week (RMSE). 
+
 **Classification**
 
 | Model              | AUC      | PR       |
 |--------------------|----------|----------|
-| **Neural Network** | 0.919790 | 0.806871 |
+| **Neural Network** | 0.919900 | 0.806871 |
 | Light GBM          | 0.919481 | 0.807930 |
 | XGBoost            | 0.919468 | 0.807311 |
 | GradientBoosting   | 0.917353 | 0.804151 |
 | Tuned XGBoost      | 0.914157 | 0.799772 |
+
+In this classification scenario, deep learning with my Neural Network performed the best with the highest AUC (0.919900), which .... This suggests there are some non-linear signals in my feature space that determine which events will/won't sell any tickets on StubHub. 
 
 <img width="691" height="547" alt="image" src="https://github.com/user-attachments/assets/72aedf02-5dc5-4b46-878f-0894e825d8fc" />
 *Figure 29: Comparing models using the ROC Curve*
 
 **Regression**
 
-| Model                  | RMSE     |
-|------------------------|----------|
-| **Neural Network**     | 0.556967 |
-| XGBoost                | 0.568408 |
-| Light XGB              | 0.568688 |
-| GradientBoosting       | 0.576019 |
-| Tuned XGBoost          | 0.581394 |
-| Naive + Neural Network | 0.581394 |
-| Naive                  | 2.874046 |
+| Model                  | RMSE (in Tickets)     | MAE (in Tickets) |
+|------------------------|----------|----------|
+| **XG Boost**     | 17.667931 | 5.518347 |
+| Light XGB | 17.868582 | 5.549856 |
+| Naive + Neural Net                | 18.039503 | 5.534035 |
+| GradientBoosting              | 18.183927 | 5.655028 |
+| Tuned XGBoost       | 18.249732 | 5.676055 |
+| Neural Net          | 18.732760 | 5.623084 |
+| Naive                  | 161.112980 | 87.988088 |
+
+After calculating RMSE values by converting each model's log scale using `np.expm1()` predictions and the `np.sqrt()` of `mean_absolute_error()` on real ticket sales, I found that tree-based learning edged out my Neural Net. Specifically, XGBoost was able to predict the exact volume of my data better than other models. 
 
 #### Per-Bucket Error (in Tickets)
+
+
 
 ---
 
