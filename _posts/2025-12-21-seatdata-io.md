@@ -659,11 +659,11 @@ Finally, I evaluated how the error changes as the event gets closer.
 
 | `days_to_event` Bin | RMSE (in Tickets) | MAE (in Tickets) |
 |---------------------|-------------------|------------------|
-| 1-7                 | 22.70             | 7.66             |
-| 8-14                | 23.50             | 8.14             |
-| 15-30               | 22.86             | 7.34             |
-| 31-60               | 7.83              | 3.26             |
 | 60+                 | 5.94              | 2.35             |
+| 31-60               | 7.83              | 3.26             |
+| 15-30               | 22.86             | 7.34             |
+| 8-14                | 23.50             | 8.14             |
+| 1-7                 | 22.70             | 7.66             |
 
 The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.
 
@@ -678,13 +678,78 @@ After understanding these error distributions and groups of thought by categorie
 
 ## 6. Market-Segmented Models
 
-At a high level, in this section I chose to fit all tree-based, Neural Networks, and Naive models for both Classification and Regression to each DataFrame of event categories. For example, all models will be fit to Comedy events, where I still keep my same train/test split logic and holding out the 14 days leading up to the event.
+At a high level, in this section I chose to fit all tree-based, Neural Networks, and Naive models for both Classification and Regression to each DataFrame of event categories. For example, all models will be fit to Comedy events, where I still keep my same train/test split logic and holding out the 14 days leading up to the event. Then, by comparing the same metrics as before, I found which model works best for the specific category while trying to make small wins in reducing the distribution of errors.
 
-### 6.1 How I Built the Pipeline (code-heavy)
+### 6.1 My Intuition
 
-### 6.2 Market-Segmented Performances
+The difference between what I've already done and what I'm setting out to do is based on conditional probability. My first attempt at a Universal predictor included both classification and regression problems, but didn't combine them in the final product, effectively estimating sales and probability of sales in the next week separately. With this next method, I want to introduce conditional probability while finding each `focus_bucket's` best predictor and classifier.
 
-### 6.3 Comparison to Global Models
+$$E[\text{# Sales}] = P(\text{Any Sale}) \times E[\text{# Sales} | \text{Any Sale}]$$
+
+This method simulates a better understanding of probabilities and real-time data known while making these decisions. Finding the estimated value of sales isn't just a hard guess but weighted by its probability there will be any sales in the first place.
+
+### 6.2 How I Built the Pipeline (code-heavy)
+
+This method required a complex Python loop that I benefited from using Gemini 3 to build. It acts more as an ML pipeline than a simple script before where I ran each model separately. I'll break it down into four phases.
+
+#### Preprocessing the Data
+
+Same as before, I needed to prepare my training and testing data before building my models. With the same cutoff date and logic as before, I split up my data with the 14 days held out for testing. I also excluded features that contributed to data leakage as I did previously. 
+
+Then, I implemented a for loop that iterates through each `focus_bucket` to isolate preprocessing. In each bucket I performed the following steps:
+-  Created a dummy column called `bucket_col` that targets the current `focus_bucket`, resulting in a 1 if the string `f"focus_bucket_{bucket}"` matches the current `focus_bucket` in my iteration list
+-  Filtered both `train_df` and `test_df` to only include event rows where `bucket_col` is an exact match (1)
+-  Filtered these dataframes for regression to only include rows in my data where there are sales (`'any_sales_7d_next' == 1`)
+    -  Only my training data will be modeled on this non-zero data, while my predictions will have to both classify and regress, using the conditional probabilities I discussed earlier
+-  Create each problem's training and testing (X and y) data
+-  Store these index locations for later visualizations
+
+After all my training and testing data is prepared, I redefined my previous hyperparamter grid search dictionary, learning rate schedule for both classification and regression, early stopping for both problems, and defined functions with the same architecture for my Neural Nets to save me for the next beast of a for loop.
+
+#### Model Training
+
+In the largest for loop I have yet to build, I began to model this data, this time with two loops! I first created empty dictionaries to hold my results, run histories, best-performing model names for each bucket, and lists for my predictions and residuals that I'd use later for visualizations.
+
+My outer loop consisted of my `focus_buckets`, as I defined which data I wanted to model on, scaled my data yet again with `StandardScaler()`, and used `.fit_transform()` on my training data and `.transform()` on my testing data. Then, I began with classification models, creating a list for results and a dictionary to hold the metrics for evaluating winning models. Then, for each model, I had a for loop that did the following for each method:
+-  **Gradient Boosting**: Used the `GradientBoostingClassifier()` function with a random state using my classification training data
+-  **XGBoost**: As with Gradient Boosting, using the `XGBClassifier()` function on my training data
+-  ***Light GBM**: One more time, using the `LGBMClassifier()` function on my training data with the default hyperparameter settings
+-  **Neural Network**: Used my predefined functions with my architecture to pass through my scaled classification training data (this time, only running for 100 epochs), again casting my `any_sales_7d_next` variable with `.astype('float32')` for probabilities, saving my run history, and raveling my probabilities
+-  **Tuned XGBoost**: Ran the `RandomizedSearchCV()` between my `param_dist` dictionary for hyperparameter tuning with my objective as `binary:logistic`, fitting my classification training data with the best hyperparameter setup
+
+After my classification setups, I saved these results in my dictionary for later comparison, saving each model name, `auc` score, and `pr` score.
+
+Then, still within each model for loop, I immediately ran the regression script after creating another list for results and a dictionary to hold those metrics, this time for my prediction error terms. In the same fashion as before, here is how I tackled the regression piece in this for loop:
+-  **Gradient Boosting**: Used the `GradientBoostingClassifier()` function with a random state using my regression training data
+-  **XGBoost**: As with Gradient Boosting, using the `XGBClassifier()` function on my training data
+-  ***Light GBM**: The `LGBMClassifier()` function on my training data with the default hyperparameter settings
+-  **Neural Network**: Used my predefined functions with my architecture to pass through my scaled regression training data (this time, only running for 100 epochs), again casting my `sales_total_7d_next_log` variable with `.astype('float32')` for predictions, saving my run history, and raveling my predictions
+-  **Tuned XGBoost**: Ran the `RandomizedSearchCV()` between my `param_dist` dictionary for hyperparameter tuning with my objective as `reg:squarederror`, fitting my regression training data with the best hyperparameter setup
+
+For later visualizations, I also appended each run's bucket name, model name, actual sales (log), predicted sales (log), and residuals in a dictionary. Saving the RMSEs in another regression dictionary, I then closed the model loop, storing each problem's results for each bucket in another dictionary.
+
+Lastly, I had the for loop find the best model for each bucket by maximizing the `auc` and `rmse` scores that were stored from each run while generating predictions on the full test set, including both inactive and actively reselling events using the conditional probability logic. When classification probabilities were greater than 0.5, I chose to set that as the threshold that differentiated a dead event from an active one.
+
+### 6.2 Comparison to Global Models
+
+Finally, I was able to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
+
+| Modeling Type   | RMSE (in Tickets) | MAE (in Tickets) |
+|-----------------|-------------------|------------------|
+| Universal       | 17.67             | 5.52             |
+| Market-Specific | 9.94              | 1.83             |
+
+### 6.3 Market-Segmented Performances
+
+| `focus_bucket`     | RMSE (in Tickets) | MAE (in Tickets) |
+|--------------------|-------------------|------------------|
+| Broadway & Theater | 3.31              | 2.34             |
+| Festivals          | 4.95              | 3.49             |
+| Comedy             | 7.69              | 5.91             |
+| Other              | 8.36              | 4.41             |
+| Concert            | 10.52             | 5.55             |
+| Minor/Other Sports | 17.17             | 9.04             |
+| Major Sports       | 21.64             | 11.49            |
 
 My takeaways from this experiment: 
 -  one
