@@ -728,28 +728,50 @@ Then, still within each model for loop, I immediately ran the regression script 
 
 For later visualizations, I also appended each run's bucket name, model name, actual sales (log), predicted sales (log), and residuals in a dictionary. Saving the RMSEs in another regression dictionary, I then closed the model loop, storing each problem's results for each bucket in another dictionary.
 
-Lastly, I had the for loop find the best model for each bucket by maximizing the `auc` and `rmse` scores that were stored from each run while generating predictions on the full test set, including both inactive and actively reselling events using the conditional probability logic. When classification probabilities were greater than 0.5, I chose to set that as the threshold that differentiated a dead event from an active one.
+Lastly, I had the for loop find the best model for each bucket by maximizing the `auc` and minimizing `rmse` scores that were stored from each run while generating predictions on the full test set, including both inactive and actively reselling events using the conditional probability logic. However, with this logic, it requires a threshold that tells our model when we predict there with be `any_sales_7d_next` or not. I didn't want to arbitrarily pick 0.5 as a threshold, because there is a different cost between misclassifying an inactive and active event, especially if there are hundreds or thousands of resale tickets my model would potentially miss!
 
-### 6.2 Comparison to Global Models
+#### Decision Threshold Search
 
-Finally, I was able to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
+In the same way I used the hyperparameter Grid Search, I wanted to look for the best decision threshold that optimized my RMSE metric in my conditional probability logic. So, I had Gemini 3 draft me a script that would run this threshold search in 0.05 increments between 0.05 and 0.95 to find the classification threshold that would minimize the prediction error RMSE. In doing so, I found the following optimal thresholds.
 
-| Modeling Type   | RMSE (in Tickets) | MAE (in Tickets) |
-|-----------------|-------------------|------------------|
-| Universal       | 17.67             | 5.52             |
-| Market-Specific | 9.94              | 1.83             |
+| `focus_bucket`     | Decision Threshold Minimizing RMSE |
+|--------------------|------------------------------------|
+| Concert            | 0.50                               |
+| Festivals          | 0.65                               |
+| Major Sports       | 0.40                               |
+| Minor/Other Sports | 0.60                               |
+| Broadway & Theater | 0.55                               |
+| Other              | 0.90                               |
+| Comedy             | 0.65                               |
+
+I found it interesting that most of these thresholds adapted to the stability of each `focus_bucket`. For example, a conservative threshold of 50% or below in categories like Major Sports told me that the classification model was trying to lower the bar for classifying positives, since false negatives (saying an event won't have future sales, when it will) is much more penalizing to RMSE than over-predicting a nothing-burger. On the flip side, thresholds above 50%, like the catchall Other category, had a lot of events in there and needed to have a high certainty of confidence before proceeding to regression predictions. This is likely because there were many zero-sale events that would be costly to misclassify as false positives. 
+
+So, this conditional prediction method seems to already show there is an unequal cost associated with even classifying our events correctly.
+
+### 6.2 Comparison of Models
+
+Finally, it was time to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
+
+| Modeling Type   | Global RMSE (in Tickets) | Conditional MAE (in Tickets) |
+|-----------------|-------------------|------------------|------------------|
+| Universal       | 17.67             | 5.52             | -                |
+| Market-Specific | 9.89              | 1.82             | 5.88             |
+
+Since my Universal approach did not include conditional predictions, I was able to compare these two approaches on my full test set and reduce RMSE residuals by nearly 50% while MAE shows that, on average, market-specific modeling predictions were off by just under 2 tickets per day! This seemed like a huge improvement from the previous model and I wanted to dig in more to the `focus_buckets` to see how my conditional predictors performed individually.
 
 ### 6.3 Market-Segmented Performances
 
-| `focus_bucket`     | RMSE (in Tickets) | MAE (in Tickets) |
-|--------------------|-------------------|------------------|
-| Broadway & Theater | 3.31              | 2.34             |
-| Festivals          | 4.95              | 3.49             |
-| Comedy             | 7.69              | 5.91             |
-| Other              | 8.36              | 4.41             |
-| Concert            | 10.52             | 5.55             |
-| Minor/Other Sports | 17.17             | 9.04             |
-| Major Sports       | 21.64             | 11.49            |
+| `focus_bucket`     | RMSE (in Tickets) | Global MAE (in Tickets) | Conditional MAE (in Tickets) |
+|--------------------|-------------------|------------------|------------------|
+| Broadway & Theater | 3.31              | 0.62             | 2.34 |
+| Festivals          | 4.94              | 1.29             | 3.57 |
+| Comedy             | 7.76              | 1.90             | 5.95 |
+| Other              | 8.96              | 1.19             | 4.95 |
+| Concert            | 9.36              | 1.87             | 5.49 |
+| Minor/Other Sports | 16.94             | 3.73             | 9.08 |
+| Major Sports       | 21.72             | 8.13             | 11.61|
+
+Immediate thoughts after looking at these results proved some early hypothesis correct. Categories with little to no ticket volume moving on StubHub had the lowest average errors, while Sports categories (the main market for StubHub seemingly) had the greatest errors. However, in the worst case, the market-specific modeling was able to conditionally predict ticket sales for event in the next week within less than 12 tickets of error.
 
 My takeaways from this experiment: 
 -  one
