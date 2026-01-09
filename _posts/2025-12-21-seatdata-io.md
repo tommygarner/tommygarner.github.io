@@ -584,7 +584,7 @@ $$
 \hat{y} = x_{\text{naive}} + f_\theta(x)
 $$
 
-Where $x_{\text{naive}}$ is current 7‑day log sales and $f_\theta(x)$ is the Neural Net’s learned correction (delta) to adjust the Naive guess.
+Where $$x_{\text{naive}}$$ is current 7‑day log sales and $$f_\theta(x)$$ is the Neural Net’s learned correction (delta) to adjust the Naive guess.
 
 <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/eafa53e4-1f0c-42c1-a1f6-dfb538a75270" />
 *Figure 28: Naive + Neural Network architecture visualized*
@@ -609,7 +609,7 @@ To fairly compare all my models, I evaluated them in two ways: their ability to 
 | GradientBoosting   | 0.917353 | 0.804151 |
 | Tuned XGBoost      | 0.914157 | 0.799772 |
 
-In this classification scenario, deep learning with my Neural Network performed the best with the highest AUC (0.919900), which .... This suggests there are some non-linear signals in my feature space that determine which events will/won't sell any tickets on StubHub. 
+In this classification scenario, deep learning with my Neural Network performed the best with the highest AUC (0.919900), which balances the true positive rate from false positive rate. Essentially, there is a 92% probability that the Neural Net will rank an event with any sales higher than a non-selling event. This suggests there are some non-linear signals in my feature space, such as interactions between terms, that determine which events will/won't sell any tickets on StubHub. 
 
 <img width="691" height="547" alt="image" src="https://github.com/user-attachments/assets/72aedf02-5dc5-4b46-878f-0894e825d8fc" />
 *Figure 29: Comparing models using the ROC Curve*
@@ -619,30 +619,77 @@ In this classification scenario, deep learning with my Neural Network performed 
 | Model                  | RMSE (in Tickets)     | MAE (in Tickets) |
 |------------------------|----------|----------|
 | **XG Boost**     | 17.667931 | 5.518347 |
-| Light XGB | 17.868582 | 5.549856 |
+| Light GBM | 17.868582 | 5.549856 |
 | Naive + Neural Net                | 18.039503 | 5.534035 |
 | GradientBoosting              | 18.183927 | 5.655028 |
 | Tuned XGBoost       | 18.249732 | 5.676055 |
 | Neural Net          | 18.732760 | 5.623084 |
 | Naive                  | 161.112980 | 87.988088 |
 
-After calculating RMSE values by converting each model's log scale using `np.expm1()` predictions and the `np.sqrt()` of `mean_absolute_error()` on real ticket sales, I found that tree-based learning edged out my Neural Net. Specifically, XGBoost was able to predict the exact volume of my data better than other models. 
+To convert RMSE values back into ticket-scale, I used the `np.expm1()` function on each model's predictions. Then, to calculate RMSE, I took the `np.sqrt()` of the `mean_squared_error()` between the actual tickets and predictions of each model. Finally, MAE only required this `mean_squared_error()` calculation on the actual and predicted values. 
+
+To put these errors into context, my Naive Baseline (predicting the same sales as last week) is off by an average of 88 tickets per day. In contrast, the XGBoost model reduces this error to just 5.5 tickets per day. This massive reduction in residuals transforms the prediction from a rough guess into a precise prediction tool that departments can use to make better decisions.
+
+When looking at Root Mean Squared Error (RMSE), the gap widens. Because RMSE squares the errors, it penalizes outliers heavily. The fact that XGBoost's RMSE (~17.7) is roughly 3x its MAE (~5.5) suggests that while the model is precise on average, it still faces challenges with events that spike unexpectedly in ticket sales. However, even with these outliers, it provides a reliable improvement over the delayed reaction of the Naive method.
+
+However, I think we can break down these residuals to get an even better idea on each bucket's resale ticket movement.
 
 #### Per-Bucket Error (in Tickets)
 
+Next, I broke down these errors by `focus_bucket`. The results show a clear difference between stable and volatile markets.
 
+| Focus Bucket       | RMSE (in Tickets) | MAE (in Tickets) |
+|--------------------|-------------------|------------------|
+| Broadway & Theater | 5.54              | 1.96             |
+| Festivals          | 6.13              | 3.16             |
+| Comedy             | 13.65             | 5.90             |
+| Other              | 16.39             | 4.16             |
+| Concert            | 16.60             | 5.38             |
+| Major Sports       | 26.21             | 11.36            |
+| Minor/Other Sports | 29.04             | 9.64             |
+
+The comparison across different categories show that Major and Minor sports are the hardest to get right, with an average absolute error of 11 and 10 tickets off for the true ticket sales of the following week. Also, these errors are more volatile, shown by their RMSE values, which penalizes larger misses, as I talked about before. Broadway & Theater and Festivals have the most precise predictions using the tree-based regressor in XGBoost, suggesting these are more stable markets and easier to predict within a reasonable range.
+
+<img width="1189" height="590" alt="image" src="https://github.com/user-attachments/assets/77778194-97d6-42c3-910e-ae1617ef0214" />
+*Figure 30: MAE comparison across categories*
+
+#### Per `days_to_event` Bins
+
+Finally, I evaluated how the error changes as the event gets closer.
+
+| `days_to_event` Bin | RMSE (in Tickets) | MAE (in Tickets) |
+|---------------------|-------------------|------------------|
+| 1-7                 | 22.70             | 7.66             |
+| 8-14                | 23.50             | 8.14             |
+| 15-30               | 22.86             | 7.34             |
+| 31-60               | 7.83              | 3.26             |
+| 60+                 | 5.94              | 2.35             |
+
+The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.
+
+My takeaways up to this point:
+-  one
+-  two
+-  ...
+
+After understanding these error distributions and groups of thought by categories of events and timelines leading up to showtime, I thought I could find even more improvement by individually fitting the best classifiers and regressors to each focus bucket, aligning with a more market-segmented modeling approach.
 
 ---
 
-## 5. Market-Segmented Models
+## 6. Market-Segmented Models
 
-### 5.1 Focus Bucket Definition
+At a high level, in this section I chose to fit all tree-based, Neural Networks, and Naive models for both Classification and Regression to each DataFrame of event categories. For example, all models will be fit to Comedy events, where I still keep my same train/test split logic and holding out the 14 days leading up to the event.
 
-### 5.2 Pipeline Per Bucket
+### 6.1 How I Built the Pipeline (code-heavy)
 
-### 5.3 Model Selection
+### 6.2 Market-Segmented Performances
 
-### 5.4 Comparison to Global Models
+### 6.3 Comparison to Global Models
+
+My takeaways from this experiment: 
+-  one
+-  two
+-  ...
 
 ---
 
