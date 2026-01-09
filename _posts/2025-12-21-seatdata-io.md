@@ -776,6 +776,9 @@ Immediate thoughts after looking at these results proved some early hypothesis c
 <img width="1783" height="634" alt="image" src="https://github.com/user-attachments/assets/c9252149-d3de-45e3-afc1-c1c8a239f4d5" />
 *Figure 3X: Comparing each method and residual impact by category*
 
+<img width="1175" height="712" alt="image" src="https://github.com/user-attachments/assets/ba1bc05e-8510-489e-8057-1a53ef93ba05" />
+*Figure 3X: Visualizing residual distributions by each category*
+
 
 My takeaways from this experiment: 
 -  one
