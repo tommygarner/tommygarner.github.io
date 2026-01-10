@@ -51,7 +51,7 @@ With accurate modeling, the potential impact is huge:
 * Business Insights can forecast expected sales in the primary market by watching secondary proxy demand
 * Finance can have confidence intervals on expected revenue with better known demand signals
 
-You get the picture! My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hello!).
+You get the picture! Because ticket sales are often sparse, with many days of zero sales, I developed a two-step approach: first classifying if a sale would occur, then regressing the volume of those sales. My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hello!).
 
 ---
 
@@ -64,7 +64,7 @@ Now, I'm a college student, so I wasn't trying to break the bank on a project, e
 
 Finally, I came across several platforms that seemed in the next tier, such as JamBase, TicketsData, and SeatData.io. These sites had plenty of tiers I could choose from to introduce granularity beyond what TouringData could afford, such as minimum prices, number of listings, and venue capacities. After weighing the different features and sampling data ingestions from each site, I eventually decided that SeatData.io would be my chosen platform. 
 
-SeatData.io collects their data from StubHub listings, which is one of the top secondary ticket platforms for resale. I also ran this decision by Nathan, who confirmed that the platform had reliable data and recommended this site, considering the scope of my portfolio project. Specifically, I decided to subscribe to their Daily CSV ingestion service for a reasonable cost.
+SeatData.io collects their data from StubHub listings, which is one of the top secondary ticket platforms for resale. I also validated this data source with an industry mentor to ensure the granularity met industry standards, considering the scope of my portfolio project. Specifically, I decided to subscribe to their Daily CSV ingestion service for a reasonable cost.
 
 ### 2.1 Data Source and Storage Decisions
 I found this SeatData.io subscription to be a worthy sacrifice of my bank account. Every morning, a new CSV ranging from 50k to 60k events would land in my inbox for downloading. Data attributes for each event included `sales_totals` for 1/3/7/14/30/and 90 days, `get_in` minimum listing price, `venue_capacity`, `listings_active`, and `listings_median` to show a relative average ticket price for that event.
@@ -98,7 +98,7 @@ In this job configuration, I clarified the expecting schema of my BigQuery table
 After pushing the data to my data lake, I told BigQuery to `load_table_from_uri` to insert the loaded data with the job configuration finally into my BigQuery table.
 
 #### Extra Context
-After a coffee chat conversation in November with Nathan, I only had about a month of snapshots to show for, so when I proposed my demand forecasting idea, he heavily recommended I backfill the previous month before starting, since I couldn't yet capture patterns. So, I was able to obtain data from October 1st to November 9th to give me the previous 40 days of snapshots to help before I started modeling.
+After a coffee chat conversation in November with an industry mentor, I only had about a month of snapshots to show for, so when I proposed my demand forecasting idea, he heavily recommended I backfill the previous month before starting, since I couldn't yet capture patterns. So, I was able to obtain data from October 1st to November 9th to give me the previous 40 days of snapshots to help before I started modeling.
 
 Additionally, upon this backfill, the sales representative let me know that SeatData.io had technical issues that prevented any data collection on October 4th. This would be a challenge in future modeling but was important to note both for collection and data preparation.
 
@@ -136,7 +136,7 @@ In order to determine the dimension tables I would need for this project, I had 
 
 Above shows a shell of code that summarizes how these `CASE` logics functioned. These statements were able to handle n_grams of `event_name` matches in the list provided while also being able to handle some language translation.
 
-These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions.
+These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions. After the LLM-generated logic was built, I manually audited the top 50 Other events to refine these Regex patterns for high-volume events.
 
 Later, these categories would be aggregated to form the basis of `focus_bucket`s for my analysis. I would combine these into seven buckets:
 
@@ -169,7 +169,6 @@ Below is the Data Flow Diagram of my database:
 <img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/1c3819c3-9f63-494b-ae75-b2224497f38c" />
 
 *Figure 2: Data flow diagram behind my database engineering*
-
 
 ---
 
