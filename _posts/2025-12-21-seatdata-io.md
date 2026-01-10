@@ -300,10 +300,10 @@ As most sales occur in the final week leading up to the event (for those last-mi
 
 I also asked Claude Sonnet 4.5 for other variables that would be helpful in understanding price-elasticity in my data. The GPT suggested I do the following with my SQL query to pull from my data mart:
 
-1) Create an `inv_per_day` variable by `SAFE_DIVIDE` the active listings and days until the event to understand how many tickets are still available relative to the days remaining, also preventing the calculation from failing if there are no more days remaining
-2) Create lagged features using the `LAG()` function, which I will discuss in the next section. These features look backwards and serve as the most recent data our model will use to determine its predictions
-3) Create the target variable `sales_total_7d_next` by summing 1-day sales totals beginning for tomorrow through seven days from today. This is extremely important to reduce data leakage where there could have been overlap in data the model both sees and predicts
-4) Create delta calculations that observe changes in week-total sales and active listings to understand how each events' market is behaving
+1. Create an `inv_per_day` variable by `SAFE_DIVIDE` the active listings and days until the event to understand how many tickets are still available relative to the days remaining, also preventing the calculation from failing if there are no more days remaining
+2. Create lagged features using the `LAG()` function, which I will discuss in the next section. These features look backwards and serve as the most recent data our model will use to determine its predictions
+3. Create the target variable `sales_total_7d_next` by summing 1-day sales totals beginning for tomorrow through seven days from today. This is extremely important to reduce data leakage where there could have been overlap in data the model both sees and predicts
+4. Create delta calculations that observe changes in week-total sales and active listings to understand how each events' market is behaving
 
 With that, I want to talk about why I lagged features and the intuition from my Supply Chain and Demand Forecasting course this Fall.
 
@@ -338,8 +338,8 @@ My `fuzzy_match_venue` function first looks only for venues within the city foun
 
 During validation, I found a couple of traps that I was able to prevent with the help of a couple of settings in `thefuzz'` library. 
 
-1) The fuzzy matching was incorrectly pairing stadiums with their parking lots (an example was Lincoln Financial Field and Lincoln Financial Field Parking). These `venue_names` had very similar tokens, but show entirely different demand signals, because one is parking and another is for the game! To fix this, I created a blacklist filter that drops any `venue_name` containing keywords such as "parking", "vip", "camping", or "shuttle" before beginning matching
-2) Originally, I used `token_set_ratio` as my fuzzy matching scoring setting, but this was too casual. It would match tokens simply because two pairs would share them. To prioritize accuracy and skip any false positive classifications, I switched to `scorer=fuzz.token_sort_ratio`, which sorts the candidate strings and compares the full sequence, penalizing length differences, for example
+1. The fuzzy matching was incorrectly pairing stadiums with their parking lots (an example was Lincoln Financial Field and Lincoln Financial Field Parking). These `venue_names` had very similar tokens, but show entirely different demand signals, because one is parking and another is for the game! To fix this, I created a blacklist filter that drops any `venue_name` containing keywords such as "parking", "vip", "camping", or "shuttle" before beginning matching
+2. Originally, I used `token_set_ratio` as my fuzzy matching scoring setting, but this was too casual. It would match tokens simply because two pairs would share them. To prioritize accuracy and skip any false positive classifications, I switched to `scorer=fuzz.token_sort_ratio`, which sorts the candidate strings and compares the full sequence, penalizing length differences, for example
 
 By enforcing a strict 85% confidence threshold and using the sort-ratio scorer, I prioritized quality over quantity, only recovering an additional 13,000 event-venue capacities across 65 unique venues. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those false positives. Finally, I imputed those venue capacities to my data.
 
@@ -400,8 +400,8 @@ And I got to see the `np.log1p` error handling play out in this case, where many
 
 With this large discrepancy in total events with no ticket transactions in the following week and some, this could become a classification problem in its own right, predicting if any sales will occur in the next week for a show. GPT suggested that I add this layer on top of my demand forecasting prediction project, essentially answering:
 
-1) Will there be any sales in the next week for this event? (Classification)
-2) If so, how many? (Prediction)
+1. Will there be any sales in the next week for this event? (Classification)
+2. If so, how many? (Prediction)
 
 So, I created the binary variable `any_sales_7d_next` and understood the class weights to be around 60% of events with no sales in the next week and 40% with at least one sale in the next week. 
 
@@ -449,8 +449,8 @@ Some takeaways from this section:
 
 Now with my understanding of StubHub's secondary ticket transaction data and my feature engineered variables, I'm ready to move onto the ML piece to answer two primary questions:
 
-1) **Classification**: Are there any sales in the next week for this event?
-2) **Regression**: If I predict yes, how many sales will occur in the next week for this event?
+1. **Classification**: Are there any sales in the next week for this event?
+2. **Regression**: If I predict yes, how many sales will occur in the next week for this event?
 
 So, I began with setting up my variables with dummy coding, train and test splits, and deciding which modeling algorithms I wanted to use based on previous coursework and experimentation.
 
@@ -469,7 +469,7 @@ Next, I wanted to build my X and y variables to easily pass through my models. X
 Any normal ML project would consider around 70/20/10 train, test, and validation splits for their data. However, doing so would jumble around different dates for our events, possibly trying to predict previous dates sandwiched between training dates, and some events would totally be excluded in testing! This will not work for time-series data, and so I took a different approach.
 
 <img width="1344" height="960" alt="image" src="https://github.com/user-attachments/assets/ccc2b491-fd4b-4a66-a523-8602a4e78a17" />
-*Figure 17: An example of train/test split with time-series data*
+*Figure 19: An example of train/test split with time-series data*
 
 Instead, I had to define a cutoff date that my training cannot see beyond, thus using the unseen days as the test set. I decided to use the last two weeks of data for my events as the test set by converting the `snapshot_date` with `.to_datetime` and creating the cutoff date with `model_data['snapshot_date`].max() - pd.Timedelta(days=14)`. Then, I separated training data (`<= cutoff_date`) from testing (`> cutoff_date`). To further prevent any data leakage, I also dropped `snapshot_date` at this point, while also some modeling methods would require inputs as floats and not date formats.
 
@@ -505,18 +505,18 @@ Regular decision trees is the most basic form of these models. Trees essentially
 
 <img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/0becc4c0-17c6-49bf-847a-15e391d819d9" />
 
-*Figure 18: A single decision tree example*
+*Figure 20: A single decision tree example*
 
 Gradient Boosting attempts to fix the overfitting problem by creating many trees instead of just one. This is also a sequential training method, where each tree is predicting the error of the previous tree. By the time all trees are summed up, the model is able to capture more because each tree covers the mistakes of the one before it.
 
 <img width="617" height="337" alt="image" src="https://github.com/user-attachments/assets/3310e6a7-4261-4cf1-9994-e206b8fa8db9" />
 
-*Figure 19: An example of sequential gradient boosting trees*
+*Figure 21: An example of sequential gradient boosting trees*
 
 XGBoost and LightGBM introduce some tailored advantages on top of Gradient Boosting. XGBoost contains regularization, which penalizes trees that get too complex (approaching overfitting and memorization) and is able to handle missing values or zeros. LightGBM is designed for massive datasets and grows its trees vertically, as opposed to XGBoost's horizontal growth. LightGBM focuses only on the leaf with the highest error and ignores other leaves. These two methods speed up training significantly and use less computational energy. 
 
 <img width="756" height="287" alt="image" src="https://github.com/user-attachments/assets/f1835955-edd3-4db0-b8d4-b5051d6460bb" />
-*Figure 20: Horizontal (XGBoost) vs. Vertical (LightGBM) decision tree training*
+*Figure 22: Horizontal (XGBoost) vs. Vertical (LightGBM) decision tree training*
 
 These tree-based models can handle both classification and prediction problems, and I eventually chose to fit each method in each scenario.
 Sklearn contains the packages for these tree-based models, and so I used `GradientBoostingClassifier.fit()`, `XGBClassifier().fit`, and `LGBMClassifier.fit()` on both `X_train_c` and `y_train_c` (and their Regressor, X_train_r and y_train_r counterparts). 
@@ -549,7 +549,7 @@ I decided to attempt this search with my XGBoost Classifier and Regressor, calli
 Instead, I used RandomizedSearchCV. This method won't check every single intersection of my hyperparameter list, but gives me the knobs to tell my search when to stop.
 
 <img width="1088" height="588" alt="image" src="https://github.com/user-attachments/assets/bac15c61-bc7e-44ed-9506-6e92525c5c42" />
-*Figure 21: Conceptual idea behind Grid Search (a) and Random Search (b)*
+*Figure 23: Conceptual idea behind Grid Search (a) and Random Search (b)*
 
 Specifically, I set `n_iter=50`, which asks the algorithm to randomly select only 50 unique combinations. I also implemented cross-validation with three folds during this search. So, for each of the 50 combinations, an XGBoost was trained on three separate slices of my data, so that each combo of hyperparameters sees new data each time to prevent lucky draws.
 
@@ -560,7 +560,7 @@ Now, I'd like to introduce the next model I selected that I thought might be mor
 In my Advanced Machine Learning and Optimization courses this Fall, we have been learning about Neural Nets, models that train weights and biases in a structure not too distant from the human brain, and use a concept called Gradient Descent in minimizing the loss function. 
 
 <img width="1318" height="862" alt="image" src="https://github.com/user-attachments/assets/27c096cf-36d8-44a6-9f7d-de49c4d34b03" />
-*Figure 22: A simplified diagram of Neural Network structure*
+*Figure 24: A simplified diagram of Neural Network structure*
 
 Neural Networks are great in that they can also be used in classification and regression problems and are able to find minima of very complicated loss function landscapes. Honestly, I wanted more practice with building one with this data, and thought it would be a great opportunity to try out. 
 
@@ -569,7 +569,7 @@ Neural Networks are great in that they can also be used in classification and re
 This model cannot take the same inputs as tree-based learning, though. Trees make splits on features regardless of their ranges, but Neural Nets are distorted if features are not scaled down. If Gradient Descent is similar to trying to find the lowest point in a valley, data that is not scaled confuses our model's descent, where one step in the `get_in` price is a small increment, and another step in the `listings_active` feature could be a large distance. So, before starting to build, I had to scale my X input features with sklearn.preprocessing to be consistent. 
 
 <img width="686" height="386" alt="image" src="https://github.com/user-attachments/assets/e54c7318-9515-4b7f-bf95-e0eabb9aa6c0" />
-*Figure 23: A visual example of Gradient Descent*
+*Figure 25: A visual example of Gradient Descent*
 
 To fix this, I used sklearn's StandardScaler, which implements a Z-score normalization, with mean 0 and standard deviation of 1, to transform my data so every feature became normalized. 
 
@@ -584,7 +584,7 @@ Neural Networks can be as shallow or deep as you'd like, considering balancing b
 Using tensorflow, I wanted to play around with different combinations of hidden layers, neuron counts, activation functions, and other techniques suggested to me by Claude. Below is the architecture I landed on for both my classification and regression networks with some explanation of terms.
 
 <img width="736" height="393" alt="image" src="https://github.com/user-attachments/assets/b416d0e8-2840-4b6b-835c-15744aa83001" />
-*Figure 24: My Feed-Forward Neural Network architecture used for classification and regression*
+*Figure 26: My Feed-Forward Neural Network architecture used for classification and regression*
 
 My Neural Network for regression included a third hidden layer with 32 neurons, and between my classification and regression output neurons, I used different activation functions to get my desired target output. Here are some more options I landed on after tinkering and trying again new architectures:
 
@@ -601,7 +601,7 @@ Then, I complied these models using `tf.keras.optimizers.Adam()`, which is a lea
 I also defined each loss function for my classifier and regressor in this step. My Classification problem used `loss='binary_crossentropy'`, since the output is a probability that there will be any sales in the next week between 0 and 1. This loss function penalizes the model for predicting a high probability for an event with no actual sales. For Regression I was suggested to use Huber Loss, which is a new concept to me that I had to investigate before using.
 
 <img width="892" height="669" alt="image" src="https://github.com/user-attachments/assets/1852070b-534c-4776-9a38-8a39425c4709" />
-*Figure 25: The Huber loss function*
+*Figure 27: The Huber loss function*
 
 Huber Loss helps specifically with long right tails and outliers, which my sales target had. The graph above shows how Huber Loss treats small errors like MSE and large errors like MAE. I defined a threshold at 0.75 where the Huber Loss function would flip from MSE to MAE using `tf.keras.losses.Huber(delta=0.75)`. 
 
@@ -620,12 +620,12 @@ Now, hitting "go" on these Neural Networks now would run training until all 300 
 A **Learning Rate Schedule** works with my Adam optimizer. Using `ReduceLROnPlateau` helps my Gradient Descent by not overshooting valleys with too-large of steps, but gradually decreasing steps as it observes the validation metric, in this case, maximizing `val_auc` for Classification and minimizing `val_mse` for Regression. I've also defined a minimum learning rate these schedules can reach at 1e-4, and with `patience` can tell the model how to decrease the learning rate `factor` after my choice of epochs (passes through my data). 
 
 <img width="1034" height="388" alt="image" src="https://github.com/user-attachments/assets/f2df722b-9d4d-426f-b98b-d9954e686b49" />
-*Figure 26: Learning Rate relative to finding minima*
+*Figure 28: Learning Rate relative to finding minima*
 
 **Early Stopping** is another method I used to immediately stop training once I recognize any overfitting. By keeping an eye on my model's `'val_auc'` or `'val_mse'` I can stop training my Neural Network once I see this begin to gradually decline. I decided that, after 20 epochs, if these metrics were to decline/incline respectively, I would `restore_best_weights` of the epoch that minimized each question's loss function, and quit training on my data.
 
 <img width="800" height="450" alt="image" src="https://github.com/user-attachments/assets/682aeff4-a724-477c-a8b0-2a619aadee27" />
-*Figure 27: Early Stopping visualized to prevent overfitting*
+*Figure 29: Early Stopping visualized to prevent overfitting*
 
 Altogether, I was able to train my Neural Networks and find their predictions using the `.ravel()` function, which reshapes the output into a one-dimensional array (where before, it output as a tuble in the shape n_samples, 1). This would prepare my predictions for the `np.sqrt(mean_squared_error())` of my actual and predicted values, aligning my metrics for comparison.
 
@@ -641,7 +641,7 @@ $$
 Where $$x_{\text{naive}}$$ is current 7‑day log sales and $$f_\theta(x)$$ is the Neural Net’s learned correction (delta) to adjust the Naive guess.
 
 <img width="1200" height="700" alt="image" src="https://github.com/user-attachments/assets/eafa53e4-1f0c-42c1-a1f6-dfb538a75270" />
-*Figure 28: Naive + Neural Network architecture visualized*
+*Figure 30: Naive + Neural Network architecture visualized*
 
 All this changed in my Regression Neural Network was including this naive term and, instead of predicting the sales for the next week, predicting the change in this week's sales to next, while adding that Naive term to the output layer. This is called a skip connection, which creates a path that bypasses dense hidden layers to carry that Naive term directly to the end.
 
@@ -667,7 +667,7 @@ In this classification scenario, deep learning with my Neural Network performed 
 
 <img width="701" height="556" alt="image" src="https://github.com/user-attachments/assets/9e616cdc-f76a-4bad-8384-9071e74eb9b9" />
 
-*Figure 29: Comparing models using the ROC Curve*
+*Figure 31: Comparing models using the ROC Curve*
 
 **Regression**
 
@@ -695,7 +695,7 @@ Next, I broke down these errors by `focus_bucket`. The results show a clear diff
 
 <img width="1183" height="784" alt="image" src="https://github.com/user-attachments/assets/cf37caa5-bf6d-4295-9c5d-bdee495a090d" />
 
-*Figure 3X: Boxplot comparison of residuals by category*
+*Figure 32: Boxplot comparison of residuals by category*
 
 | `focus_bucket`     | RMSE (in Tickets)| MAE (in Tickets)  |
 |--------------------|------------------|-------------------|
@@ -711,7 +711,7 @@ The comparison across different categories show that Major and Minor sports are 
 
 <img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/d80a972c-dcf5-4fc5-97ed-ee7427efc0eb" />
 
-*Figure 30: MAE and RMSE comparison across categories*
+*Figure 33: MAE and RMSE comparison across categories*
 
 ### 5.11 Per `days_to_event` Bins
 
@@ -719,7 +719,7 @@ Finally, I evaluated how the error changes as the event gets closer.
 
 <img width="1184" height="784" alt="image" src="https://github.com/user-attachments/assets/f8fbed49-82af-4619-a853-7e609485a646" />
 
-*Figure 3X: Boxplot comparison of residuals by their `days_to_event` bin*
+*Figure 34: Boxplot comparison of residuals by their `days_to_event` bin*
 
 
 | `days_to_event` bin | RMSE  | MAE  |
@@ -742,7 +742,7 @@ SHAP (SHapley Additive exPlanations) can calculate the marginal contributions of
 
 <img width="784" height="934" alt="image" src="https://github.com/user-attachments/assets/884b6ac4-ec6c-476a-8160-d4f3e8739283" />
 
-*Figure 3X: Features ranked by their importance (SHAP values) on Naive + Neural Network predictions*
+*Figure 35: Features ranked by their importance (SHAP values) on Naive + Neural Network predictions*
 
 This plot told me straightaway that the previous weeks' sales gave the Naive + Neural Net model the most information when making its predictions. Interestingly, other important features, though lacking in magnitude, were the number of listings (inventory) for that event, the remaining days until the event, especially if it was in the upcoming week, and that venue capacity I took so long to impute!
 
