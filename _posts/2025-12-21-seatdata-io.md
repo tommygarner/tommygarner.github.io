@@ -751,6 +751,10 @@ $$E[\text{# Sales}] = P(\text{Any Sale}) \times E[\text{# Sales} | \text{Any Sal
 
 This method simulates a better understanding of probabilities and real-time data known while making these decisions. Finding the estimated value of sales isn't just a hard guess but weighted by its probability there will be any sales in the first place.
 
+<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/4c94b334-b0fb-4126-8431-b0253723b735" />
+
+*Figure 3X: Concept behind the two models and improving sure guesses*
+
 ### 6.2 How I Built the Pipeline (code-heavy)
 
 This method required a complex Python loop that I benefited from using Gemini 3 to build. It acts more as an ML pipeline than a simple script before where I ran each model separately. I'll break it down into four phases.
@@ -850,22 +854,14 @@ However, this seemed like a huge improvement from the previous model and I wante
 
 Immediate thoughts after looking at these results proved some early hypothesis correct. Categories with little to no ticket volume moving on StubHub had the lowest average errors, while Sports categories (the main market for StubHub seemingly) had the greatest errors. 
 
-
-<img width="1783" height="634" alt="image" src="https://github.com/user-attachments/assets/c9252149-d3de-45e3-afc1-c1c8a239f4d5" />
-*Figure 3X: Comparing each method and residual impact by category*
-
-<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/80a18ae1-0f3a-4db2-90aa-ae74c92c1eb7" />
-*Figure 3X: Comparing both modeling methods by their RMSE reduction*
-
-<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/fd7c02bf-e5c3-4e43-862f-87cd7c1aac18" />
-*Figure 3X: Comparing both modeling methods by their MAE reduction*
-
 ### 6.4 Collective Feature Importances
 
-<img width="792" height="734" alt="image" src="https://github.com/user-attachments/assets/5126d42c-0b8e-448c-bb84-41b91cfc4d51" />
+<img width="792" height="734" alt="image" src="https://github.com/user-attachments/assets/78eecab6-1a6c-4768-bee2-9a82cc0b86d7" />
+
 *Figure 4X: SHAP values of predictors amongst all models*
 
-<img width="808" height="534" alt="image" src="https://github.com/user-attachments/assets/9df3ed57-febd-472a-b0be-45bdd40c60d0" />
+<img width="808" height="534" alt="image" src="https://github.com/user-attachments/assets/8cdced02-b80b-4546-8e80-6420313fbf87" />
+
 *Figure 4X: Top 10 collective features ranked by influence amongst all models*
 
 My takeaways from this experiment: 
