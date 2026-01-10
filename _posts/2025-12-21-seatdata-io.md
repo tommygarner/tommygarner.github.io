@@ -107,6 +107,10 @@ Now, with my BigQuery table beefing up with every new day, I wanted to put my In
 ### 2.3 Dimensional Modeling
 In a star schema, data is structured as fact and dimensional tables. Fact tables are where statistics and numbers live, while descriptors are sent to dimensional tables. This way, data is structured so that I could query information faster in EDA and feature engineering steps. I can reduce the number of JOINS, plus I wouldn't be searching the entire 4 million-row table when trying to answer specific questions in my analyses.
 
+<img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
+
+*Figure 1: Entity relationship diagram for my SeatData.io Warehouse*
+
 In order to determine the dimension tables I would need for this project, I had to decide the level of grain that one row would contain in each table. Below is the conclusion I landed on.
 
 | Table | Grain | Key Columns | Purpose |
@@ -116,10 +120,6 @@ In order to determine the dimension tables I would need for this project, I had 
 | `dim_events_categorized` | 1 per `event_id_stubhub` | `event_category` (38 labels), `event_id_stubhub`, `focus_bucket` (6 buckets) | Granular categories built via regex ladder |
 | `fact_event_snapshots` | 1 per event per day | 'event_id_stubhub`, `imported_at` | Storage for time-series metrics like price and inventory |
 | `mart_event_snapshot_panel` | 1 row per event per day | `event_id_stubhub`, `days_to_event`, `price_spread_ratio` | Includes engineered and joined metrics to pull straight into Python notebooks |
-
-<img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
-
-*Figure 1: Entity relationship diagram for my SeatData.io Warehouse*
 
 ### 2.4 Dimension Tables
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
