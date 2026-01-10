@@ -166,7 +166,7 @@ I also feature engineered the `days_to_event` variable, which calculates the amo
 
 Below is the Data Flow Diagram of my database:
 
-<img width="8192" height="423" alt="image" src="https://github.com/user-attachments/assets/3d49f73e-2c8c-4773-8438-5514d4ea085c" />
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/1c3819c3-9f63-494b-ae75-b2224497f38c" />
 
 *Figure 2: Data flow diagram behind my database engineering*
 
