@@ -795,9 +795,11 @@ Immediate thoughts after looking at these results proved some early hypothesis c
 <img width="1783" height="634" alt="image" src="https://github.com/user-attachments/assets/c9252149-d3de-45e3-afc1-c1c8a239f4d5" />
 *Figure 3X: Comparing each method and residual impact by category*
 
-<img width="1175" height="712" alt="image" src="https://github.com/user-attachments/assets/ba1bc05e-8510-489e-8057-1a53ef93ba05" />
-*Figure 3X: Visualizing residual distributions by each category*
+<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/80a18ae1-0f3a-4db2-90aa-ae74c92c1eb7" />
+*Figure 3X: Comparing both modeling methods by their RMSE reduction*
 
+<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/fd7c02bf-e5c3-4e43-862f-87cd7c1aac18" />
+*Figure 3X: Comparing both modeling methods by their MAE reduction*
 
 My takeaways from this experiment: 
 -  one
