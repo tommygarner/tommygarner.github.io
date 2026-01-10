@@ -24,26 +24,26 @@ excerpt: ""
 
 ## Abstract
 
-Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a market-segmented modeling method to reduce prediction errors by nearly 50% (RMSE) compared to generalized modeling on next week's sales of an event. I did this by introducing a conditional probability framework that combines classification and regression models. 
+Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a **market-segmented modeling method** to **reduce prediction errors by nearly 50% (RMSE)** compared to generalized modeling on next week's sales of an event. I did this by introducing a **conditional probability framework** that combines **classification and regression models**. 
 
 ## Key Contributions
 
--  Data Engineering (BigQuery Star Schema)
--  Feature Engineering (Imputations, Demand Signal Calculations)
--  Custom Loss Functions (Huber Loss)
--  Conditional Probability Predictions (Two-Stage Classification/Regression Method)
+-  **Data Engineering** (BigQuery Star Schema)
+-  **Feature Engineering** (Imputations, Demand Signal Calculations)
+-  **Custom Loss Functions** (Huber Loss)
+-  **Conditional Probability Predictions** (Two-Stage Classification/Regression Method)
 
 ---
 
 ## 1. Introduction
 I love live entertainment, and I enjoy statistics and modeling. I want to see the two intersect and, after a couple of coffee chats with analysts in the industry, they suggested that I tackle demand forecasting ticket sales.
 
-I wanted to take this challenge on not only to use for recruiting in the Spring upon graduation, but also to become more familiar with the ticketing industry. I wanted to understand how ticket sales move as different time features change. So, I decided to dive headfirst into this project and learn along the way. It also helps to use the new ML preprocessing and modeling techniques I'm learning in my classes towards an industry I truly enjoy.
+I wanted to take this challenge on not only to use for recruiting in the Spring upon graduation, but also to become more familiar with the ticketing industry. I wanted to understand how ticket sales move as different time features change. So, I decided to dive headfirst into this project and learn along the way. It also helps to use the **new ML preprocessing and modeling techniques** I'm learning in my classes towards an industry I truly enjoy.
 
 ### 1.1 Problem Statement
-However, demand modeling is not so simple. Data sources in this industry are closely guarded. Public information about ticket sales, prices, and other demand signals are also very difficult to find.
+However, demand modeling is not so simple. **Data sources in this industry are closely guarded**. Public information about ticket sales, prices, and other demand signals are also very difficult to find.
 
-The reasoning behind this is likely due to the BOTS Act (and it's recent enforcement) in the secondary ticket market to prevent people from automating scraping and scalping ticket inventory. So, the industry doesn't want this information in the hands of just anyone.
+The reasoning behind this is likely due to the **BOTS Act** (and it's recent enforcement) in the secondary ticket market to prevent people from **automating scraping and scalping** ticket inventory. So, the industry doesn't want this information in the hands of just anyone.
 
 ### 1.2 My Approach
 While artist teams set primary ticket prices for a concert, for example, the secondary market is where you really see the true ticket price converge when it comes to decentralized economics. Every individual seller sets their own price, often guided by pricing recommendations from their secondary ticketing platform.
@@ -53,7 +53,7 @@ With accurate modeling, the potential impact is huge:
 * Business Insights can forecast expected sales in the primary market by watching secondary proxy demand
 * Finance can have confidence intervals on expected revenue with better known demand signals
 
-You get the picture! Because ticket sales are often sparse, with many days of zero sales, I developed a two-step approach: first classifying if a sale would occur, then regressing the volume of those sales. My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hello!).
+You get the picture! Because ticket sales are often sparse, with many days of zero sales, I developed a two-step approach: first **classifying** if a sale would occur, then **regressing** the volume of those sales. My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hello!).
 
 ---
 
@@ -64,7 +64,7 @@ When researching, I came across a couple of dead ends. At first, I thought free 
 
 Now, I'm a college student, so I wasn't trying to break the bank on a project, especially alongside paying tuition for Graduate School. That's when I came across TouringData's Patreon service for only $11/month. However, after gaining access to the past two years of touring information, the data would not be enough. CSVs were too generalized and aggregated for my liking, as I was only provided with total revenue and tickets sold statistics, as well as metadata on event and venue information.
 
-Finally, I came across several platforms that seemed in the next tier, such as JamBase, TicketsData, and SeatData.io. These sites had plenty of tiers I could choose from to introduce granularity beyond what TouringData could afford, such as minimum prices, number of listings, and venue capacities. After weighing the different features and sampling data ingestions from each site, I eventually decided that SeatData.io would be my chosen platform. 
+Finally, I came across several platforms that seemed in the next tier, such as JamBase, TicketsData, and SeatData.io. These sites had plenty of tiers I could choose from to introduce granularity beyond what TouringData could afford, such as minimum prices, number of listings, and venue capacities. After weighing the different features and sampling data ingestions from each site, I eventually decided that **SeatData.io** would be my chosen platform. 
 
 SeatData.io collects their data from StubHub listings, which is one of the top secondary ticket platforms for resale. I also validated this data source with an industry mentor to ensure the granularity met industry standards, considering the scope of my portfolio project. Specifically, I decided to subscribe to their Daily CSV ingestion service for a reasonable cost.
 
