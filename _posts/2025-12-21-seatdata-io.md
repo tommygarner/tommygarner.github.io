@@ -265,7 +265,7 @@ Another one of the features I created was translating the `imported_at` date to 
 
 <img width="791" height="384" alt="image" src="https://github.com/user-attachments/assets/f63c47b7-3254-47a3-9e99-f639684c8dcf" />
 
-*Figure 8: A distribution of `days_to_event` by category*
+*Figure 9: A distribution of `days_to_event` by category*
 
 This stacked bar chart helped me understand where events stood upon beginning my EDA and feature engineering steps. Around mid-December, a majority of my event snapshots stood in the month to two-month out bins, whereas the remaining 50% of events in my database lived in the month-to-go timeframe. 
 
@@ -273,7 +273,7 @@ This feature would help separate different price and demand trends in upcoming s
 
 <img width="1509" height="1535" alt="image" src="https://github.com/user-attachments/assets/78d56391-c938-4360-a955-f1f47f121c85" />
 
-*Figure 9: Boxplot showing 1-day sale totals by Day of the Week*
+*Figure 10: Boxplot showing 1-day sale totals by Day of the Week*
 
 Demand clearly shows patterns throughout each `focus_bucket`. Where Sunday lives on the far left and Saturday on the far right, you can see a increase in most categories as the weekend approaches. Another interesting takeaway from this graphic is that Tuesday shows volatility in demand, which might be influenced by several factors among researching:
   - Tuesday is a common ticket on-sale day across the live entertainment industry for arena tours and major concert announcements. These on-sales experience lots of price and demand volatility as many rush to secure tickets
@@ -282,19 +282,19 @@ Demand clearly shows patterns throughout each `focus_bucket`. Where Sunday lives
 
 <img width="788" height="390" alt="image" src="https://github.com/user-attachments/assets/569cb212-4500-4916-8cc1-64262b9cf27f" />
 
-*Figure 10: Median `get_in` price as the event draws closer by category*
+*Figure 11: Median `get_in` price as the event draws closer by category*
 
 Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the three tiers of pricing. However, it appears that prices are somewhat stable and unaffected as time progresses. If anything, you could maybe say there is a slight decrease in the minimum ticket price, as sellers are likely dropping prices on StubHub to reduce the likelihood of unsold inventory with no salvage opportunity after the event.
 
 <img width="977" height="484" alt="image" src="https://github.com/user-attachments/assets/8a349c19-73b5-48b7-99c1-18b4f214dc66" />
 
-*Figure 11: Average daily sales per category by `days_to_event` bins* 
+*Figure 12: Average daily sales per category by `days_to_event` bins* 
 
 However, looking at the market volume in these categories per day as the event/performance draws near tells a unique story: StubHub is a great place to dump tickets off for sporting events, especially the week before (or day of!) the game. All other categories see a minor increase in transaction volume, and all categories see very little tickets change hands two months prior to the event.
 
 <img width="976" height="484" alt="image" src="https://github.com/user-attachments/assets/63565a19-0688-4182-ab1c-82034ac83cd9" />
 
-*Figure 12: Average active listings per category by `days_to_event` bins*
+*Figure 13: Average active listings per category by `days_to_event` bins*
 
 As most sales occur in the final week leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average number of listings per event drop on that final day possible. This shows the risk of putting up last-minute inventory only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
 
@@ -344,7 +344,8 @@ During validation, I found a couple of traps that I was able to prevent with the
 By enforcing a strict 85% confidence threshold and using the sort-ratio scorer, I prioritized quality over quantity, only recovering an additional 13,000 event-venue capacities across 65 unique venues. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those false positives. Finally, I imputed those venue capacities to my data.
 
 <img width="1024" height="385" alt="image" src="https://github.com/user-attachments/assets/839ec1d1-ea1e-4048-8d0e-a77da6616162" />
-*Figure 13: Conceptual design of fuzzy matching, candidates, and ranking/scoring*
+
+*Figure 14: Conceptual design of fuzzy matching, candidates, and ranking/scoring*
 
 At this point, I still had many rows with missing venue data and no more additional sources to duplicate this strategy, since APIs I looked into did not share this data with rate limits I needed for my scope.
 
@@ -370,7 +371,8 @@ So, finally, I decided to conditionally impute the remaining missing values with
 After double-checking my now-filled `venue_capacity` distribution, I found some extreme outliers, such as Dickies Arena having a 240K capacity(???), so after correcting this figure to its estimated 14K figure, I was able to investigate the distribution of capacities:
 
 <img width="551" height="428" alt="image" src="https://github.com/user-attachments/assets/bfe97fb8-4789-4c2b-bd9a-2f56ae12a2b7" />
-*Figure 13: Distribution of the `venue_capacity` variable after imputation*
+
+*Figure 15: Distribution of the `venue_capacity` variable after imputation*
 
 Extremely right-skewed data, where there are still some extreme values for motorsports, and many venues holding no more than 2,500ish people. This tailed distribution would become a familiar sight as I looked at specific variables, and the `np.log1p` function would become a best friend as I prepared the data for modeling.
 
@@ -379,19 +381,22 @@ Extremely right-skewed data, where there are still some extreme values for motor
 This log function is not simply the natural log, but it includes a safety net. It calculates $$ln(1+x)$$. We need this because our data contains zeroes. Taking the log of a zero results in an undefined value, so this error handling helps the `np.log1p(0)` become just 0, preventing our model from crashing.
 
 <img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/0d9ca6be-44ad-4501-b308-8b05f2e2082f" />
-*Figure 14: Distribution of `venue_capacity_log` variable after imputation*
+
+*Figure 16: Distribution of `venue_capacity_log` variable after imputation*
 
 This distribution is much closer to normal and will be better for our models to use in predicting, instead of associating outlier capacities with the same week-long sales total since there aren't enough samples.
 
 The `sales_total_7d_next` variable had a similar problem:
 
 <img width="556" height="428" alt="image" src="https://github.com/user-attachments/assets/5559fd2b-b7f5-4a31-9d6e-42b653e1f0c1" />
-*Figure 15: Distribution of `sales_total_7d_next`*
+
+*Figure 17: Distribution of `sales_total_7d_next`*
 
 And I got to see the `np.log1p` error handling play out in this case, where many records have no transactions within a weeks' time:
 
 <img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/7bc9c0f2-1628-4da9-87ec-70f4d2bd1129" />
-*Figure 16: Distribution of `sales_total_7d_next_log`*
+
+*Figure 18: Distribution of `sales_total_7d_next_log`*
 
 With this large discrepancy in total events with no ticket transactions in the following week and some, this could become a classification problem in its own right, predicting if any sales will occur in the next week for a show. GPT suggested that I add this layer on top of my demand forecasting prediction project, essentially answering:
 
@@ -422,8 +427,18 @@ Lastly, I evaluated the missingness of my data and summarize below my thought pr
 | `listings_active_log`       | 2%                 | After imputing `listings_active`, using `.clip(lower=1)` if `days_to_event` is small or 0 to prevent undefined calculations                                                                                    |
 
 After this, my data had no more missing values and I was finally ready to push this back to BigQuery and begin modeling. 
+Here is a concise summary table of the different features I'm pushing to my modeling section: 
+
+| Category | Features                                                                    | Reasoning                                                       |
+|----------|-----------------------------------------------------------------------------|-----------------------------------------------------------------|
+| Core     | `get_in_log`, `listings_median_log`, `listings_active_log`                  | Price and inventory signals at time of predictions              |
+| Momentum | `sales_total_7d_prev`, `sales_total_change_7d`, `listings_active_change_7d` | Gives models memory and trend information                       |
+| Time     | `days_to_event`, `event_weekend`, `inv_per_day`                             | Adds variables for discovering scarcity effect                  |
+| Context  | `venue_capacity_log`, `price_spread_ratio`                                  | Scales demand to the specific venue or event's market price     |
+| Segments | `focus_bucket_...` (One-hot encoded)                                        | Understands differences between different markets and behaviors |
 
 Some takeaways from this section:
+
 -  **Filled Venue Capacity is Context**: My model understanding that 100 ticket sales in a 500-person club signals a viral event whereas those 100 sales in a stadium event is nothing at all. Future models will now be able to tell this apart after the imputation on `venue_capacity`, which was missing nearly half of entries
 -  **Solving Sparsity**: Sales numbers in my data is extremely sparse, with many days having zero transactions. Both by log-transforming these sales figures and splitting up the target into a classification and regression problem, I've created a modeling strategy that won't be overwhelmed by zeros
 -  **Lagging Features**: The idea of giving my later models a memory of the previous week will hopefully benefit predictions by giving prediction models more access to historical data, such as the previous week. Now, a model can understand momentum for an event and adjust predictions accordingly, rather than simply seeing today's sales volume
