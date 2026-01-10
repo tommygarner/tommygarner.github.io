@@ -178,13 +178,13 @@ With the data mart structured, I then moved onto my EDA step to validate the dat
 
 ### 3.1 Initial Data Diagnostics and Cleaning
 Before diving into demand and trends in my data, I used several functions to investigate the quality of my snapshot records and their attribute distributions
-  - `.info()` and `.describe()` allowed me to check for null values and verify that my type casting from my ingestion script worked across the entire database in BigQuery. Distributions of both 1-day and 7-day sales were missing no values, and only `listings_median` was missing about 15% of the time, which might be because of low ticket volume (1-2 tickets that day), where a median cannot be calculated reliably
+  - `.info()` and `.describe()` allowed me to check for null values and verify that my type casting from my ingestion script worked across the entire database in BigQuery. Distributions of both 1-day and 7-day sales had no missing values, and only `listings_median` was missing about 15% of the time, which might be because of low ticket volume (1-2 tickets that day), where a median cannot be calculated reliably
   - I also looked for the October 4th gap mentioned by SeatData.io to understand how it affected my rolling windows for sales totals
   - Finally, I evaluated the volume of unique events across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket. I took a swing with Festivals, which had only 500 unique events and about 12,000 rows. Otherwise, every other bucket had more than 2,000 events with over 71,000 rows in their respective categories.
 
 <img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/d5a306b9-61c0-4cd9-9532-69da1a7994a1" />
 
-*Figure 2: Bar chart representation of events per `focus_bucket`*
+*Figure 3: Bar chart representation of events per `focus_bucket`*
 
 
 ### 3.2 Bucket EDA
@@ -192,7 +192,7 @@ I decided to then understand demand, price and inventory statistics by each `foc
 
 <img width="989" height="490" alt="image" src="https://github.com/user-attachments/assets/ea4b29f4-9109-4b17-a0c7-e41069f50765" />
 
-*Figure 3: 1-day sales aggregated by `focus_bucket`
+*Figure 4: 1-day sales aggregated by `focus_bucket`*
 
 Some initial insights I found from this data included:
   - Major sports has many ticket transactions (with an average of around 7,000 tickets sold on StubHub per day) compared to the next tier of Concerts and Other Events
@@ -205,13 +205,13 @@ Some initial insights I found from this data included:
 
 <img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/abe4a919-4e3a-453c-8a41-90f5b608066c" />
 
-*Figure 4: Total active listings in each category over time*
+*Figure 5: Total active listings in each category over time*
 
 I found that the total active listings in each category was fairly stable throughout the duration of data collection, where there was maybe a gradual decline as most events kicked up in the November, December months. I did not choose to investigate this further, but was shocked that millions of tickets are listed online just on StubHub alone. It is interesting to think how many of those are also listed on other ticketing sites, or how long the average ticket is listed on a site before it's either taken off or sold.
 
 <img width="1180" height="584" alt="image" src="https://github.com/user-attachments/assets/75be51bb-8c29-4e29-ab89-33320a6f3a94" />
 
-*Figure 5: The median get-in (minimum ticket price) in each category over time*
+*Figure 6: The median get-in (minimum ticket price) in each category over time*
 
 Next, I looked at how the median minimum ticket price in each category moved throughout the months of October to mid-December. The reason I chose median as opposed to average is because there were some extreme values that made interpretation difficult.
 
@@ -223,17 +223,18 @@ Median `get_in` prices are somewhat stable across different categories with reas
 
 <img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/b1e58ace-2695-4f29-bafa-ecf69da2975b" />
 
-*Figure 6: A close-up at the number of active listings per day for Festivals.*
+*Figure 7: A close-up at the number of active listings per day for Festivals.*
 
 Next, I looked at the distributions of these features by each `focus_bucket`. I first tried to understand how 1-day sales volume is represented in each bucket.
 
 <img width="1009" height="636" alt="image" src="https://github.com/user-attachments/assets/e2149fd3-cd36-4907-befd-6b924e1ac6fb" />
 
-*Figure 7: The distribution of aggregated sales totals per day among each category*
+*Figure 8: The distribution of aggregated sales totals per day among each category*
 
 The above boxplot shows the spread of total transactions in the resale marekt by category, showing again that StubHub is a happening place for major sports fans to both sell and buy inventory. Concerts and Other Events also have 2,000+ transactions per day on the platform. Meanwhile, Broadway & Theater, Comedy, and Festivals do not see many transactions per day on this ticketing site.
 
 To conclude, I want to wrap up with some high-level takeaways from my EDA to summarize what I've already learned about the data at this point:
+
 -  **Good, full data**: The database has complete numerical statistics from 1-day sales to 1-week sales. Of course, many are low-volume events with 1-2 tickets sold, but it is nice to not have to worry about imputation of these volume statistics. Also, all categories have thousands of unique events with many snapshots, so there is both length and width in our data
 -  **StubHub is a major Sports resale platform**: Stubhub appears to primarily cater towards the sports fan resale market, averaging nearly 7,000 sales per day. The major/minor sports categories are also the most volatile of all focus buckets
 -  **November 4th**: Election Day likely caused the massive dip in ticket sales across the platform (and likely many other platforms). This will be interesting for future modeling to learn from, and it is good that our models will not be able to memorize patterns due to this outlier day
