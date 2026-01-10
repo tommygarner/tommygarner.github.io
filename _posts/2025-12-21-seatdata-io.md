@@ -1,8 +1,8 @@
 ---
 layout: single
-title: "Market-Segmented Demand Forecasting Secondary Ticket Sales"
+title: "Demand Forecasting Secondary Ticket Sales"
 date: 2026-01-07
-description: "Using SeatData.io Secondary Ticket Sales and Machine Learning Models to Predict Total Sales for the Subsequent Week"
+description: "Using SeatData.io Secondary Ticket Sales and Machine Learning Models to Predict Total Sales for the Following Week"
 author_profile: true
 toc: true
 toc_sticky: true
@@ -17,7 +17,7 @@ tags:
   - python
   - sql
   - tensorflow
-excerpt: "How segmentation can outperform generalization in prediction machine learning while understanding price-elasticity differences and market-specific secondary ticket transaction patterns."
+excerpt: ""
 ---
 
 ## Abstract
@@ -679,15 +679,15 @@ Next, I broke down these errors by `focus_bucket`. The results show a clear diff
 
 *Figure 3X: Boxplot comparison of residuals by category*
 
-| `focus_bucket`     | MAE (in Tickets) | RMSE (in Tickets) |
-|--------------------|------------|-------------|
-| Broadway_Theater   | 0.40       | 2.47        |
-| Festivals          | 0.87       | 3.27        |
-| Comedy             | 1.61       | 7.31        |
-| Other              | 0.91       | 8.32        |
-| Concert            | 1.50       | 8.57        |
-| Minor_Other_Sports | 3.33       | 17.58       |
-| Major_Sports       | 6.72       | 19.19       |
+| `focus_bucket`     | RMSE (in Tickets)| MAE (in Tickets)  |
+|--------------------|------------------|-------------------|
+| Broadway_Theater   | 2.47             | 0.40              |
+| Festivals          | 3.27             | 0.87              |
+| Comedy             | 7.31             | 1.61              |
+| Other              | 8.32             | 0.91              |
+| Concert            | 8.57             | 1.50              |
+| Minor_Other_Sports | 17.58            | 3.33              |
+| Major_Sports       | 19.19            | 6.72              |
 
 The comparison across different categories show that Major and Minor sports are the hardest to get right, with an average absolute error of 6.7 and 3.3 tickets off for the true ticket sales of the following week. Also, these errors are more volatile, shown by their exploding RMSE values, which penalizes larger misses, as I talked about before. Broadway & Theater and Festivals have the most precise predictions using the Naive + Neural Net regressor, suggesting these are more stable markets and easier to predict within a reasonable range.
 
@@ -776,7 +776,7 @@ In the largest for loop I have yet to build, I began to model this data, this ti
 My outer loop consisted of my `focus_buckets`, as I defined which data I wanted to model on, scaled my data yet again with `StandardScaler()`, and used `.fit_transform()` on my training data and `.transform()` on my testing data. Then, I began with classification models, creating a list for results and a dictionary to hold the metrics for evaluating winning models. Then, for each model, I had a for loop that did the following for each method:
 -  **Gradient Boosting**: Used the `GradientBoostingClassifier()` function with a random state using my classification training data
 -  **XGBoost**: As with Gradient Boosting, using the `XGBClassifier()` function on my training data
--  ***Light GBM**: One more time, using the `LGBMClassifier()` function on my training data with the default hyperparameter settings
+-  **Light GBM**: One more time, using the `LGBMClassifier()` function on my training data with the default hyperparameter settings
 -  **Neural Network**: Used my predefined functions with my architecture to pass through my scaled classification training data (this time, only running for 100 epochs), again casting my `any_sales_7d_next` variable with `.astype('float32')` for probabilities, saving my run history, and raveling my probabilities
 -  **Tuned XGBoost**: Ran the `RandomizedSearchCV()` between my `param_dist` dictionary for hyperparameter tuning with my objective as `binary:logistic`, fitting my classification training data with the best hyperparameter setup
 
@@ -785,7 +785,7 @@ After my classification setups, I saved these results in my dictionary for later
 Then, still within each model for loop, I immediately ran the regression script after creating another list for results and a dictionary to hold those metrics, this time for my prediction error terms. In the same fashion as before, here is how I tackled the regression piece in this for loop:
 -  **Gradient Boosting**: Used the `GradientBoostingClassifier()` function with a random state using my regression training data
 -  **XGBoost**: As with Gradient Boosting, using the `XGBClassifier()` function on my training data
--  ***Light GBM**: The `LGBMClassifier()` function on my training data with the default hyperparameter settings
+-  **Light GBM**: The `LGBMClassifier()` function on my training data with the default hyperparameter settings
 -  **Neural Network**: Used my predefined functions with my architecture to pass through my scaled regression training data (this time, only running for 100 epochs), again casting my `sales_total_7d_next_log` variable with `.astype('float32')` for predictions, saving my run history, and raveling my predictions
 -  **Tuned XGBoost**: Ran the `RandomizedSearchCV()` between my `param_dist` dictionary for hyperparameter tuning with my objective as `reg:squarederror`, fitting my regression training data with the best hyperparameter setup
 
@@ -797,15 +797,15 @@ Lastly, I had the for loop find the best model for each bucket by maximizing the
 
 In the same way I used the hyperparameter Grid Search, I wanted to look for the best decision threshold that optimized my RMSE metric in my conditional probability logic. So, I had Gemini 3 draft me a script that would run this threshold search in 0.05 increments between 0.05 and 0.95 to find the classification threshold that would minimize the prediction error RMSE. In doing so, I found the following optimal thresholds.
 
-| `focus_bucket`     | Decision Threshold Minimizing RMSE |
-|--------------------|------------------------------------|
-| Concert            | 0.50                               |
-| Festivals          | 0.65                               |
-| Major Sports       | 0.40                               |
-| Minor/Other Sports | 0.60                               |
-| Broadway & Theater | 0.55                               |
-| Other              | 0.90                               |
-| Comedy             | 0.65                               |
+| `focus_bucket`     | Decision Threshold |
+|--------------------|--------------------|
+| Concert            | 0.50               |
+| Festivals          | 0.65               |
+| Major Sports       | 0.40               |
+| Minor/Other Sports | 0.60               |
+| Broadway & Theater | 0.55               |
+| Other              | 0.90               |
+| Comedy             | 0.65               |
 
 I found it interesting that most of these thresholds adapted to the stability of each `focus_bucket`. For example, an aggressive threshold below 50% in categories like Major Sports told me that the classification model was trying to lower the bar for classifying positives, since false negatives (saying an event won't have future sales, when it will) is much more penalizing to RMSE than over-predicting a nothing-burger. On the flip side, thresholds above 50%, like the catch-all Other category, had a lot of events in there and needed to have a high certainty of confidence before proceeding to regression predictions. This is likely because there were many zero-sale events that would be costly to misclassify as false positives. 
 
@@ -827,26 +827,29 @@ Below shows the best classifier and regressors for each `focus_bucket` after run
 
 Finally, it was time to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
 
-| Modeling Type   | Global RMSE (in Tickets) | Conditional MAE (in Tickets) | All MAE (in Tickets) |
-|-----------------|-------------------|------------------|------------------|------------------|
-| Universal       | 17.67             | 5.52             | -                |
-| Market-Specific | 9.89              | 1.82             | 5.88             |
+| Modeling Type   | Global RMSE (in Tickets) | Active MAE (in Tickets)      |
+|-----------------|--------------------------|------------------------------|
+| Universal       | 17.73                    | 5.52                         |
+| Market-Specific | 10.23                    | 5.87                         |
 
-Since my Universal approach did not include conditional predictions, I was able to compare these two approaches on my full test set and reduce RMSE residuals by nearly 50% while MAE shows that, on average, market-specific modeling predictions were off by just under 2 tickets per day! This seemed like a huge improvement from the previous model and I wanted to dig in more to the `focus_buckets` to see how my conditional predictors performed individually. The market-specific models were able to efficiently find and ignore the inactive inventory in the resale market, a big win!
+Since my Universal approach did not include conditional predictions, I was able to compare these two approaches on my full test set and reduce RMSE residuals by nearly 50% while MAE shows that, on average, market-specific modeling predictions were a little worse than the Universal modeling approach. The reasoning for this is likely because the classification part of the market-segemented approach doesn't catch all nonzero-sale events. Therefore, any misclassifications could penalize error regardless if they are extreme or little misses in magnitude.
+
+However, this seemed like a huge improvement from the previous model and I wanted to dig in more to the `focus_buckets` to see how my conditional predictors performed individually. The market-specific models were able to efficiently find and ignore the inactive inventory in the resale market, a big win!
 
 ### 6.3 Market-Segmented Performances
 
-| `focus_bucket`     | RMSE (in Tickets) | Global MAE (in Tickets) | Conditional MAE (in Tickets) |
-|--------------------|-------------------|------------------|------------------|
-| Broadway & Theater | 3.31              | 0.62             | 2.34 |
-| Festivals          | 4.94              | 1.29             | 3.57 |
-| Comedy             | 7.76              | 1.90             | 5.95 |
-| Other              | 8.96              | 1.19             | 4.95 |
-| Concert            | 9.36              | 1.87             | 5.49 |
-| Minor/Other Sports | 16.94             | 3.73             | 9.08 |
-| Major Sports       | 21.72             | 8.13             | 11.61|
+| `focus_bucket`     | RMSE (in Tickets) | MAE (in Tickets) |
+|--------------------|-------------------|------------------|
+| Broadway_Theater   | 3.33              | 2.38             |
+| Festivals          | 5.07              | 3.63             |
+| Comedy             | 7.41              | 5.88             |
+| Other              | 9.03              | 4.93             |
+| Concert            | 10.70             | 5.62             |
+| Minor_Other_Sports | 17.59             | 9.30             |
+| Major_Sports       | 21.84             | 11.36            |
 
-Immediate thoughts after looking at these results proved some early hypothesis correct. Categories with little to no ticket volume moving on StubHub had the lowest average errors, while Sports categories (the main market for StubHub seemingly) had the greatest errors. However, in the worst case, the market-specific modeling was able to conditionally predict ticket sales for event in the next week within less than 12 tickets of error.
+Immediate thoughts after looking at these results proved some early hypothesis correct. Categories with little to no ticket volume moving on StubHub had the lowest average errors, while Sports categories (the main market for StubHub seemingly) had the greatest errors. 
+
 
 <img width="1783" height="634" alt="image" src="https://github.com/user-attachments/assets/c9252149-d3de-45e3-afc1-c1c8a239f4d5" />
 *Figure 3X: Comparing each method and residual impact by category*
