@@ -660,6 +660,10 @@ The comparison across different categories show that Major and Minor sports are 
 
 Finally, I evaluated how the error changes as the event gets closer.
 
+<img width="1184" height="784" alt="image" src="https://github.com/user-attachments/assets/12db55eb-44a5-4170-9599-30564a0cbaec" />
+*Figure 3X: Boxplot comparison of residuals by their `days_to_event` bin*
+
+
 | `days_to_event` Bin | RMSE (in Tickets) | MAE (in Tickets) |
 |---------------------|-------------------|------------------|
 | 60+                 | 5.94              | 2.35             |
@@ -668,7 +672,7 @@ Finally, I evaluated how the error changes as the event gets closer.
 | 8-14                | 23.50             | 8.14             |
 | 1-7                 | 22.70             | 7.66             |
 
-The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.
+**The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.**
 
 #### Feature Importance
 It's one thing to have a good ML model that can accurately predict, but it's another to know what exactly drives predictions by interpreting your model, taking it beyond the black box.
