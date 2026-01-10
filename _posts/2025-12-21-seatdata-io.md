@@ -505,7 +505,7 @@ Regular decision trees is the most basic form of these models. Trees essentially
 
 <img width="640" height="480" alt="image" src="https://github.com/user-attachments/assets/0becc4c0-17c6-49bf-847a-15e391d819d9" />
 
-*Figure 20: A single decision tree example*
+*Figure 20: A conceptual example of a decision tree, where splits would be based on features like `venue_capacity` or `price_spread_ratio` in my example*
 
 Gradient Boosting attempts to fix the overfitting problem by creating many trees instead of just one. This is also a sequential training method, where each tree is predicting the error of the previous tree. By the time all trees are summed up, the model is able to capture more because each tree covers the mistakes of the one before it.
 
@@ -697,6 +697,8 @@ Next, I broke down these errors by `focus_bucket`. The results show a clear diff
 
 *Figure 32: Boxplot comparison of residuals by category*
 
+This comparison of residuals clearly shows that the majority of prediction error comes from the Major Sports category with almost 2x errors in either direction. Otherwise, the model is able to predict across all other categories within +/-9 tickets. This plot also shows that the model tends to under-predict massive spikes, or the left tails in these box plots, when there is more demand than expected in the resale market.
+
 | `focus_bucket`     | RMSE (in Tickets)| MAE (in Tickets)  |
 |--------------------|------------------|-------------------|
 | Broadway_Theater   | 2.47             | 0.40              |
@@ -771,11 +773,11 @@ This method simulates a better understanding of probabilities and real-time data
 
 <img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/4c94b334-b0fb-4126-8431-b0253723b735" />
 
-*Figure 3X: Concept behind the two models and improving sure guesses*
+*Figure 36: Concept behind the two models and improving sure guesses*
 
 ### 6.2 How I Built the Pipeline (code-heavy)
 
-This method required a complex Python loop that I benefited from using Gemini 3 to build. It acts more as an ML pipeline than a simple script before where I ran each model separately. I'll break it down into four phases.
+This method required a complex Python loop that I benefited from using Gemini 3 to build. It acts more as an ML pipeline than a simple script before where I ran each model separately. I'll break it down into three phases.
 
 #### Preprocessing the Data
 
@@ -878,30 +880,43 @@ Immediate thoughts after looking at these results proved some early hypothesis c
 
 <img width="792" height="734" alt="image" src="https://github.com/user-attachments/assets/78eecab6-1a6c-4768-bee2-9a82cc0b86d7" />
 
-*Figure 4X: SHAP values of predictors amongst all models*
+*Figure 37: SHAP values of predictors amongst all models*
 
 <img width="808" height="534" alt="image" src="https://github.com/user-attachments/assets/8cdced02-b80b-4546-8e80-6420313fbf87" />
 
-*Figure 4X: Top 10 collective features ranked by influence amongst all models*
+*Figure 38: Top 10 collective features ranked by influence amongst all models*
 
-My takeaways from this experiment: 
--  one
--  two
--  ...
+My takeaways from this market-segmented experiment: 
+
+-  **Classification is Key**: Successfully identifying inactive events is more important for reducing error than perfecting a regressor
+-  **Specialization Outperforms Generalization**: No single algorithm or model won every bucket. Neural Networks seemed to outperform in high-volume markets, which tree-based learning won in niche categories
+-  **Threshold Optimization**: There are different costs associated with misclassifying events in each market, something to consider when improving classification models beyond just ticketing
 
 ---
 
 ## 7. Insights
 
-### 7.1 Where Segmentation Works
+The jump from a universal model to the market-segmented approach proved that ticket demand is not a one-model-fits-all problem. By treating each category as a unique market environment, I was able to reduce RMSE of ticket sales in the following week by 42.3%, transforming a high-variance Naive estimate into a specialized model of models prediction.
+
+### 7.1 Key Takeaways
+
+1. **Gatekeeping**: In secondary markets, zero-sale noise is hard to cut through. Successfully identifying those events by classification methods was the biggest single driver in reducing my error
+2. **Feature engineering**: My decision to impute `venue_capacity` and calculate `price_spread_ratio` paid off, as SHAP values consistently ranked these in the top 10 most influential features, all behind momentum like the previous week's sales. Venue context is up there in importance to volume and price
+3. **Segmentation**: All tickets are not created equal. While Neural Nets worked best for high-volume events, tree-based modeling like LightGBM was better fit for more niche markets like Festivals
 
 ### 7.2 Limits
 
+-  What if I were to start with no previous history of sales for the event? While this is an entirely different research project, I think identifying "comp"(arable) events is the way to go, and assuming that ticket performance will be similar in some capacity amongst similar artists or sporting events
+-  As I saw with the November 4th Election Day dip, external cultural events can shock discretionary spending in ways that historical transaction data can't always predict. So, in a way, it was good that my model was able to see this in training
+-  The current pipeline relies on daily CSV snapshots. In an industry application, real-time streaming data would be necessary to capture these demand spikes my model wasn't able to tightly predict. But, that would require much more expensive data sourcing that corporations have better resources for than this college kid
+
 ### 7.3 Other Architectures to Try Next
+
+-  Something I wanted to implement that would overly complicate the project was introducing metadata on these events, like Spotify streaming data for artists, or current records, playoff chances, and injury reports for sports events
 
 ---
 
 ## Appendix
 
 ## Inspiration
-@nrankin0: https://medium.com/@nmrankin0/using-machine-learning-and-cloud-computing-to-forecast-the-resale-of-concert-tickets-293c2f15c13b
+Special thanks to @nrankin0 for the foundational work on [Using Machine Learning and Cloud Computing to Forecast Resale Tickets](https://medium.com/@nmrankin0/using-machine-learning-and-cloud-computing-to-forecast-the-resale-of-concert-tickets-293c2f15c13b)! The project was a significant spark for my own undertaking and is a great read as well.
