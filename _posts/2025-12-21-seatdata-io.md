@@ -22,7 +22,14 @@ excerpt: "How segmentation can outperform generalization in prediction machine l
 
 ## Abstract
 
+Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a market-segmented modeling method to reduce prediction errors compared to generalized modeling next week's sales of an event.
+
 ## Key Contributions
+
+-  Data Engineering (BigQuery Star Schema)
+-  Feature Engineering (Imputations, Demand Signal Calculations)
+-  Custom Loss Functions (Huber Loss)
+-  Conditional Probability Predictions (Two-Stage Classification/Regression Method)
 
 ---
 
@@ -158,6 +165,7 @@ I also feature engineering the `days_to_event` variable, which calculates the am
 Below is the Data Flow Diagram of my database:
 
 <img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
+
 *Figure 1: Data Flow Diagram for my SeatData.io Warehouse*
 
 ---
@@ -170,13 +178,19 @@ With the data mart structured, I then moved onto my EDA step to validate the dat
 Before diving into demand and trends in my data, I used several functions to investigate the quality of my snapshot records and their attribute distributions
   - `.info()` and `.describe()` allowed me to check for null values and verify that my type casting from my ingestion script worked across the entire database in BigQuery. Distributions of both 1-day and 7-day sales were missing no values, and only `listings_median` was missing about 15% of the time, which might be because of low ticket volume (1-2 tickets that day), where a median cannot be calculated reliably
   - I also looked for the October 4th gap mentioned by SeatData.io to understand how it affected my rolling windows for sales totals
-  - Finally, I evaluated the volume of unique events across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket. I took a swing with Festivals, which had only 500 unique events and about 12,000 rows. Otherwise, every other bucket had more than 2,000 events with over 71,000 rows in their respective categories. 
+  - Finally, I evaluated the volume of unique events across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket. I took a swing with Festivals, which had only 500 unique events and about 12,000 rows. Otherwise, every other bucket had more than 2,000 events with over 71,000 rows in their respective categories.
+
+<img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/d5a306b9-61c0-4cd9-9532-69da1a7994a1" />
+
+*Figure 2: Bar chart representation of events per `focus_bucket`*
+
 
 ### 3.2 Bucket EDA
 I decided to then understand demand, price and inventory statistics by each `focus bucket` to see how different markets move daily by aggregating these numbers with each day in my database. Below shows the trend of 1-day sales over time by bucket.
 
 <img width="989" height="490" alt="image" src="https://github.com/user-attachments/assets/ea4b29f4-9109-4b17-a0c7-e41069f50765" />
-*Figure 2: 1-day sales aggregated by `focus_bucket`
+
+*Figure 3: 1-day sales aggregated by `focus_bucket`
 
 Some initial insights I found from this data included:
   - Major sports has many ticket transactions (with an average of around 7,000 tickets sold on StubHub per day) compared to the next tier of Concerts and Other Events
@@ -188,12 +202,14 @@ Some initial insights I found from this data included:
       - Election Day: probably the biggest influence to the lack of ticket transactions on this day had to do with Election Day, where many people are heading to polls to cast their votes. Many either make plans to wait in line to vote either during their work shift or afterwards, which likely prevented people from looking to spend discretionary income on tickets
 
 <img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/abe4a919-4e3a-453c-8a41-90f5b608066c" />
-*Figure 3: Total active listings in each category over time*
+
+*Figure 4: Total active listings in each category over time*
 
 I found that the total active listings in each category was fairly stable throughout the duration of data collection, where there was maybe a gradual decline as most events kicked up in the November, December months. I did not choose to investigate this further, but was shocked that millions of tickets are listed online just on StubHub alone. It is interesting to think how many of those are also listed on other ticketing sites, or how long the average ticket is listed on a site before it's either taken off or sold.
 
 <img width="1180" height="584" alt="image" src="https://github.com/user-attachments/assets/75be51bb-8c29-4e29-ab89-33320a6f3a94" />
-*Figure 4: The median get-in (minimum ticket price) in each category over time*
+
+*Figure 5: The median get-in (minimum ticket price) in each category over time*
 
 Next, I looked at how the median minimum ticket price in each category moved throughout the months of October to mid-December. The reason I chose median as opposed to average is because there were some extreme values that made interpretation difficult.
 
@@ -204,12 +220,14 @@ Median `get_in` prices are somewhat stable across different categories with reas
   - Festivals, interestingly enough, have the most volatility when it comes to minimum ticket prices. However, remembering back to the spread of these buckets and their events in the first place, festivals only make up 500 unique events and have the least amount of transactions and active listings per day. Therefore, these median swings are likely out of small sample sizes as shown in the following graph, where the greatest spike in median `get_in` price occurs when only 10,000 active listings live on StubHub:
 
 <img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/b1e58ace-2695-4f29-bafa-ecf69da2975b" />
-*Figure 5: A close-up at the number of active listings per day for Festivals.*
+
+*Figure 6: A close-up at the number of active listings per day for Festivals.*
 
 Next, I looked at the distributions of these features by each `focus_bucket`. I first tried to understand how 1-day sales volume is represented in each bucket.
 
 <img width="1009" height="636" alt="image" src="https://github.com/user-attachments/assets/e2149fd3-cd36-4907-befd-6b924e1ac6fb" />
-*Figure 6: The distribution of aggregated sales totals per day among each category*
+
+*Figure 7: The distribution of aggregated sales totals per day among each category*
 
 The above boxplot shows the spread of total transactions in the resale marekt by category, showing again that StubHub is a happening place for major sports fans to both sell and buy inventory. Concerts and Other Events also have 2,000+ transactions per day on the platform. Meanwhile, Broadway & Theater, Comedy, and Festivals do not see many transactions per day on this ticketing site.
 
@@ -243,14 +261,16 @@ A high ratio would tell us that there is similar pricing across the board for an
 Another one of the features I created was translating the `imported_at` date to a day-of-the-week variable `dow`. This helped me understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
 
 <img width="791" height="384" alt="image" src="https://github.com/user-attachments/assets/f63c47b7-3254-47a3-9e99-f639684c8dcf" />
-*Figure 7: A distribution of `days_to_event` by category*
+
+*Figure 8: A distribution of `days_to_event` by category*
 
 This stacked bar chart helped me understand where events stood upon beginning my EDA and feature engineering steps. Around mid-December, a majority of my event snapshots stood in the month to two-month out bins, whereas the remaining 50% of events in my database lived in the month-to-go timeframe. 
 
 This feature would help separate different price and demand trends in upcoming steps of understanding dynamics in the resale market further.
 
 <img width="1509" height="1535" alt="image" src="https://github.com/user-attachments/assets/78d56391-c938-4360-a955-f1f47f121c85" />
-*Figure 8: Boxplot showing 1-day sale totals by Day of the Week*
+
+*Figure 9: Boxplot showing 1-day sale totals by Day of the Week*
 
 Demand clearly shows patterns throughout each `focus_bucket`. Where Sunday lives on the far left and Saturday on the far right, you can see a increase in most categories as the weekend approaches. Another interesting takeaway from this graphic is that Tuesday shows volatility in demand, which might be influenced by several factors among researching:
   - Tuesday is a common ticket on-sale day across the live entertainment industry for arena tours and major concert announcements. These on-sales experience lots of price and demand volatility as many rush to secure tickets
@@ -258,17 +278,20 @@ Demand clearly shows patterns throughout each `focus_bucket`. Where Sunday lives
   - With most concerts occurring Thursday-Saturday, early in the week serves as a good amount of time to list inventory a full 48-72 hours before the prime time weekend plans are made. Resellers can then respond to visible demand signals by driving price up or down depending on adjacent sales
 
 <img width="788" height="390" alt="image" src="https://github.com/user-attachments/assets/569cb212-4500-4916-8cc1-64262b9cf27f" />
-*Figure 9: Median `get_in` price as the event draws closer by category*
+
+*Figure 10: Median `get_in` price as the event draws closer by category*
 
 Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the three tiers of pricing. However, it appears that prices are somewhat stable and unaffected as time progresses. If anything, you could maybe say there is a slight decrease in the minimum ticket price, as sellers are likely dropping prices on StubHub to reduce the likelihood of unsold inventory with no salvage opportunity after the event.
 
 <img width="977" height="484" alt="image" src="https://github.com/user-attachments/assets/8a349c19-73b5-48b7-99c1-18b4f214dc66" />
-*Figure 10: Average daily sales per category by `days_to_event` bins* 
+
+*Figure 11: Average daily sales per category by `days_to_event` bins* 
 
 However, looking at the market volume in these categories per day as the event/performance draws near tells a unique story: StubHub is a great place to dump tickets off for sporting events, especially the week before (or day of!) the game. All other categories see a minor increase in transaction volume, and all categories see very little tickets change hands two months prior to the event.
 
 <img width="976" height="484" alt="image" src="https://github.com/user-attachments/assets/63565a19-0688-4182-ab1c-82034ac83cd9" />
-*Figure 11: Average active listings per category by `days_to_event` bins*
+
+*Figure 12: Average active listings per category by `days_to_event` bins*
 
 As most sales occur in the final week leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average number of listings per event drop on that final day possible. This shows the risk of putting up last-minute inventory only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
 
@@ -292,24 +315,37 @@ To achieve this, I lagged features. By using `t` as the current snapshot date, I
 
 I decided to add the `venue_capacity` to help the model understand how available inventory influences sales relative to how much the venue can hold. 1,000 tickets available on StubHub for an NFL arena is extremely different than 1,000 available tickets for a college basketball game or concert.
 
-However, this proved to be challenging, since just under 50% of events had missing capacities listed. I knew this variable would help our models make better predictions, so I focused on sourcing data and logical assumptions to help me fill in the gaps.
+However, this proved to be my most challenging data engineering hurdle, since just under 50% of events had missing capacities listed, with 33% of unique venues missing capacity numbers. I knew this variable would help my models make better predictions, so I focused on sourcing data and introducing logical assumptions to help me fill in the gaps.
 
-First, I used another ticket source called TouringData.org[https://touringdata.org/] to help bring in missing capacity values. This Patreon contains aggregated ticket revenue and inventory statistics for many shows and will post daily CSVs. Periodically, they will post files that contain all shows up to that point within the year, and so I relied on both their completed 2024 and 2025 documents for my missing capacities.
+#### External Sourcing
+
+First, I used another ticket source called TouringData.org[https://touringdata.org/] to help bring in missing capacity values. This Patreon contains aggregated ticket revenue and inventory statistics for many shows and will post daily CSVs. Periodically, they will post files that contain all shows up to that point within the year, and so I relied on both their completed 2024 and 2025 documents for missing capacities.
 
 To do this, I mounted my Google Drive into Google Colab, defined my folder path, and read both documents into my directory using Pandas. After this, I concatenated both files and standardized venue names and cities, using these as my primary mapping keys between my SeatData.io and TouringData.org sources. This meant the usual `.str.lower()` lowercasing, `.str.strip()` removing leading and trailing whitespace, and `.fillna('')` handling missing cities or venue names. These names and cities are then placed into a `venue_capacity_map` dictionary.
 
 Then, I created a helper function that first checks the existing data in my data mart to see if the row is missing `venue_capacity`. If there is already existing data, I skip the row. However, if the row is missing that feature, a lookup key is created with `(row['join_name'], row['join_city'])` and then searched to return the `venue_capacity` from my dictionary created from TouringData.org's documents.
 
-Upon my first attempt, 42K capacities were imputed from the additional source. However, I was stilling missing 900K. So, I decided to introduce fuzzy matching with my key and dictionary pairs to improve this imputation. What fuzzy matching does is look for approximately similar spelled names and pair them together, instead of looking for exact matches. This includes typos, different languages, and special characters.
+Upon my first attempt, 42K capacities were imputed among 120 of the nearly 4,000 venues missing capacity data from the additional source. I was stilling missing 900K rows and 3,700 venues. So, I decided to introduce fuzzy matching with my key and dictionary pairs to improve this imputation. 
+
+#### Fuzzy Matching
+
+What fuzzy matching does is look for approximately similar spelled names of venues and pair them together, instead of looking for exact matches. This includes typos, different languages, and special characters. This is a risky endeavor, since I could easily misapply capacities and throw off my model training entirely, so I had to be quite careful about how 'fuzzy' I wanted to get.
 
 My `fuzzy_match_venue` function first looks only for venues within the city found in that row by using if, then logic: `if not venue or not city or city not in master_by_city: return None`. So, if I was missing Madison Square Garden's capacity, this function prevents me from accidentally matching with Madison Square Park in Georgia. Then, it collects potential candidates in a list.
 
-The function then compares my `venue_name` against the filtered list of candidates using the `scorer=fuzz.token_set_ratio` scoring. Using NLP, this will focus on token pairings between my venues and potential candidates, where The Staples Center from SeatData.io will match Staples Center, Los Angeles" because of the shared core tokens, resulting in a nearly perfect score. And I accept only matches that are found 85% confident to prevent false positives. Finally, it will impute that venues capacity to my data.
+During validation, I found a couple of traps that I was able to prevent with the help of a couple of settings in `thefuzz'` library. 
+
+1) The fuzzy matching was incorrectly pairing stadiums with their parking lots (an example was Lincoln Financial Field and Lincoln Financial Field Parking). These `venue_names` had very similar tokens, but show entirely different demand signals, because one is parking and another is for the game! To fix this, I created a blacklist filter that drops any `venue_name` containing keywords such as "parking", "vip", "camping", or "shuttle" before beginning matching
+2) Originally, I used `token_set_ratio` as my fuzzy matching scoring setting, but this was too casual. It would match tokens simply because two pairs would share them. To prioritize accuracy and skip any false positive classifications, I switched to `scorer=fuzz.token_sort_ratio`, which sorts the candidate strings and compares the full sequence, penalizing length differences, for example
+
+By enforcing a strict 85% confidence threshold and using the sort-ratio scorer, I prioritized quality over quantity, only recovering an additional 13,000 event-venue capacities across 65 unique venues. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those false positives. Finally, I imputed those venue capacities to my data.
 
 <img width="1024" height="385" alt="image" src="https://github.com/user-attachments/assets/839ec1d1-ea1e-4048-8d0e-a77da6616162" />
-*Figure 12: Conceptual design of fuzzy matching, candidates, and ranking/scoring*
+*Figure 13: Conceptual design of fuzzy matching, candidates, and ranking/scoring*
 
-This round helped me find an additional 100K venue capacities, which was great! Yet, I still had 33% of rows with missing venue data and no more additional sources to duplicate this strategy, since APIs I looked into did not share this data with rate limits I needed for my scope.
+At this point, I still had many rows with missing venue data and no more additional sources to duplicate this strategy, since APIs I looked into did not share this data with rate limits I needed for my scope.
+
+#### Logical Imputation
 
 So, secondary to my data aggregating strategy, I decided to use logical imputation to impute the remaining capacities. The following are assumptions I made after researching conservative average venue sizes:
 
