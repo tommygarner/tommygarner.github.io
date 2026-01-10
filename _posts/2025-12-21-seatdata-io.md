@@ -831,14 +831,16 @@ Below shows the best classifier and regressors for each `focus_bucket` after run
 
 Finally, it was time to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
 
-| Modeling Type   | Global RMSE (in Tickets) | Active MAE (in Tickets)      |
-|-----------------|--------------------------|------------------------------|
-| Universal       | 17.73                    | 5.52                         |
-| Market-Specific | 10.23                    | 5.87                         |
+| Modeling Type   | Global RMSE (in Tickets) | MAE (in Tickets)      |
+|-----------------|--------------------------|-----------------------|
+| Universal       | 17.73                    | 5.52                  |
+| Market-Specific | 10.23                    | 5.87                  |
 
 Since my Universal approach did not include conditional predictions, I was able to compare these two approaches on my full test set and reduce RMSE residuals by nearly 50% while MAE shows that, on average, market-specific modeling predictions were a little worse than the Universal modeling approach. The reasoning for this is likely because the classification part of the market-segemented approach doesn't catch all nonzero-sale events. Therefore, any misclassifications could penalize error regardless if they are extreme or little misses in magnitude.
 
-However, this seemed like a huge improvement from the previous model and I wanted to dig in more to the `focus_buckets` to see how my conditional predictors performed individually. The market-specific models were able to efficiently find and ignore the inactive inventory in the resale market, a big win!
+Another significant victory of the market-segmented approach was reducing a Global MAE to 1.83 tickets on average. By layering the classifier and regressor, the final prediction for any random event in my data was off by only a couple of tickets, driven mostly by the classifier functioning as a gatekeeper. Successfully identifying dead events with no sales in the next week (thus, forcing predictions to a hard zero) helped the segmented models eliminate noise. The Universal model, on the other hand, hedged its predictions by making small, nonzero value predictions on inactive inventory, slowly adding up error. The segmented modeling approach could predict with confience no inventory at all. 
+
+Altogether, this seemed like a huge improvement from the previous model and I wanted to dig in more to the `focus_buckets` to see how my conditional predictors performed individually. The market-specific models were able to efficiently find and ignore the inactive inventory in the resale market, a big win!
 
 ### 6.3 Market-Segmented Performances
 
