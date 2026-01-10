@@ -638,6 +638,9 @@ However, I think we can break down these residuals to get an even better idea on
 
 Next, I broke down these errors by `focus_bucket`. The results show a clear difference between stable and volatile markets.
 
+<img width="1183" height="784" alt="image" src="https://github.com/user-attachments/assets/85fbc2d4-7204-404f-b514-e300bf9fb758" />
+*Figure 3X: Boxplot comparison of residuals by category*
+
 | Focus Bucket       | RMSE (in Tickets) | MAE (in Tickets) |
 |--------------------|-------------------|------------------|
 | Broadway & Theater | 5.54              | 1.96             |
@@ -650,8 +653,8 @@ Next, I broke down these errors by `focus_bucket`. The results show a clear diff
 
 The comparison across different categories show that Major and Minor sports are the hardest to get right, with an average absolute error of 11 and 10 tickets off for the true ticket sales of the following week. Also, these errors are more volatile, shown by their RMSE values, which penalizes larger misses, as I talked about before. Broadway & Theater and Festivals have the most precise predictions using the tree-based regressor in XGBoost, suggesting these are more stable markets and easier to predict within a reasonable range.
 
-<img width="1189" height="590" alt="image" src="https://github.com/user-attachments/assets/77778194-97d6-42c3-910e-ae1617ef0214" />
-*Figure 30: MAE comparison across categories*
+<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/b6d51ac8-4c6f-4f27-a146-35a41a5486b0" />
+*Figure 30: MAE and RMSE comparison across categories*
 
 #### Per `days_to_event` Bins
 
@@ -666,6 +669,18 @@ Finally, I evaluated how the error changes as the event gets closer.
 | 1-7                 | 22.70             | 7.66             |
 
 The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.
+
+#### Feature Importance
+It's one thing to have a good ML model that can accurately predict, but it's another to know what exactly drives predictions by interpreting your model, taking it beyond the black box.
+
+So, after looking back at the XGBoost Regressor, I was able to collect `.feature_importances_` in my model and output the top 10 variables that influenced predictions on next week's sales.
+
+<img width="1015" height="558" alt="image" src="https://github.com/user-attachments/assets/b7d39bb5-80fb-4e7c-b475-c4cabbb6ae8f" />
+*Figure 3X: Top 10 features that drove predictions in Universal model*
+
+This plot told me straightaway that the previous two weeks' sales gave the XGBoost model the most information when making its predictions, totaling about 90% of total influence amongst all predictors. Interestingly, the `days_to_event` provided relatively little information for our model.
+
+Also, some feature engineered and imputed values proved to be a good use of time, as `venue_capacity_log`, the `focus_bucket` categorizations, and the `price_spread_ratio` made it into the top 10 influencers on my regressor, even though they total maybe a generous 5% influence. 
 
 My takeaways up to this point:
 -  one
