@@ -634,7 +634,7 @@ When looking at Root Mean Squared Error (RMSE), the gap widens. Because RMSE squ
 
 However, I think we can break down these residuals to get an even better idea on each bucket's resale ticket movement.
 
-#### Per-Bucket Error (in Tickets)
+### 5.10 Per-Bucket Error (in Tickets)
 
 Next, I broke down these errors by `focus_bucket`. The results show a clear difference between stable and volatile markets.
 
@@ -656,7 +656,7 @@ The comparison across different categories show that Major and Minor sports are 
 <img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/b6d51ac8-4c6f-4f27-a146-35a41a5486b0" />
 *Figure 30: MAE and RMSE comparison across categories*
 
-#### Per `days_to_event` Bins
+### 5.11 Per `days_to_event` Bins
 
 Finally, I evaluated how the error changes as the event gets closer.
 
@@ -674,7 +674,7 @@ Finally, I evaluated how the error changes as the event gets closer.
 
 **The results align with my logic. It's far easier to predict next week's sales the further out from the event, since there is little movement in the resale market. However, as I saw in my EDA, many ticket transactions happen in the two weeks approaching the event, which is where most of the XGBoost's prediction error falls in. However, a prediction error of roughly 8 tickets off per day in those two weeks still beats out a Naive guess, which is what will help other departments make better decisions when it comes to a final marketing push, for example.**
 
-#### Feature Importance
+### 5.12 Feature Importance
 It's one thing to have a good ML model that can accurately predict, but it's another to know what exactly drives predictions by interpreting your model, taking it beyond the black box.
 
 So, after looking back at the XGBoost Regressor, I was able to collect `.feature_importances_` in my model and output the top 10 variables that influenced predictions on next week's sales.
@@ -771,8 +771,8 @@ So, this conditional prediction method seems to already show there is an unequal
 
 Finally, it was time to look at these performances across both classification and regression problems to see if this hypothesis was worth the rabbit hole.
 
-| Modeling Type   | Global RMSE (in Tickets) | Conditional MAE (in Tickets) |
-|-----------------|-------------------|------------------|------------------|
+| Modeling Type   | Global RMSE (in Tickets) | Conditional MAE (in Tickets) | All MAE (in Tickets) |
+|-----------------|-------------------|------------------|------------------|------------------|
 | Universal       | 17.67             | 5.52             | -                |
 | Market-Specific | 9.89              | 1.82             | 5.88             |
 
@@ -800,6 +800,14 @@ Immediate thoughts after looking at these results proved some early hypothesis c
 
 <img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/fd7c02bf-e5c3-4e43-862f-87cd7c1aac18" />
 *Figure 3X: Comparing both modeling methods by their MAE reduction*
+
+### 6.4 Collective Feature Importances
+
+<img width="792" height="734" alt="image" src="https://github.com/user-attachments/assets/5126d42c-0b8e-448c-bb84-41b91cfc4d51" />
+*Figure 4X: SHAP values of predictors amongst all models*
+
+<img width="808" height="534" alt="image" src="https://github.com/user-attachments/assets/9df3ed57-febd-472a-b0be-45bdd40c60d0" />
+*Figure 4X: Top 10 collective features ranked by influence amongst all models*
 
 My takeaways from this experiment: 
 -  one
