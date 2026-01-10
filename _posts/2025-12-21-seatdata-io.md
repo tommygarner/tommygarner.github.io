@@ -22,7 +22,7 @@ excerpt: ""
 
 ## Abstract
 
-Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a market-segmented modeling method to reduce prediction errors compared to generalized modeling next week's sales of an event.
+Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a market-segmented modeling method to reduce prediction errors by nearly 50% (RMSE) compared to generalized modeling on next week's sales of an event. I did this by introducing a conditional probability framework that combines classification and regression models. 
 
 ## Key Contributions
 
@@ -51,7 +51,7 @@ With accurate modeling, the potential impact is huge:
 * Business Insights can forecast expected sales in the primary market by watching secondary proxy demand
 * Finance can have confidence intervals on expected revenue with better known demand signals
 
-You get the picture! My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hopefully)!
+You get the picture! My goal was to build a system that can accurately forecast demand in a way that isn't well documented online and that wows recruiters (hello!).
 
 ---
 
@@ -75,8 +75,6 @@ Enter: Google Cloud Services. I chose this cloud storage in order to simulate re
 
 ### 2.2 Raw Ingestion
 To move from these CSV snapshots to a cloud-based data storage, I decided to build a Python script in Google Colab that handled these daily CSV exports. Using `google.colab.auth.authenticate.user()`, I was able to directly talk to Google Cloud Services from my Colab notebook. Then, with `files.upload()`, I could import one or many CSVs at a time into my local directory.
-
-When reading these CSVs into Python, I came across some trouble 
 
 Before pushing these CSVs directly into Google Cloud Services, I needed to create a BigQuery table that would catch my snapshot rows and store all of the data in its correct types. This resulted in an immutable fact table `event_ticket_snapshots`. This table would eventually hold every daily state for my nearly 100,000 events at roughly 4 million rows.
 
@@ -119,6 +117,10 @@ In order to determine the dimension tables I would need for this project, I had 
 | `fact_event_snapshots` | 1 per event per day | 'event_id_stubhub`, `imported_at` | Storage for time-series metrics like price and inventory |
 | `mart_event_snapshot_panel` | 1 row per event per day | `event_id_stubhub`, `days_to_event`, `price_spread_ratio` | Includes engineered and joined metrics to pull straight into Python notebooks |
 
+<img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
+
+*Figure 1: Entity relationship diagram for my SeatData.io Warehouse*
+
 ### 2.4 Dimension Tables
 - **`dim_events`**: This table served to simplify the unique events found in my database by using the ``ROW_NUMBER() OVER (`event_id_stubhub`)`` function. `WHERE rn = 1` allowed me to use only the latest information found among the snapshots for event names or venue names. I would need this table later for feature engineering statistics like lead time until the event.
 - **`dim_venues`**: By using the function ``TO_HEX(SHA256(CONCAT(`venue_name`, `venue_city`, `venue_state`)))``, I created a surrogate key with the `TRIM` and `LOWER` functions. This lets my database join tables to speed up querying much faster than on long strings of text
@@ -153,20 +155,21 @@ I landed on these major categories because I thought there was enough differenti
 ### 2.5 Fact Table
 The `fact_event_snapshots` table acts as the central storage table for all quantitative data. Unlike dimension tables which store descriptive elements, this table is designed to grow alongside the influx of new data as I append more CSV snapshots.
 
-This table is partioned by `imported_at` to help me query specific time ranges easily from this fact table. Additionally, the table is clustered by `event_id_stubhub`, organizing events within their own time-series. The table is also a cleaned copy of the raw `event_ticket_snapshots` source but is organized in a way that can be easily joined to my dimensional tables for creating a data mart for my specific project use.
+This table is partitioned by `imported_at` to help me query specific time ranges easily from this fact table. Additionally, the table is clustered by `event_id_stubhub`, organizing events within their own time-series. The table is also a cleaned copy of the raw `event_ticket_snapshots` source but is organized in a way that can be easily joined to my dimensional tables for creating a data mart for my specific project use.
 
 ### 2.6 Data Mart
 Speaking of which, I then created a data mart within BigQuery to pull from when I begin looking at the data more closely and feature engineering and modeling. `mart_event_snapshot_panel` joins the `dim_event_categories` with the central fact table as well as event and venue metadata. 
 
-I also decided to introduced engineered features such as `price_spread_ratio` using `SAFE_DIVIDE(get_in, listings_median)` to capture the relationship between the lowest and median listing price on StubHub. I thought this feature might help future models understand the relationship of demand to price for the related event, where a low ratio suggests that resellers might be trying to get rid of inventory for dirt cheap instead of taking the $0 salvage value of missing the event entirely. If the `price_spread_ratio` was close to 1.0, that might suggest the secondary market has a competitive and relatively stable price to actual demand.
+I also decided to introduce engineered features such as `price_spread_ratio` using `SAFE_DIVIDE(get_in, listings_median)` to capture the relationship between the lowest and median listing price on StubHub. I thought this feature might help future models understand the relationship of demand to price for the related event, where a low ratio suggests that resellers might be trying to get rid of inventory for dirt cheap instead of taking the $0 salvage value of missing the event entirely. If the `price_spread_ratio` was close to 1.0, that might suggest the secondary market has a competitive and relatively stable price to actual demand.
 
-I also feature engineering the `days_to_event` variable, which calculates the amount of days between the `event_date` and `imported_at` date. While I don't have enough aggregated events and days to see how different `focus_bucket`s truly move as events reach their days, I still included this feature in modeling to see how my limited sample size would communicate this dynamic.
+I also feature engineered the `days_to_event` variable, which calculates the amount of days between the `event_date` and `imported_at` date. While I don't have enough aggregated events and days to see how different `focus_bucket`s truly move as events reach their days, I still included this feature in modeling to see how my limited sample size would communicate this dynamic.
 
 Below is the Data Flow Diagram of my database:
 
-<img width="747" height="389" alt="image" src="https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd" />
+<img width="1193" height="6546" alt="image" src="https://github.com/user-attachments/assets/21b6aead-a51f-4778-84ee-b6ba33f8e879" />
 
-*Figure 1: Data Flow Diagram for my SeatData.io Warehouse*
+*Figure 2: Data flow diagram behind my database engineering*
+
 
 ---
 
@@ -873,31 +876,14 @@ My takeaways from this experiment:
 
 ---
 
-## 6. Evaluation
-
-### 6.1 Back Transformation
-
-### 6.2 Performances
-
-### 6.3 Error Distributions
-
-### 6.4 RMSE by Bucket
-
----
-
 ## 7. Insights
 
-### 7.1 Why Segmentation Works
+### 7.1 Where Segmentation Works
 
 ### 7.2 Limits
 
 ### 7.3 Other Architectures to Try Next
 
---- 
-
-## 8. Insights
-
-segmenting works really well
 ---
 
 ## Appendix
