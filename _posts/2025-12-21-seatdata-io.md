@@ -24,7 +24,7 @@ excerpt: ""
 
 ## Abstract
 
-Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a **market-segmented modeling method** to **reduce prediction errors by nearly 50% (RMSE)** compared to generalized modeling on next week's sales of an event. I did this by introducing a **conditional probability framework** that combines **classification and regression models**. 
+Secondary ticketing markets can be proxies to the primary market, yet forecasting these markets are difficult due to volatility and data sourcing security. By taking on this challenge, I sourced and structured secondary ticket transactions and used a **market-segmented modeling method** to **reduce prediction errors by nearly 50% (RMSE)** compared to generalized deep learning modeling on next week's sales of an event. I did this by introducing a **conditional probability framework** that combines **classification and regression models**. 
 
 ## Key Contributions
 
