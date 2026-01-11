@@ -916,7 +916,26 @@ The jump from a universal model to the market-segmented approach proved that tic
 
 -  Something I wanted to implement that would overly complicate the project was introducing metadata on these events, like Spotify streaming data for artists, or current records, playoff chances, and injury reports for sports events
 
+### 7.4 Business Impact
+
+Accurate short-term demand forecasts in the secondary ticket market enable several downstream decisions:
+
+- Pricing teams can adjust primary pricing and fee structures based on expected resale activity
+- Marketing teams can reallocate spend toward events likely to experience demand surges
+- Finance teams can improve revenue forecasting by using secondary activity as a demand signal
+
+With a 50% reduction in forecasting error just by segmenting events before modeling, this approach can improve confidence in these decisions, particularly for those high-volume events where small percentage wins translate into large revenue differences.
+
 ---
+
+## Tech Stack
+
+- Data ingestion: SeatData.io CSV
+- Data warehouse: BigQuery (star schema)
+- Transformation: SQL
+- Modeling: Python (pandas, sklearn, tensorflow)
+- Visualization: matplotlib / seaborn
+
 
 ## Appendix
 
