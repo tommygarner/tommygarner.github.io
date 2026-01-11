@@ -456,33 +456,32 @@ Some takeaways from this section:
 
 ---
 
-## 5. Modeling
+## 5. Baseline Modeling
 
-Now with my understanding of StubHub's secondary ticket transaction data and my feature engineered variables, I'm ready to move onto the ML piece to answer two primary questions:
+Now with my understanding of StubHub's secondary ticket transaction data and my feature engineered variables, I'm ready to move onto the ML piece to predict ticket resale totals in the upcoming week. 
 
-1. **Classification**: Are there any sales in the next week for this event?
-2. **Regression**: If I predict yes, how many sales will occur in the next week for this event?
+To set a baseline, I am first *only* building a regression model that can predict how many sales will occur in the next week for an event. I will be comparing this prediction against a **Naive baseline**, which assumes a stable market in that **last week's sales total = next week's sales total**.
 
-So, I began with setting up my variables with dummy coding, train and test splits, and deciding which modeling algorithms I wanted to use based on previous coursework and experimentation.
+So, I began with setting up my variables with **dummy coding, train and test splits, and deciding which modeling algorithms I wanted to use** based on previous coursework and experimentation.
 
-*It's important to note, this first round of modeling did not facet by `focus_bucket`. I chose to investigate if modeling all of the data (with dummy coding) universally would result in tight predictions.*
+*It's important to note, this first round of modeling did not facet by `focus_bucket` nor used classification hurdle logic. I chose to investigate if modeling all of the data (with dummy coding) universally would result in tight predictions.*
 
 ### 5.1 Dummy Coding
 
-Dummy variables separate columns into categorical variables with buckets as columns, with k-1 columns. So, trading my `days_to_event` numerical data into bins using Pandas' `.get(dummies)` function helped me represent my events in six possible buckets, ranging from one week span to three-week span and beyond.
+Dummy variables **separate columns into categorical variables** with buckets as columns, with k-1 columns. So, trading my **`days_to_event`** numerical data into bins using Pandas' `.get(dummies)` function helped me represent my events in **six possible buckets**, ranging from one week span to three-week span and beyond.
 
 ### 5.2 Building X and y
 
-Next, I wanted to build my X and y variables to easily pass through my models. X would include any column in my data that did not include the target variable or any leakage variables (`any_sales_7d_next`, `sales_total_7d_next_log`). This also includes string variables like `venue_name` and `event_id_stubhub`, where a model could potentially just memorize that The Moody Center will always have high sales volume. So we want to get these identifiers out.
+Next, I wanted to build my **X and y variables** to easily pass through my models. X would include **any column in my data that did not include the target variable or any leakage variables** (`any_sales_7d_next`, `sales_total_7d_next_log`). This **also includes string variables** like `venue_name` and `event_id_stubhub`, where a model could potentially just memorize that The Moody Center will always have high sales volume. So we want to get these identifiers out.
 
 ### 5.3 Train/Test Splits
 
-Any normal ML project would consider around 70/20/10 train, test, and validation splits for their data. However, doing so would jumble around different dates for our events, possibly trying to predict previous dates sandwiched between training dates, and some events would totally be excluded in testing! This will not work for time-series data, and so I took a different approach.
+Any normal ML project would consider around **70/20/10 train, test, and validation splits** for their data. However, doing so would jumble around different dates for our events, possibly trying to predict previous dates sandwiched between training dates, and some events would totally be excluded in testing! **This will not work for time-series data**, and so I took a different approach.
 
 <img width="1344" height="960" alt="image" src="https://github.com/user-attachments/assets/ccc2b491-fd4b-4a66-a523-8602a4e78a17" />
 *Figure 19: An example of train/test split with time-series data*
 
-Instead, I had to define a cutoff date that my training cannot see beyond, thus using the unseen days as the test set. I decided to use the last two weeks of data for my events as the test set by converting the `snapshot_date` with `.to_datetime` and creating the cutoff date with `model_data['snapshot_date`].max() - pd.Timedelta(days=14)`. Then, I separated training data (`<= cutoff_date`) from testing (`> cutoff_date`). To further prevent any data leakage, I also dropped `snapshot_date` at this point, while also some modeling methods would require inputs as floats and not date formats.
+Instead, I had to define a **cutoff date** that my training cannot see beyond, thus using the unseen days as the test set. I decided to use the **last two weeks of data** for my events as the test set by converting the `snapshot_date` with `.to_datetime` and creating the cutoff date with `model_data['snapshot_date`].max() - pd.Timedelta(days=14)`. Then, I **separated training data** (`<= cutoff_date`) from **testing** (`> cutoff_date`). To further prevent any data leakage, I also dropped `snapshot_date` at this point, while also some modeling methods would require inputs as floats and not date formats.
 
 Next, I had separate my y outputs in the classification and regression problems, since classification problems are trying to predict a binary 0/1 outcome and regression problems are trying to predict the number of (log) ticket sales for the following week, assuming there will be!
 
