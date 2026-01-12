@@ -165,7 +165,7 @@ Speaking of which, I then created a data mart within BigQuery to pull from when 
 
 I also decided to introduce engineered features such as **`price_spread_ratio`** using `SAFE_DIVIDE(get_in, listings_median)` to capture the **relationship between the lowest and median listing price** on StubHub. I thought this feature might help future models understand the relationship of demand to price for the related event, where a *low ratio* suggests that resellers might be trying to get rid of inventory for dirt cheap instead of taking the $0 salvage value of missing the event entirely. If the `price_spread_ratio` was close to *1.0*, that might suggest the secondary market has a competitive and relatively stable price to actual demand.
 
-I also feature engineered the **`days_to_event`** variable, which calculates the amount of days between the `event_date` and `imported_at` date. While I don't have enough aggregated events and days to see how different `focus_buckets` truly move as events reach their days, I still included this feature in modeling to see how my **limited sample size** would communicate this dynamic.
+I also feature engineered the **`days_to_event`** variable, which calculates the amount of days between the `event_date` and `imported_at` date. Later on I will take a stab and understanding particular events in this dataset, the distribution of this variable, and more in feature engineering.
 
 Below is the Data Flow Diagram of my database:
 
@@ -191,7 +191,7 @@ Before diving into demand and trends in my data, I used several functions to inv
       - I took a swing with *Festivals*, which had only 1,000 unique events and about 45,000 rows of data
       - Otherwise, every other bucket had more than 3,500 events with over 200,000 rows in their respective categories
 
-<img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/d5a306b9-61c0-4cd9-9532-69da1a7994a1" />
+<img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/857b1659-6ae2-4842-b09c-84fc62650636" />
 
 *Figure 3: Bar chart representation of events per `focus_bucket`*
 
@@ -258,7 +258,7 @@ To conclude, I want to wrap up with some high-level takeaways from my EDA to sum
 -  **StubHub is a major Sports resale platform**: Stubhub appears to primarily **cater towards the sports fan resale** market, averaging nearly 7,000 sales per day. The major/minor sports categories are also the most volatile of all focus buckets
 -  **November 4th**: **Election Day** likely caused the massive dip in ticket sales across the platform (and likely many other platforms). This will be **interesting for future modeling to learn from**, and it is good that our models will not be able to memorize patterns due to this outlier day
 -  **Median will be my best friend**: Since ticket listings and prices are up to the user, initial EDA showed some **fantastical ticket prices** that largely influenced visuals and comparisons across focus buckets. Therefore, I decided to lean on **median, which reduces the effect of outlier** statistics in this project, such as a comedy show with a $900K ticket listing as the `get_in`...
--  **Pricing tiers**: I noticed there are generally **three pricing tiers amongst the categories** I investigated, where smaller inventory events such as Festivals or Comedies have the highest median `get_in` prices ($60-80), the Sporting events with the most inventory having the lowest median `get_in` prices ($30-40), and the Other Events category sitting somewhere in the middle, an interesting supply and demand effect 
+-  **Pricing tiers**: I noticed there are generally **three pricing tiers amongst the categories** I investigated, where smaller inventory events such as Festivals has the highest median `get_in` prices ($100+), Sporting events with the most inventory having the lowest median `get_in` prices ($30-40), and the Other Events sit somewhere in the middle, an interesting supply and demand effect 
 
 Now, I wanted to do some **feature engineering** in order to continue my exploring of the data, since I wanted to know how price and demand move as the event draws closer.
 
@@ -267,7 +267,7 @@ Now, I wanted to do some **feature engineering** in order to continue my explori
 ## 4. Feature Engineering
 
 My feature engineering notebook was motivated by some initial questions I came across as I explored the data:
--  How does **demand react to pric**e amongst StubHub ticket-buyers?
+-  How does **demand react to price** amongst StubHub ticket-buyers?
 -  How does **price react to demand** amongst sellers?
 -  Is there any relationship between the **`event_date` drawing closer** and demand? price?
 
@@ -275,7 +275,11 @@ This section will explore these questions while **creating new variables** to he
 
 ### 4.1 Filtering the Mart
 
-After pulling my data mart into a Python Colab notebook, I wanted to ensure that the data I grabbed **only events that hadn't expired** yet with `days_to_event > 0`. Most of the filtering has been performed in the EDA SQL queries and database engineering, so thankfully the data mart is prepared to get started.
+After pulling my data mart into a Python Colab notebook, I decided that I wanted to be able to predict event ticket sale totals on their **`days_to_event`** index. So, for any given event, can I train a model that predicts that particular event's next-day/week sales?
+
+To do this, I had to take a closer look at my **`days_to_event`** variable, which had interesting distributions in each `focus_bucket`. Some events in my data were placeholders, such as `TEST EVENT - TBD at Philadelphia 76ers Tickets` on 2029-07-01... 1,369 days out. It's important to note that, as I took a closer look into events that were listed more than 2 years in advance, some were legit, and some were placeholders. Therefore, I decided to filter my dataset to only include events within 1,000 days.
+
+In a later section, I will detail my intution for filtering these snapshots even further after finding patterns in feature-engineered EDA.
 
 ### 4.2 Creating New Features
 A feature I was suggested to create by Gemini 3 was the **`price_spread_ratio`**, which is a `SAFE_DIVIDE` of the `get_in` price and the `listings_median`. Essentially, this ratio helps understand the relationship between the lowest and middle values of tickets per event.
@@ -340,7 +344,7 @@ To achieve this, I lagged features. By using `t` as the current snapshot date, I
 
 I decided to add the **`venue_capacity`** to help the model understand how available inventory influences sales **relative** to how much the venue can hold. 1,000 tickets available on StubHub for an NFL arena is extremely different than 1,000 available tickets for a college basketball game or concert.
 
-However, this proved to be my **most challenging data engineering hurdle**, since just **under 50% of events had missing capacities listed, and 33% of unique venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
+However, this proved to be my **most challenging data engineering hurdle**, since just **40% of events had missing capacities listed, and 25% of unique venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
 
 #### External Sourcing
 
@@ -350,7 +354,7 @@ To do this, I **mounted my Google Drive** into Google Colab, defined my folder p
 
 Then, I created a helper function that first checks the existing data in my data mart to see if the row is missing `venue_capacity`. If there is already existing data, I skip the row. However, if the row is missing that feature, a **lookup key is created** with `(row['join_name'], row['join_city'])` and then searched to return the `venue_capacity` from my dictionary created from TouringData.org's documents.
 
-Upon my first attempt, **42K capacities were imputed among 120** of the nearly 4,000 venues missing capacity data from the additional source. I was stilling missing 900K rows and 3,700 venues. So, I decided to introduce **fuzzy matching** with my key and dictionary pairs to improve this imputation. 
+Upon my first attempt, **110K capacities were imputed among 138** of the nearly 13,000 venues missing capacity data from the additional source. I was stilling missing 2.3M rows and 4,400 venues. So, I decided to introduce **fuzzy matching** with my key and dictionary pairs to improve this imputation. 
 
 #### Fuzzy Matching
 
@@ -363,7 +367,7 @@ During **validation**, I found a couple of traps that I was able to prevent with
 1. The fuzzy matching was **incorrectly pairing stadiums with their parking lots** (an example was Lincoln Financial Field and Lincoln Financial Field Parking). These `venue_names` had very similar tokens, but show entirely different demand signals, because one is parking and another is for the game! To fix this, I created a **blacklist filter** that drops any `venue_name` containing keywords such as "parking", "vip", "camping", or "shuttle" before beginning matching
 2. Originally, I used **`token_set_ratio`** as my fuzzy matching scoring setting, but this was **too casual**. It would match tokens simply because two pairs would share them. **To prioritize accuracy and skip any false positive classifications**, I switched to **`scorer=fuzz.token_sort_ratio`**, which sorts the candidate strings based on exact matches and **compares the full sequence**, penalizing length differences, for example
 
-By enforcing a strict **85% confidence threshold** and using the sort-ratio scorer, I prioritized quality over quantity, **recovering an additional 13,000 event-venue capacities across 65 unique venues**. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those **false positives**. Finally, I imputed those venue capacities to my data.
+By enforcing a strict **85% confidence threshold** and using the sort-ratio scorer, I prioritized quality over quantity, **recovering an additional 37,000 event-venue capacities across 80 unique venues**. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those **false positives**. Finally, I imputed those venue capacities to my data.
 
 <img width="1024" height="385" alt="image" src="https://github.com/user-attachments/assets/839ec1d1-ea1e-4048-8d0e-a77da6616162" />
 
@@ -386,7 +390,7 @@ So, secondary to my data aggregating strategy, I decided to use **logical imputa
 | Cafe            | 150                        |
 | Bar             | 100                        |
 
-After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy brought me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
+After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy imputed 850,000 rows of data, bringing me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
 
 #### Conditional Median Imputation
 
