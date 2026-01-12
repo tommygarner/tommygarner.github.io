@@ -179,11 +179,17 @@ Below is the Data Flow Diagram of my database:
 
 With the data mart structured, I then moved onto my EDA step to validate the data and **investigate patterns** of my SeatData.io snapshots. This phase was important for me to gain an **understanding of the secondary ticket market and its features** while also helping me **decide which direction** I wanted to take my first project with this data.
 
+In **summary**, I had collected **103 days** of snapshots from October 1st to January 12th. Over **114,000** unique events and **13,000** unique venues collected over **5.79 million** rows of data. With that, I dove in!
+
 ### 3.1 Initial Data Diagnostics and Cleaning
 Before diving into demand and trends in my data, I used several functions to investigate the quality of my snapshot records and their attribute distributions
-  - **`.info()`** and **`.describe()`** allowed me to *check for null values* and verify that my *type casting* from my ingestion script worked across the entire database in BigQuery. Distributions of both 1-day and 7-day sales had no missing values, and only `listings_median` was missing about 15% of the time, which might be because of low ticket volume (1-2 tickets that day), where a median cannot be calculated reliably
-  - I also looked for the **October 4th gap** mentioned by SeatData.io to understand how it affected my *rolling windows* for sales totals
-  - Finally, I evaluated the **volume of unique events** across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket. I took a swing with *Festivals*, which had only 500 unique events and about 12,000 rows. Otherwise, every other bucket had more than 2,000 events with over 71,000 rows in their respective categories.
+  - **`.info()`** and **`.describe()`** allowed me to *check for null values* and verify that my *type casting* from my ingestion script worked across the entire database in BigQuery
+      - Distributions of all sales figures had no missing values, whereas many `venue_capacities`, `listings_median`, `listings_active`, and few `event_dates` were missing
+      - Some maximum values seemed unrealistic in the data, such as a nearly $100K price floor minimum for a resale ticket. I'd later go on to investigate these statistics in this section and while feature engineering
+  - I also looked for the **October 4th gap** mentioned by SeatData.io to understand how it will affect sales totals, already starting to brainstorm imputation or considering simply starting from October 5th, as an option
+  - Finally, I evaluated the **volume of unique events** across my seven `focus_bucket`s to ensure that I had enough data and total snapshots to effectively model each bucket.
+      - I took a swing with *Festivals*, which had only 1,000 unique events and about 45,000 rows of data
+      - Otherwise, every other bucket had more than 3,500 events with over 200,000 rows in their respective categories
 
 <img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/d5a306b9-61c0-4cd9-9532-69da1a7994a1" />
 
@@ -192,51 +198,59 @@ Before diving into demand and trends in my data, I used several functions to inv
 ### 3.2 Bucket EDA
 I decided to then understand **demand, price and inventory** statistics by each `focus bucket` to see how different markets move daily by **aggregating** these numbers with each day in my database. Below shows the trend of 1-day sales over time by bucket.
 
-<img width="989" height="490" alt="image" src="https://github.com/user-attachments/assets/ea4b29f4-9109-4b17-a0c7-e41069f50765" />
+<img width="985" height="490" alt="image" src="https://github.com/user-attachments/assets/b0d6255c-1aa6-46f6-ba6a-7ab03300418a" />
 
 *Figure 4: 1-day sales aggregated by `focus_bucket`*
 
 Some initial insights I found from this data included:
   - **Major sports has many ticket transactions** (with an average of around 7,000 tickets sold on StubHub per day) compared to the next tier of Concerts and Other Events
-  - Major sports **also is the most volatile**, with major swings in the hundreds of tickets
-  - Interestingly, Minor sports has about **1/4th of the ticket volume moving** on StubHub than does Major sports
-  - There is a day of **massive dips in ticket transactions for all categories** excluding Festivals, but transactions do not reach zero. After researching this discrepancy, the day was **November 4th, 2025**. I found a couple of reasons why this major dip would occur in the secondary market:
+  - **Concerts are the most volatile**, with major swings in thousands of tickets
+  - Interestingly, Minor sports has about **1/4th of the ticket volume**, on average, moving on StubHub than does Major sports
+  - There is a day of **massive dips in ticket transactions for all categories**, but transactions do not reach zero. After researching this discrepancy, the day was **November 4th, 2025**. I found a couple of reasons why this major dip would occur in the secondary market:
       - Major events ended: **The World Series wrapped up** on November 2nd, when the Dodgers beat the Blue Jays in Game 7, which marked the **end of the MLB postseason**. The playoffs had been a major driver of secondary ticket sales throughout October. Similarly, **the Breeders' Cup (horse racing) wrapped up** on the 1st, and **the NASCAR Cup Series Championship finished** on the 2nd
       - **College Basketball season opening**: over 200 games fired off the college basketball season opening day on November 3rd. However, these tickets were likely purchased months in advance by fans looking forward to go to the games instead of reselling them
       - **Election Day**: probably the biggest influence to the lack of ticket transactions on this day had to do with Election Day, where many people are **heading to polls to cast their votes**. Many either make plans to wait in line to vote either during their work shift or afterwards, which likely **prevented people from looking to spend discretionary income** on tickets
+  - The **beginning of December** shows a sharp incline of ticket sales on the platform for Sports, Concerts, and Other events
 
-<img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/abe4a919-4e3a-453c-8a41-90f5b608066c" />
+**Next, I looked at the **distributions** of these ticket transactions by each `focus_bucket` to get a better idea of spread in this feature space.
 
-*Figure 5: Total active listings in each category over time*
+<img width="1005" height="627" alt="image" src="https://github.com/user-attachments/assets/26b10e29-c3ec-41fa-8b00-c541461c1fa2" />
 
-I also found that the **total active listings** in each category was fairly **stable** throughout the duration of data collection, where there was maybe a **gradual decline** as most events kicked up in the November, December months. I did not choose to investigate this further, but was shocked that **millions of tickets** are listed online just on StubHub alone. It is interesting to think how many of those are also listed on **other ticketing sites**, or how long the average ticket is listed on a site before it's either taken off or sold.
+*Figure 5: The distribution of aggregated sales totals per day among each category*
 
-<img width="1180" height="584" alt="image" src="https://github.com/user-attachments/assets/75be51bb-8c29-4e29-ab89-33320a6f3a94" />
+The above boxplot shows the spread of total transactions in the resale market to sum up the previous discussion. There's both good spread and distinction within and between these categories, which I expected to be exciting to model and draw predictions from.
 
-*Figure 6: The median get-in (minimum ticket price) in each category over time*
+<img width="984" height="490" alt="image" src="https://github.com/user-attachments/assets/71ca0f4e-27f4-4304-9997-0d6502e07a6a" />
 
-Next, I looked at how the **median minimum ticket price** in each category moved throughout the months of October to mid-December. The reason I chose median as opposed to average is because there were some **extreme values** that made interpretation difficult.
+*Figure 6: Total active listings in each category over time*
+
+When evaluating the **total active listings** for each category per day, I found a couple of observations:
+
+  - Categories with few listings on the platform, notably **Festivals, Minor Sports, and Comedy shows**, have relatively stable listings throughout these three months
+  - In another tier (4x the previously mentioned categories) is **Broadway & Theater, Other Events, and Concerts**, of which **Other Events** shown to be most volatile in the total `listings_active` per day, likely because this is inherently a catch-all category
+  - Lastly, **Major Sports** has the most listings by far, on average, than any other category
+  - There is an **increase of listings around November 1st** across many categories
+
+I did not choose to investigate the boost in listings on this date further, but was shocked that **millions of tickets** are listed online just on StubHub alone. It is interesting to think how many of those are also listed on **other ticketing sites**, or how long the average ticket is listed on a site before it's either taken off or sold.
+
+<img width="1187" height="590" alt="image" src="https://github.com/user-attachments/assets/fbd2f03b-a434-4a15-a5cb-0bf51ee63993" />
+
+*Figure 7: The median get-in (minimum ticket price) in each category over time*
+
+Next, I looked at how the **median minimum ticket price** in each category moved throughout the months of October to mid-January. The reason I chose median as opposed to average is because there were some **extreme values** that made interpretation difficult.
 
 In this chart, it's clear that there are **three tiers** to ticket price minimums:
 
 1. **Sports have the lowest barrier to entry** in the resale market around $30-$40. Sports also had the **most transactions** in the secondary market, which implies that many sports fan scour resale platforms for the best deals to get into different games. Also to note, **huge stadiums might influence these lower prices**, since these tickets are likely located in the upper decks with poor views of the action
 
-2. The *Other Events category sits in the middle **in-between** the high and low barrier to entry categories. This might represent the **true average amount of money an individual would expect to spend** to get in the doors of their chosen event
+2. The **Other Events, Comedy, Concerts, and Broadway & Theater categories** sit in the middle **in-between** the high and low barrier to entry categories. This might represent the **true average amount of money an individual would expect to spend** to get in the doors of their chosen event, anywhere in the ballpark of $60-$80
 
-3. **Concerts, Comedy, Broadway & Theater, and Festivals have the highest barriers to entry** anywhere between $60-$90. These make sense since they are **more unique experiences** that are more **rare** than sporting events, where a home team could play tens of times in their home arena/stadium. In these categories, acts are likely on tour, and **fans don't know the next time their favorite act will come back into town**, so they are much **more willing** to pay a higher price
-  - Festivals, interestingly enough, have the **most volatility** when it comes to minimum ticket prices. However, remembering back to the spread of these buckets and their events in the first place, festivals only make up 500 unique events and have the **least amount of transactions and active listings per day**. Therefore, these median swings are likely out of **small sample sizes** as shown in the following graph, where the greatest spike in median `get_in` price occurs when only 10,000 active listings live on StubHub:
+3. **Festivals have the highest barriers to entry** of around $120 on "average", with an interesting movement over time. These make sense since they are **more unique experiences** that are **rarer** than sporting events, where a home team could play tens of times in their home arena/stadium. In Festivals, artists are stacked on top of each other, where you might see 4 or 5 performances in a day compared to your typical concert. Festivals are much larger events as well, with tens of thousands of tickets available. So, while Festival data is scarce throughout this collected data, it will be the most interesting to keep an eye on
+  - Festivals also have the **most volatility** when it comes to minimum ticket prices. However, remembering back to the spread of these buckets and their events in the first place, festivals only make up 1,000 unique events and have the **least amount of transactions and active listings per day**. Therefore, these median swings are likely out of **small sample sizes** as shown in the following graph, where the greatest spike in median `get_in` price occurs when only 30,000 active listings live on StubHub:
 
-<img width="983" height="484" alt="image" src="https://github.com/user-attachments/assets/b1e58ace-2695-4f29-bafa-ecf69da2975b" />
+<img width="987" height="490" alt="image" src="https://github.com/user-attachments/assets/c770e5fc-930b-4585-9a52-7ae1e4e30ac1" />
 
-*Figure 7: A close-up at the number of active listings per day for **Festivals***
-
-Next, I looked at the **distributions** of these ticket transactions by each `focus_bucket`. I tried to understand how 1-day sales volume is represented in each bucket.
-
-<img width="1009" height="636" alt="image" src="https://github.com/user-attachments/assets/e2149fd3-cd36-4907-befd-6b924e1ac6fb" />
-
-*Figure 8: The distribution of aggregated sales totals per day among each category*
-
-The above boxplot shows the spread of total transactions in the resale market by category, showing again that StubHub is a happening place for **major sports fans to both sell and buy inventory**. Concerts and Other Events also have 2,000+ transactions per day on the platform. Meanwhile, Broadway & Theater, Comedy, and Festivals do not see many transactions per day on this ticketing site.
+*Figure 8: A close-up at the number of active listings per day for **Festivals***
 
 To conclude, I want to wrap up with some high-level takeaways from my EDA to summarize what I've already learned about the data at this point:
 
