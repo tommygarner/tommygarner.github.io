@@ -191,16 +191,12 @@ Before diving into demand and trends in my data, I used several functions to inv
       - I took a swing with *Festivals*, which had only 1,000 unique events and about 45,000 rows of data
       - Otherwise, every other bucket had more than 3,500 events with over 200,000 rows in their respective categories
 
-<img width="989" height="590" alt="image" src="https://github.com/user-attachments/assets/857b1659-6ae2-4842-b09c-84fc62650636" />
-
-*Figure 3: Bar chart representation of events per `focus_bucket`*
-
 ### 3.2 Bucket EDA
 I decided to then understand **demand, price and inventory** statistics by each `focus bucket` to see how different markets move daily by **aggregating** these numbers with each day in my database. Below shows the trend of 1-day sales over time by bucket.
 
 <img width="985" height="490" alt="image" src="https://github.com/user-attachments/assets/b0d6255c-1aa6-46f6-ba6a-7ab03300418a" />
 
-*Figure 4: 1-day sales aggregated by `focus_bucket`*
+*Figure 3: 1-day sales aggregated by `focus_bucket`*
 
 Some initial insights I found from this data included:
   - **Major sports has many ticket transactions** (with an average of around 7,000 tickets sold on StubHub per day) compared to the next tier of Concerts and Other Events
@@ -216,13 +212,13 @@ Some initial insights I found from this data included:
 
 <img width="1005" height="627" alt="image" src="https://github.com/user-attachments/assets/26b10e29-c3ec-41fa-8b00-c541461c1fa2" />
 
-*Figure 5: The distribution of aggregated sales totals per day among each category*
+*Figure 4: The distribution of aggregated sales totals per day among each category*
 
 The above boxplot shows the spread of total transactions in the resale market to sum up the previous discussion. There's both good spread and distinction within and between these categories, which I expected to be exciting to model and draw predictions from.
 
 <img width="984" height="490" alt="image" src="https://github.com/user-attachments/assets/71ca0f4e-27f4-4304-9997-0d6502e07a6a" />
 
-*Figure 6: Total active listings in each category over time*
+*Figure 5: Total active listings in each category over time*
 
 When evaluating the **total active listings** for each category per day, I found a couple of observations:
 
@@ -235,7 +231,7 @@ I did not choose to investigate the boost in listings on this date further, but 
 
 <img width="1187" height="590" alt="image" src="https://github.com/user-attachments/assets/fbd2f03b-a434-4a15-a5cb-0bf51ee63993" />
 
-*Figure 7: The median get-in (minimum ticket price) in each category over time*
+*Figure 6: The median get-in (minimum ticket price) in each category over time*
 
 Next, I looked at how the **median minimum ticket price** in each category moved throughout the months of October to mid-January. The reason I chose median as opposed to average is because there were some **extreme values** that made interpretation difficult.
 
@@ -250,7 +246,7 @@ In this chart, it's clear that there are **three tiers** to ticket price minimum
 
 <img width="987" height="490" alt="image" src="https://github.com/user-attachments/assets/c770e5fc-930b-4585-9a52-7ae1e4e30ac1" />
 
-*Figure 8: A close-up at the number of active listings per day for **Festivals***
+*Figure 7: A close-up at the number of active listings per day for **Festivals***
 
 To conclude, I want to wrap up with some high-level takeaways from my EDA to summarize what I've already learned about the data at this point:
 
@@ -279,6 +275,9 @@ After pulling my data mart into a Python Colab notebook, I decided that I wanted
 
 To do this, I had to take a closer look at my **`days_to_event`** variable, which had interesting distributions in each `focus_bucket`. Some events in my data were placeholders, such as `TEST EVENT - TBD at Philadelphia 76ers Tickets` on 2029-07-01... 1,369 days out! It's important to note that, as I took a closer look into events that were listed more than 2 years in advance, some were legit and some were placeholders. However, ticket sale totals for events 5+ years away are minimal, and there are much more pressing shows and games to model for different departments. Therefore, I decided to filter my dataset to **only include events within 1,000 days**.
 
+<img width="784" height="390" alt="image" src="https://github.com/user-attachments/assets/e80686fe-d8c5-4d6c-8d2b-c530f80ba24b" />
+*Figure 8: Completed events after filtering for each category*
+
 In a later section, I will detail my intution for filtering these snapshots even further after finding patterns in feature-engineered EDA.
 
 ### 4.2 Creating New Features
@@ -288,7 +287,7 @@ A **high ratio** would tell us that there is similar pricing across the board fo
 
 Another one of the features I created was translating the `imported_at` date to a **day-of-the-week variable** `dow`. This would be used in my modeling inputs to help understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
 
-<img width="789" height="390" alt="image" src="https://github.com/user-attachments/assets/b7e6bb11-7e9b-4b67-8d70-59d663fd97c4" />
+<img width="789" height="390" alt="image" src="https://github.com/user-attachments/assets/236b1d37-b348-46f8-9917-e8fcdd36b505" />
 
 *Figure 9: A distribution of `days_to_event` by category*
 
@@ -296,21 +295,23 @@ After filtering my data (>= 45 days of observed history, `days_to_event` < 1000)
 
 This feature would further help separate different price and demand trends in upcoming steps of understanding dynamics in the resale market.
 
-<img width="788" height="390" alt="image" src="https://github.com/user-attachments/assets/569cb212-4500-4916-8cc1-64262b9cf27f" />
+<img width="1189" height="490" alt="image" src="https://github.com/user-attachments/assets/8566e780-14a4-4407-802f-20c4b62c9c6e" />
 
 *Figure 10: Median `get_in` price as the event draws closer by category*
+
+This assessment shows some interesting stuff. **Festivals have very high floors** beyond 2 months out, but drop significantly to their converged minimum by the 30-days out mark. **Minor/Other Sports** similarly half in price from the 9 month to 2 month timeframe. 
 
 Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the **three tiers of pricing**. However, it appears that **prices are somewhat stable and unaffected as time progresses**. If anything, you could maybe say there is a **slight decrease** in the minimum ticket price, as sellers are likely dropping prices on StubHub to **reduce the likelihood of unsold inventory with no salvage opportunity** after the event.
 
 <img width="977" height="484" alt="image" src="https://github.com/user-attachments/assets/8a349c19-73b5-48b7-99c1-18b4f214dc66" />
 
-*Figure 12: Average daily sales per category by `days_to_event` bins* 
+*Figure 11: Average daily sales per category by `days_to_event` bins* 
 
 When looking at the market volume in these categories per day as the event/performance draws near tells a unique story: StubHub is a great place to dump tickets off for sporting events, **especially the week before (or day of!) the game**. All other categories see a **minor increase** in transaction volume, and all categories see very little tickets change hands two months prior to the event.
 
 <img width="976" height="484" alt="image" src="https://github.com/user-attachments/assets/63565a19-0688-4182-ab1c-82034ac83cd9" />
 
-*Figure 13: Average active listings per category by `days_to_event` bins*
+*Figure 12: Average active listings per category by `days_to_event` bins*
 
 As **most sales occur in the final week** leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average **number of listings per event drop on that final day** possible. This shows the **risk of putting up last-minute inventory** only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
 
