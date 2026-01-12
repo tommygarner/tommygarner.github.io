@@ -277,7 +277,7 @@ This section will explore these questions while **creating new variables** to he
 
 After pulling my data mart into a Python Colab notebook, I decided that I wanted to be able to predict event ticket sale totals on their **`days_to_event`** index. So, for any given event, can I train a model that predicts that particular event's next-day/week sales?
 
-To do this, I had to take a closer look at my **`days_to_event`** variable, which had interesting distributions in each `focus_bucket`. Some events in my data were placeholders, such as `TEST EVENT - TBD at Philadelphia 76ers Tickets` on 2029-07-01... 1,369 days out. It's important to note that, as I took a closer look into events that were listed more than 2 years in advance, some were legit, and some were placeholders. Therefore, I decided to filter my dataset to only include events within 1,000 days.
+To do this, I had to take a closer look at my **`days_to_event`** variable, which had interesting distributions in each `focus_bucket`. Some events in my data were placeholders, such as `TEST EVENT - TBD at Philadelphia 76ers Tickets` on 2029-07-01... 1,369 days out! It's important to note that, as I took a closer look into events that were listed more than 2 years in advance, some were legit and some were placeholders. However, ticket sale totals for events 5+ years away are minimal, and there are much more pressing shows and games to model for different departments. Therefore, I decided to filter my dataset to **only include events within 1,000 days**.
 
 In a later section, I will detail my intution for filtering these snapshots even further after finding patterns in feature-engineered EDA.
 
@@ -286,28 +286,19 @@ A feature I was suggested to create by Gemini 3 was the **`price_spread_ratio`**
 
 A **high ratio** would tell us that there is similar pricing across the board for an event, whereas a **lower ratio** describes either a great deal or a great suspicion compared to the rest of inventory for that event. Somewhere in the middle represents the minimum ticket price for that event sitting low enough for a potential customer to pull the trigger and buy the tickets. 
 
-Another one of the features I created was translating the `imported_at` date to a **day-of-the-week variable** `dow`. This helped me understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
+Another one of the features I created was translating the `imported_at` date to a **day-of-the-week variable** `dow`. This would be used in my modeling inputs to help understand sales volume and other price signals bucketed by these days of the week, to see if approaching weekends or middle of the weeks influenced price or demand.
 
-<img width="791" height="384" alt="image" src="https://github.com/user-attachments/assets/f63c47b7-3254-47a3-9e99-f639684c8dcf" />
+<img width="789" height="390" alt="image" src="https://github.com/user-attachments/assets/b7e6bb11-7e9b-4b67-8d70-59d663fd97c4" />
 
 *Figure 9: A distribution of `days_to_event` by category*
 
-This stacked bar chart helped me understand where events stood upon beginning my EDA and feature engineering steps. Around mid-December, a **majority of my event snapshots stood in the month to two-month out bins**, whereas the remaining 50% of events in my database lived in the month-to-go timeframe. 
+After filtering my data (>= 45 days of observed history, `days_to_event` < 1000), most categories held a **balanced** share of events across all `days_to_event` bins. In other words, a large fraction of events in each bucket are observed at least once in each `days_to_event` bucket. This will give future models an understanding of how demand moves over time from early listings through the final weeks.
 
 This feature would further help separate different price and demand trends in upcoming steps of understanding dynamics in the resale market.
 
-<img width="1509" height="1535" alt="image" src="https://github.com/user-attachments/assets/78d56391-c938-4360-a955-f1f47f121c85" />
-
-*Figure 10: Boxplot showing 1-day sale totals by Day of the Week*
-
-Demand clearly shows **patterns** throughout each `focus_bucket`. Where Sunday lives on the far left and Saturday on the far right, you can see an **increase in transactions among most categories as the weekend approaches**. Another interesting takeaway from this graphic is that **Tuesday shows volatility in demand**, which might be influenced by several factors among researching:
-  - Tuesday is a **common ticket on-sale day** across the live entertainment industry for arena tours and major concert announcements. These on-sales experience lots of price and demand volatility as many rush to secure tickets
-  - According to box office managers with 20+ years of experience, **venues will typically release held-back inventory in the mid-week**, usually landing on Tuesdays. This inventory includes production holds (tickets held back until the stage is built), sponsor allocations (corporate ticket packages not fully utilized by marketing partners get released back to the box office), and artist guest lists (unused complimentary tickets allocated to performers)
-  - With most concerts occurring Thursday-Saturday, early in the week serves as a good amount of time to **list inventory a full 48-72 hours before** the prime time weekend plans are made. Resellers can then respond to visible demand signals by driving price up or down depending on adjacent sales
-
 <img width="788" height="390" alt="image" src="https://github.com/user-attachments/assets/569cb212-4500-4916-8cc1-64262b9cf27f" />
 
-*Figure 11: Median `get_in` price as the event draws closer by category*
+*Figure 10: Median `get_in` price as the event draws closer by category*
 
 Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the **three tiers of pricing**. However, it appears that **prices are somewhat stable and unaffected as time progresses**. If anything, you could maybe say there is a **slight decrease** in the minimum ticket price, as sellers are likely dropping prices on StubHub to **reduce the likelihood of unsold inventory with no salvage opportunity** after the event.
 
