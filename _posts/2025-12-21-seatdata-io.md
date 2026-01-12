@@ -301,19 +301,29 @@ This feature would further help separate different price and demand trends in up
 
 This assessment shows some interesting stuff. **Festivals have very high floors** beyond 2 months out, but drop significantly to their converged minimum by the 30-days out mark. **Minor/Other Sports** similarly half in price from the 9 month to 2 month timeframe. 
 
-Again, looking at the minimum ticket price for events in each category as the `event_date` draws nearer, we can see the **three tiers of pricing**. However, it appears that **prices are somewhat stable and unaffected as time progresses**. If anything, you could maybe say there is a **slight decrease** in the minimum ticket price, as sellers are likely dropping prices on StubHub to **reduce the likelihood of unsold inventory with no salvage opportunity** after the event.
+All categories seem to **converge to their true `get_in` market minimum ticket price** by the two months preceding the event market. This is good news to know that passing these `get_in` snapshots into modeling will not be noisy but true estimates for each market.
 
-<img width="977" height="484" alt="image" src="https://github.com/user-attachments/assets/8a349c19-73b5-48b7-99c1-18b4f214dc66" />
+<img width="988" height="490" alt="image" src="https://github.com/user-attachments/assets/b1ffb448-5416-43d3-b4c0-37e669fcbe7a" />
 
 *Figure 11: Average daily sales per category by `days_to_event` bins* 
 
 When looking at the market volume in these categories per day as the event/performance draws near tells a unique story: StubHub is a great place to dump tickets off for sporting events, **especially the week before (or day of!) the game**. All other categories see a **minor increase** in transaction volume, and all categories see very little tickets change hands two months prior to the event.
 
-<img width="976" height="484" alt="image" src="https://github.com/user-attachments/assets/63565a19-0688-4182-ab1c-82034ac83cd9" />
+<img width="988" height="490" alt="image" src="https://github.com/user-attachments/assets/fd065367-daaf-4d98-a71f-941a1ebffcb7" />
 
 *Figure 12: Average active listings per category by `days_to_event` bins*
 
-As **most sales occur in the final week** leading up to the event (for those last-minute decisions, as I often do!), surprisingly enough, the average **number of listings per event drop on that final day** possible. This shows the **risk of putting up last-minute inventory** only to see it expire without any bites. There is a unique risk-and-reward trade-off to the resale market that is a gutsy game to play.
+I see three different trends when trying to understand the **number of active listings per category as each event draws near**. 
+
+1. **Sports** categories list more tickets
+2. **Comedy and Concerts** list less tickets
+3. All other categories show **minimal shift** in `listings_active`
+
+I can think of a couple of reasons for these trend lines. First, the **Sports markets generally have more inventory to list**, since venues hold greater capacities and there are just outright more events in number. Also, as we saw, tickets in this category can get quite cheap. So, to avoid inventory that has **no salvage value**, sports fans likely would rather list their tickets at a loss than let them go unused.
+
+Second, **Comedy and Concerts have unusually high inventory listed so far out in advance**. I thought this might be because tours are announced sometimes 9 months away, so these **early on-sales and promotions** might circulate the inventory I saw in this chart.
+
+Lastly, all other categories have relatively little inventory listed on StubHub. This is because sports has more events in general, where teams can play up to 150+ games in a season, so more events = more tickets posted.
 
 #### Assisted Feature Engineering
 I also asked Claude Sonnet 4.5 for other variables that would be helpful in understanding price-elasticity in my data. The GPT suggested I do the following with my SQL query to pull from my data mart:
@@ -336,7 +346,7 @@ To achieve this, I lagged features. By using `t` as the current snapshot date, I
 
 I decided to add the **`venue_capacity`** to help the model understand how available inventory influences sales **relative** to how much the venue can hold. 1,000 tickets available on StubHub for an NFL arena is extremely different than 1,000 available tickets for a college basketball game or concert.
 
-However, this proved to be my **most challenging data engineering hurdle**, since just **40% of events had missing capacities listed, and 25% of unique venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
+However, this proved to be my **most challenging data engineering hurdle**, since **40% of events had missing capacities listed, and 33% of venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
 
 #### External Sourcing
 
@@ -382,7 +392,7 @@ So, secondary to my data aggregating strategy, I decided to use **logical imputa
 | Cafe            | 150                        |
 | Bar             | 100                        |
 
-After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy imputed 850,000 rows of data, bringing me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
+After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy imputed 900,000 rows of missing data, bringing me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
 
 #### Conditional Median Imputation
 
@@ -390,17 +400,17 @@ Finally, I decided to **conditionally impute** the remaining missing values with
 
 After double-checking my now-filled `venue_capacity` distribution, **I found some extreme outliers**, such as Dickies Arena having a 240K capacity(???), so after correcting this figure to its estimated 14K figure, I was able to investigate the distribution of capacities:
 
-<img width="551" height="428" alt="image" src="https://github.com/user-attachments/assets/bfe97fb8-4789-4c2b-bd9a-2f56ae12a2b7" />
+<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/1e0c1fe9-53f4-41fe-b0e2-ea988050d684" />
 
 *Figure 15: Distribution of the `venue_capacity` variable after imputation*
 
-**Extremely right-skewed data**, where there are still some extreme values for motorsports, and many venues holding no more than 2,500ish people. **This tailed distribution would become a familiar sight** as I looked at specific variables, and the **`np.log1p` function** would become a best friend as I prepared the data for modeling.
+**Extremely right-skewed data**, where there are still some extreme values for motorsports, and many venues holding no more than 25,000 people. **This tailed distribution would become a familiar sight** as I looked at specific variables, and the **`np.log1p` function** would become a best friend as I prepared the data for modeling.
 
 ### 4.5 Transforming Variables
 
 This log function is **not simply the natural log**, but it includes a safety net. It calculates $$ln(1+x)$$. I needed this because other **data features contained zeroes**. Taking the log of a zero results in an undefined value, so this error handling helps the `np.log1p(0)` become just 0, preventing our model or calculations from crashing.
 
-<img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/0d9ca6be-44ad-4501-b308-8b05f2e2082f" />
+<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/78ecf838-cf56-4770-bbbf-975ef072b258" />
 
 *Figure 16: Distribution of `venue_capacity_log` variable after imputation*
 
