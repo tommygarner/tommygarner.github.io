@@ -346,17 +346,17 @@ To achieve this, I lagged features. By using `t` as the current snapshot date, I
 
 I decided to add the **`venue_capacity`** to help the model understand how available inventory influences sales **relative** to how much the venue can hold. 1,000 tickets available on StubHub for an NFL arena is extremely different than 1,000 available tickets for a college basketball game or concert.
 
-However, this proved to be my **most challenging data engineering hurdle**, since **40% of events had missing capacities listed, and 33% of venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
+However, this proved to be my **most challenging data engineering hurdle**, since **40% of events had missing capacities listed, and 50% of venues lacked capacity numbers**. I knew this variable would help my models make better predictions, so I focused on **sourcing data** and introducing **logical assumptions** to help me fill in the gaps.
 
 #### External Sourcing
 
-First, I used the ticket source called **TouringData.org**[https://touringdata.org/] I discussed earlier to help bring in missing capacity values. This Patreon contained those **aggregated** ticket revenue and inventory statistics for many shows as daily CSVs, too. Periodically, they will post files that contain all shows up to that point within the year, and so I relied on both their **completed 2024 and 2025 documents** for missing capacities.
+First, I used the ticket source called **TouringData.org**(https://touringdata.org/) I discussed earlier to help bring in missing capacity values. This Patreon contained those **aggregated** ticket revenue and inventory statistics for many shows as daily CSVs, too. Periodically, they will post files that contain all shows up to that point within the year, and so I relied on both their **completed 2024 and 2025 documents** for missing capacities.
 
 To do this, I **mounted my Google Drive** into Google Colab, defined my folder path, and read both documents into my directory using **Pandas**. After this, I **concatenated** both files and **standardized venue names and cities**, using these as my primary **mapping keys** between my SeatData.io and TouringData.org sources. This meant the usual `.str.lower()` lowercasing, `.str.strip()` removing leading and trailing whitespace, and `.fillna('')` handling missing cities or venue names. These names and cities are then placed into a **`venue_capacity_map` dictionary**.
 
 Then, I created a helper function that first checks the existing data in my data mart to see if the row is missing `venue_capacity`. If there is already existing data, I skip the row. However, if the row is missing that feature, a **lookup key is created** with `(row['join_name'], row['join_city'])` and then searched to return the `venue_capacity` from my dictionary created from TouringData.org's documents.
 
-Upon my first attempt, **110K capacities were imputed among 138** of the nearly 13,000 venues missing capacity data from the additional source. I was stilling missing 2.3M rows and 4,400 venues. So, I decided to introduce **fuzzy matching** with my key and dictionary pairs to improve this imputation. 
+Upon my first attempt, I imputed **72 of the nearly 5,000 venues** missing capacity data from the additional source. I was stilling missing 500K rows and most venues. So, I decided to introduce **fuzzy matching** with my key and dictionary pairs to improve this imputation. 
 
 #### Fuzzy Matching
 
@@ -369,7 +369,7 @@ During **validation**, I found a couple of traps that I was able to prevent with
 1. The fuzzy matching was **incorrectly pairing stadiums with their parking lots** (an example was Lincoln Financial Field and Lincoln Financial Field Parking). These `venue_names` had very similar tokens, but show entirely different demand signals, because one is parking and another is for the game! To fix this, I created a **blacklist filter** that drops any `venue_name` containing keywords such as "parking", "vip", "camping", or "shuttle" before beginning matching
 2. Originally, I used **`token_set_ratio`** as my fuzzy matching scoring setting, but this was **too casual**. It would match tokens simply because two pairs would share them. **To prioritize accuracy and skip any false positive classifications**, I switched to **`scorer=fuzz.token_sort_ratio`**, which sorts the candidate strings based on exact matches and **compares the full sequence**, penalizing length differences, for example
 
-By enforcing a strict **85% confidence threshold** and using the sort-ratio scorer, I prioritized quality over quantity, **recovering an additional 37,000 event-venue capacities across 80 unique venues**. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those **false positives**. Finally, I imputed those venue capacities to my data.
+By enforcing a strict **85% confidence threshold** and using the sort-ratio scorer, I prioritized quality over quantity, **recovering an additional 41 unique venues and their capacities**. While this extensive logic didn't result in more filled data, I could be certain I wasn't polluting my dataset with those **false positives**. Finally, I imputed those venue capacities to my data.
 
 <img width="1024" height="385" alt="image" src="https://github.com/user-attachments/assets/839ec1d1-ea1e-4048-8d0e-a77da6616162" />
 
@@ -392,25 +392,25 @@ So, secondary to my data aggregating strategy, I decided to use **logical imputa
 | Cafe            | 150                        |
 | Bar             | 100                        |
 
-After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy imputed 900,000 rows of missing data, bringing me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
+After creating this dictionary, I performed the same imputing strategy with *exact* pairings in both the **`venue_name` and the `event_name`**, since some event titles included the location of the performance. This strategy imputed 200,000 rows of missing data, bringing me down to now 25% of rows missing their `venue_capacity`, and I knew I was in the home stretch.
 
 #### Conditional Median Imputation
 
 Finally, I decided to **conditionally impute** the remaining missing values with the **median `venue_capacity` of that focus bucket**. Doing this would not misrepresent the data's middle values for this variable, and assumed that the remaining Festivals, for example, had similar capacities to the rest of the festivals in my data. This was an aggressive assumption looking back on it, but I would need the complete variable for later modeling and wanted to be as fair as possible.
 
-After double-checking my now-filled `venue_capacity` distribution, **I found some extreme outliers**, such as Dickies Arena having a 240K capacity(???), so after correcting this figure to its estimated 14K figure, I was able to investigate the distribution of capacities:
+After double-checking my now-filled `venue_capacity` distribution, **I found some extreme outliers**, such as Sportpaleis in Belgium having a 230K capacity(???), so after correcting this figure to its estimated 23K figure, I was able to investigate the distribution of capacities:
 
-<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/1e0c1fe9-53f4-41fe-b0e2-ea988050d684" />
+<img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/ad68254a-6512-431a-8e48-007288cdf391" />
 
 *Figure 15: Distribution of the `venue_capacity` variable after imputation*
 
-**Extremely right-skewed data**, where there are still some extreme values for motorsports, and many venues holding no more than 25,000 people. **This tailed distribution would become a familiar sight** as I looked at specific variables, and the **`np.log1p` function** would become a best friend as I prepared the data for modeling.
+**Extremely right-skewed data**, where there are still some extreme values for motorsports, and many venues holding no more than 10,000 people. **This tailed distribution would become a familiar sight** as I looked at specific variables, and the **`np.log1p` function** would become a best friend as I prepared the data for modeling.
 
 ### 4.5 Transforming Variables
 
 This log function is **not simply the natural log**, but it includes a safety net. It calculates $$ln(1+x)$$. I needed this because other **data features contained zeroes**. Taking the log of a zero results in an undefined value, so this error handling helps the `np.log1p(0)` become just 0, preventing our model or calculations from crashing.
 
-<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/78ecf838-cf56-4770-bbbf-975ef072b258" />
+<img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/4f39fb9f-c66e-409c-8f03-2d830fbdbe89" />
 
 *Figure 16: Distribution of `venue_capacity_log` variable after imputation*
 
@@ -418,22 +418,22 @@ This distribution is much closer to normal and will be better for our models to 
 
 The `sales_total_7d_next` target variable had a similar problem:
 
-<img width="556" height="428" alt="image" src="https://github.com/user-attachments/assets/5559fd2b-b7f5-4a31-9d6e-42b653e1f0c1" />
+<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/6117483c-39c0-4a3f-ad0c-e58da86a6a45" />
 
 *Figure 17: Distribution of `sales_total_7d_next`*
 
 And I got to see the `np.log1p` **error handling** play out in this case, where many records have no transactions within a weeks' time:
 
-<img width="547" height="428" alt="image" src="https://github.com/user-attachments/assets/7bc9c0f2-1628-4da9-87ec-70f4d2bd1129" />
+<img width="578" height="413" alt="image" src="https://github.com/user-attachments/assets/99053b8c-52fe-45ed-b544-6b35c101992a" />
 
 *Figure 18: Distribution of `sales_total_7d_next_log`*
 
 With this large discrepancy in total events with no ticket transactions in the following week and some, **this could become a classification problem in its own right**, predicting if any sales will occur in the next week for a show. GPT suggested that I add this layer on top of my demand forecasting prediction project, essentially answering:
 
 1. Will there be any sales in the next week for this event? (**Classification**)
-2. If so, how many? (**Prediction**)
+2. If so, how many? (**Regression**)
 
-So, I **created the binary variable `any_sales_7d_next`** and understood the class weights to be around **60%** of events with **no sales** in the next week and **40%** with **at least one sale** in the next week. 
+So, I **created the binary variable `any_sales_7d_next`** and understood the class weights to be around **70%** of events with **no sales** in the next week and **30%** with **at least one sale** in the next week. 
 
 I then **log-transformed other volume and price featuers** in the dataset, such as `sales_total_7d`, `get_in`, `listings_median`, and `listings_active` since their distributions also showed heavy right-skews.
 
