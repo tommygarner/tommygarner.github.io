@@ -728,25 +728,29 @@ However, I think we can break down these residuals to get an even better idea on
 
 Next, I broke down these errors by `focus_bucket`. The results show a clear difference between stable and volatile markets.
 
-<img width="1183" height="784" alt="image" src="https://github.com/user-attachments/assets/cf37caa5-bf6d-4295-9c5d-bdee495a090d" />
+<img width="1120" height="754" alt="image" src="https://github.com/user-attachments/assets/630fdbfe-0be6-4191-9d66-a5d036e9014d" />
 
-*Figure 32: Boxplot comparison of residuals by category*
+*Figure 32: Comparison of absolute errors by category*
+
+<img width="1339" height="833" alt="image" src="https://github.com/user-attachments/assets/f1560129-5391-4df9-b742-638b88da75ee" />
+
+*Figure 32: Residual comparison by category*
 
 This comparison of residuals clearly shows that the majority of prediction error comes from the Major Sports category with almost 2x errors in either direction. Otherwise, the model is able to predict across all other categories within +/-9 tickets. This plot also shows that the model tends to under-predict massive spikes, or the left tails in these box plots, when there is more demand than expected in the resale market.
 
-| `focus_bucket`     | RMSE (in Tickets)| MAE (in Tickets)  |
-|--------------------|------------------|-------------------|
-| Broadway_Theater   | 2.47             | 0.40              |
-| Festivals          | 3.27             | 0.87              |
-| Comedy             | 7.31             | 1.61              |
-| Other              | 8.32             | 0.91              |
-| Concert            | 8.57             | 1.50              |
-| Minor_Other_Sports | 17.58            | 3.33              |
-| Major_Sports       | 19.19            | 6.72              |
+| Focus_Bucket       | RMSE_Tickets | Sample_Size |
+|--------------------|--------------|-------------|
+| Comedy             | 3.70         | 989         |
+| Broadway Theater   | 4.15         | 5851        |
+| Concert            | 5.63         | 2603        |
+| Festivals          | 15.77        | 61          |
+| Other              | 17.85        | 5347        |
+| Minor Other Sports | 23.60        | 1080        |
+| Major Sports       | 56.20        | 3100        |
 
 The comparison across different categories show that Major and Minor sports are the hardest to get right, with an average absolute error of 6.7 and 3.3 tickets off for the true ticket sales of the following week. Also, these errors are more volatile, shown by their exploding RMSE values, which penalizes larger misses, as I talked about before. Broadway & Theater and Festivals have the most precise predictions using the Naive + Neural Net regressor, suggesting these are more stable markets and easier to predict within a reasonable range.
 
-<img width="1184" height="584" alt="image" src="https://github.com/user-attachments/assets/d80a972c-dcf5-4fc5-97ed-ee7427efc0eb" />
+<img width="1366" height="765" alt="image" src="https://github.com/user-attachments/assets/f1f8e66d-0ddb-4114-88cc-fd79ad9b800d" />
 
 *Figure 33: MAE and RMSE comparison across categories*
 
