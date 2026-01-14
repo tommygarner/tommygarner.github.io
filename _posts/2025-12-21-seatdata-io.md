@@ -685,42 +685,35 @@ Finally, it was time to evaluate my results.
 
 To fairly compare all my models, I evaluated them by their RMSE values in Tickets, which required transfomring the logged values back into interpretable units. 
 
-
-in two ways: their ability to classify if an event would sell at all (AUC) and their accuracy in predicting the number of tickets sold in the following week (RMSE). 
-
 **Classification**
 
-| Model              | AUC      | PR       |
-|--------------------|----------|----------|
-| **Neural Network** | 0.919424 | 0.806652 |
-| Light GBM          | 0.919336 | 0.806929 |
-| XGBoost            | 0.919194 | 0.807326 |
-| GradientBoosting   | 0.917234 | 0.804061 |
-| Tuned XGBoost      | 0.914105 | 0.800630 |
+|                      Model |      AUC |       PR |
+|---------------------------:|---------:|---------:|
+|             **Neural Net** | 0.965792 | 0.950848 |
+|             LGBMClassifier | 0.964779 | 0.949386 |
+|              XGBClassifier | 0.964237 | 0.948895 |
+|        Tuned XGBClassifier | 0.962124 | 0.946871 |
+| GradientBoostingClassifier | 0.962038 | 0.945085 |
 
-In this classification scenario, deep learning with my Neural Network performed the best with the highest AUC (0.919424), which balances the true positive rate from false positive rate. Essentially, there is a 92% probability that the Neural Net will rank an event with any sales higher than a non-selling event. This suggests there are some non-linear signals in my feature space, such as interactions between terms, that determine which events will/won't sell any tickets on StubHub. It's interesting to find, however, that all classification models perform quite similarly, if a real-world application wanted to trade speed for a slight dip in accuracy when training on even more data records.
-
-<img width="701" height="556" alt="image" src="https://github.com/user-attachments/assets/9e616cdc-f76a-4bad-8384-9071e74eb9b9" />
-
-*Figure 31: Comparing models using the ROC Curve*
+In this classification scenario, deep learning with my Neural Network performed the best with the highest AUC (0.965792), which balances the true positive rate from false positive rate. Essentially, there is a 96.58% probability that the Neural Net will rank an event with any sales higher than a non-selling event. This suggests there are some non-linear signals in my feature space, such as interactions between terms, that determine which events will/won't sell any tickets on StubHub. It's interesting to find, however, that all classification models perform quite similarly, if a real-world application wanted to trade speed for a slight dip in accuracy when training on even more data records.
 
 **Regression**
 
-| Model                     | RMSE (in Tickets) | MAE (in Tickets) |
-|---------------------------|-------------------|------------------|
-| **Naive + Neural Net**    | 17.725909         | 5.520446         |
-| XGBRegressor              | 17.736355         | 5.539470         |
-| LGBMRegressor             | 17.809106         | 5.551094         |
-| GradientBoostingRegressor | 18.153335         | 5.671927         |
-| Tuned XGBRegressor        | 19.287867         | 5.761756         |
-| Neural Net                | 19.546449         | 5.772538         |
-| Naive                     | 161.112980        | 87.988088        |
+|                     Model | RMSE (Tickets) | MAE (Tickets) |
+|--------------------------:|---------------:|--------------:|
+|         **LGBMRegressor** |      25.144153 |      4.440456 |
+|              XGBRegressor |      25.437653 |      4.521342 |
+|        Tuned XGBRegressor |      26.857546 |      4.751118 |
+|        Naive + Neural Net |      27.142414 |      4.619519 |
+| GradientBoostingRegressor |      28.336068 |      5.019528 |
+|                Neural Net |      31.112211 |      5.298227 |
+|                     Naive |    4104.015962 |    199.982331 |
 
 To convert RMSE values back into ticket-scale, I used the `np.expm1()` function on each model's predictions. Then, to calculate RMSE, I took the `np.sqrt()` of the `mean_squared_error()` between the actual tickets and predictions of each model. Finally, MAE only required this `mean_squared_error()` calculation on the actual and predicted values. 
 
-To put these errors into context, my Naive Baseline (predicting the same sales as last week) is off by an average of 88 tickets per day. In contrast, the Naive + Neural Network model reduces this error to just 5.5 tickets per day. This massive reduction in residuals transforms the prediction from a rough guess into a precise prediction tool that departments can use to make better decisions.
+To put these errors into context, my Naive Baseline (predicting the same sales as last week) is off by an average of 200 tickets per day. In contrast, the Light Gradient Boosting Regression model reduces this error to just 4.4 tickets per day. This massive reduction in residuals transforms the prediction from a rough guess into a precise prediction tool that departments can use to make better decisions.
 
-When looking at Root Mean Squared Error (RMSE), the gap widens. Because RMSE squares the errors, it penalizes outliers heavily. The fact that my Naive + Neural Net's RMSE (~17.7) is roughly 3x its MAE (~5.5) suggests that while the model is precise on average, it still faces challenges with events that spike unexpectedly in ticket sales. This makes sense because the regressors are trying to predict both zero and nonzero-sale events, which introduces some bias in predicting. However, even with these outliers and zero-sale events, the mdoel provides a reliable improvement over the delayed reaction of the Naive method.
+When looking at Root Mean Squared Error (RMSE), the gap widens. Because RMSE squares the errors, it penalizes outliers heavily. The fact that my Light GBM's RMSE (25) is roughly 5x its MAE (4.4) suggests that while the model is precise on average, it still faces challenges with events that spike unexpectedly in ticket sales. This makes sense because the regressors are trying to predict both zero and nonzero-sale events, which introduces some bias in predicting. However, even with these outliers and zero-sale events, the mdoel provides a reliable improvement over the delayed reaction of the Naive method.
 
 However, I think we can break down these residuals to get an even better idea on each bucket's resale ticket movement.
 
@@ -730,7 +723,7 @@ Next, I broke down these errors by `focus_bucket`. The results show a clear diff
 
 <img width="1120" height="754" alt="image" src="https://github.com/user-attachments/assets/630fdbfe-0be6-4191-9d66-a5d036e9014d" />
 
-*Figure 32: Comparison of absolute errors by category*
+*Figure 31: Comparison of absolute errors by category*
 
 <img width="1339" height="833" alt="image" src="https://github.com/user-attachments/assets/f1560129-5391-4df9-b742-638b88da75ee" />
 
