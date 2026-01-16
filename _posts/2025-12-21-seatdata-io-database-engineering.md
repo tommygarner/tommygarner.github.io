@@ -1,7 +1,7 @@
 ---
 layout: single
 title: "SeatData.io Part 1: Database Engineering and Warehouse"
-date: 2026-01-07
+date: 2025-12-21
 description: "Designing a Star Schema and ETL Pipeline in BigQuery for High-Frequency Secondary Market Snapshots"
 author_profile: true
 toc: true
