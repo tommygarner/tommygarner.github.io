@@ -42,11 +42,11 @@ The reasoning behind this is likely due to the **BOTS Act** (and it's recent enf
 ### 1.2 My Approach
 While the ultimate goal is to forecast how secondary market prices and sales volume moves, I couldn't model what I couldn't store. Secondary market listings change by the hour and sales are sparse, with many events having zero-day sales. I needed a system that had:
 
--  History: Capturing daily snapshots so that to evaluate that point in time
--  Data Integrity: Standardizing messy CSV inputs into a schema
--  Opportunity to Scale: Allowing for fast querying across millions of rows
+-  **History**: Capturing daily snapshots so that to evaluate that point in time
+-  **Data Integrity**: Standardizing messy CSV inputs into a schema
+-  **Opportunity to Scale**: Allowing for fast querying across millions of rows
 
-In this post, I detail the first phase of this SeatData.io project: moving from raw email attachments to a fully modeled BigQuery Star Schema. This foundation gives me reassurance when I get to later steps down the line, such as feature engineering or machine learning, that my data is clean and ready for work.
+In this post, I detail the first phase of this SeatData.io project: moving **from raw email attachments** to a fully modeled **BigQuery Star Schema**. This foundation gives me reassurance when I get to later steps down the line, such as feature engineering or machine learning, that my data is clean and ready for work.
 
 ---
 
