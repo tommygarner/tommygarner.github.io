@@ -24,7 +24,8 @@ In the secondary ticketing industry, data is often hard to find and behind paywa
 ## Key Contributions
 
 -  Automated Python-based ETL pipeline
--  Regex classification engine
+-  Star Schema dimensional modeling
+-  Regex classification engine (NLP)
 
 ---
 
@@ -171,6 +172,7 @@ Below is the Data Flow Diagram of my database:
 - Data ingestion: SeatData.io CSV, Python
 - Data warehouse: BigQuery (star schema)
 - Transformation: SQL
+- Natural Language Processing: SQL Regex
 
 ## Appendix
 
