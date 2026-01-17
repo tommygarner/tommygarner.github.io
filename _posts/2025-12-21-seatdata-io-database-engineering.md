@@ -135,26 +135,22 @@ These categories were built with granularity in mind, separating by genre, major
 
 #### Claude Code Integration
 
-Then, I was introduced to Claude Code, a coding agent that can evaluate project folder context tokens to make edits and audits to your code. As a way to get familiar with the system, I gave my Claude Code agent the task of refining my `categories.sql` file with the following directions: 
+Then, I was introduced to Claude Code, a coding agent that can evaluate project folder context tokens to make edits and audits to your code. As a way to get familiar with the system, I gave my Claude Code agent the task of refining my `categories.sql` file with the following high-level directions: 
 
 > I need to refactor 'categories.sql' to fix existing logic errors AND reduce the 'Other' bucket. Please follow this 4-step execution plan:
 
-Step 1: AUDIT EXISTING LOGIC (Fixing Mistakes)
-   - Read 'categories.sql' to load the current REGEX patterns.
-   - Run a BigQuery check on secondary-tickets.seatdata.dim_events_categorized for "False Positives" (misclassification).
-     - Query: Find rows labeled 'Major Sports' or 'Concert' that contain keywords usually belonging to the OTHER group (e.g., check for 'Disney' or 'Cirque' hiding in Sports, or ' vs ' hiding in Concerts).
-   - Identify which existing `CASE WHEN` lines are too "greedy" (capturing things they shouldn't) and mark them for editing.
-
-Step 2: DISCOVER GAPS (The 3-Cycle Sweep)
+> Step 1: AUDIT EXISTING LOGIC (Fixing Mistakes)
+> -  Here, I asked Claude Code to first read my existing `categories.sql` regex CASE logic and then to run a BigQuery check on my categorized events table to search for misclassification errors. I gave Claude Code a natural language query to search for rows in categories that contain keywords belonging to the "Other" group to identify those fringe cases and mark them for later editing
+> Step 2: DISCOVER GAPS (The 3-Cycle Sweep)
    - Cycle 1: Find the Top 100 most frequent 'event_name' patterns currently in 'Other'.
    - Cycle 2: Find the Top 50 'Other' patterns EXCLUDING the ones found in Cycle 1.
    - Cycle 3: Find high-volume specific venues in 'Other'.
 
-Step 3: REFACTOR STRATEGY
+> Step 3: REFACTOR STRATEGY
    - Compare your Audit findings (Step 1) with your Gap findings (Step 2).
    - Determine the correct ORDER of operations. (e.g., Ensure the new "Disney" rule is placed ABOVE the generic "Concert" rule so it doesn't get shadowed).
 
-Step 4: WRITE THE CODE
+> Step 4: WRITE THE CODE
    - Rewrite 'categories.sql'.
    - **edit** the existing lines you found were broken in Step 1.
    - **insert** the new rules from Step 2 in the correct locations.
