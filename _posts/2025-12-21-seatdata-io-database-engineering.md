@@ -139,22 +139,24 @@ Then, I was introduced to Claude Code, a coding agent that can evaluate project 
 
 > I need to refactor 'categories.sql' to fix existing logic errors AND reduce the 'Other' bucket. Please follow this 4-step execution plan:
 
-> Step 1: AUDIT EXISTING LOGIC (Fixing Mistakes)
-> -  Here, I asked Claude Code to first read my existing `categories.sql` regex CASE logic and then to run a BigQuery check on my categorized events table to search for misclassification errors. I gave Claude Code a natural language query to search for rows in categories that contain keywords belonging to the "Other" group to identify those fringe cases and mark them for later editing
-> Step 2: DISCOVER GAPS (The 3-Cycle Sweep)
-   - Cycle 1: Find the Top 100 most frequent 'event_name' patterns currently in 'Other'.
-   - Cycle 2: Find the Top 50 'Other' patterns EXCLUDING the ones found in Cycle 1.
-   - Cycle 3: Find high-volume specific venues in 'Other'.
+> **Step 1: AUDIT EXISTING LOGIC (Fixing Mistakes)**
+> -  Here, I asked Claude Code to first read my existing `categories.sql` regex CASE logic and then to run a BigQuery check on my categorized events table to search for misclassification errors
+> -  I gave Claude Code a natural language query to search for rows in categories that contain keywords belonging to the "Other" group to identify those fringe cases and mark them for later editing
 
-> Step 3: REFACTOR STRATEGY
-   - Compare your Audit findings (Step 1) with your Gap findings (Step 2).
-   - Determine the correct ORDER of operations. (e.g., Ensure the new "Disney" rule is placed ABOVE the generic "Concert" rule so it doesn't get shadowed).
+> **Step 2: DISCOVER GAPS (The 3-Cycle Sweep)**
+> -  Cycle 1: Find the Top 100 most frequent 'event_name' patterns currently in 'Other'
+> -  Cycle 2: Find the Top 50 'Other' patterns EXCLUDING the ones found in Cycle 1
+> -  Cycle 3: Find high-volume specific venues in 'Other'
 
-> Step 4: WRITE THE CODE
-   - Rewrite 'categories.sql'.
-   - **edit** the existing lines you found were broken in Step 1.
-   - **insert** the new rules from Step 2 in the correct locations.
-   - Output the full, valid SQL file.
+> **Step 3: REFACTOR STRATEGY**
+> -  Next, I asked Claude Code to compare it's audit findings from Step 1 to the gap findings in step 2
+> -  Then, I let Claude determine the best order of operations in the regex pattern that would minimize the amount of misclassifications
+
+> **Step 4: WRITE THE CODE**
+> -  Finally, I asked Claude Code to rewrite `categories.sql` by
+>    -  Editing the existing lines that the agent found broken from step 1
+>    -  Inserting the new rules it found from step 2
+> -  Then, Claude Code would output the full SQL file in the end
 
 Later, these categories would be aggregated to form the basis of **`focus_buckets`** for my analysis. I would combine these into seven buckets:
 
