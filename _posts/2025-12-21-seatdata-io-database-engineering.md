@@ -135,7 +135,7 @@ These categories were built with granularity in mind, separating by genre, major
 
 #### Claude Code Integration
 
-Then, I was introduced to Claude Code, a coding agent that can evaluate project folder context tokens to make edits and audits to your code. As a way to get familiar with the system, I gave my Claude Code agent the task of refining my `categories.sql` file with the following high-level directions: 
+Then, I was introduced to **Claude Code**, a powerful coding agent that can evaluate a project folder and its contents as **context tokens** to make edits and audits to your code. As a way to get familiar with the system, I gave my Claude Code agent the task of **refining my `categories.sql` file** with the following high-level directions: 
 
 > I need to refactor 'categories.sql' to fix existing logic errors AND reduce the 'Other' bucket. Please follow this 4-step execution plan:
 
@@ -170,6 +170,7 @@ Later, these categories would be aggregated to form the basis of **`focus_bucket
 | **Minor Sports**         | Flint Firebirds at Erie Otters (Ontario Hockey League) | 1356            | 1.19           |
 | **Festivals**            | Sick New World Festival, Badlands Music Festival       | 498             | 0.44           |
 
+
 I landed on these major categories because I thought there was enough differentiation between them and their target consumers/fans that would be telling for my project. For example, I'm expecting to see professional sports tickets move very differently than concert tickets, and will explore this later!
 
 ### 2.5 Fact Table
@@ -197,7 +198,7 @@ Below is the Data Flow Diagram of my database:
 - Data ingestion: SeatData.io CSV, Python
 - Data warehouse: BigQuery (star schema)
 - Transformation: SQL
-- Natural Language Processing: SQL Regex
+- Natural Language Processing: SQL Regex, Claude Code
 
 ## Appendix
 
