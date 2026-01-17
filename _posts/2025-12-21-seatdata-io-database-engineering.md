@@ -133,17 +133,44 @@ Above shows a shell of code that summarizes how these `CASE` logics functioned. 
 
 These categories were built with granularity in mind, separating by genre, major and minor sports leagues, and also niche events and special attractions. After the LLM-generated logic was built, I **manually audited the top 50 Other events** to refine these Regex patterns for high-volume events.
 
+#### Claude Code Integration
+
+Then, I was introduced to Claude Code, a coding agent that can evaluate project folder context tokens to make edits and audits to your code. As a way to get familiar with the system, I gave my Claude Code agent the task of refining my `categories.sql` file with the following directions: 
+
+> I need to refactor 'categories.sql' to fix existing logic errors AND reduce the 'Other' bucket. Please follow this 4-step execution plan:
+
+Step 1: AUDIT EXISTING LOGIC (Fixing Mistakes)
+   - Read 'categories.sql' to load the current REGEX patterns.
+   - Run a BigQuery check on secondary-tickets.seatdata.dim_events_categorized for "False Positives" (misclassification).
+     - Query: Find rows labeled 'Major Sports' or 'Concert' that contain keywords usually belonging to the OTHER group (e.g., check for 'Disney' or 'Cirque' hiding in Sports, or ' vs ' hiding in Concerts).
+   - Identify which existing `CASE WHEN` lines are too "greedy" (capturing things they shouldn't) and mark them for editing.
+
+Step 2: DISCOVER GAPS (The 3-Cycle Sweep)
+   - Cycle 1: Find the Top 100 most frequent 'event_name' patterns currently in 'Other'.
+   - Cycle 2: Find the Top 50 'Other' patterns EXCLUDING the ones found in Cycle 1.
+   - Cycle 3: Find high-volume specific venues in 'Other'.
+
+Step 3: REFACTOR STRATEGY
+   - Compare your Audit findings (Step 1) with your Gap findings (Step 2).
+   - Determine the correct ORDER of operations. (e.g., Ensure the new "Disney" rule is placed ABOVE the generic "Concert" rule so it doesn't get shadowed).
+
+Step 4: WRITE THE CODE
+   - Rewrite 'categories.sql'.
+   - **edit** the existing lines you found were broken in Step 1.
+   - **insert** the new rules from Step 2 in the correct locations.
+   - Output the full, valid SQL file.
+
 Later, these categories would be aggregated to form the basis of **`focus_buckets`** for my analysis. I would combine these into seven buckets:
 
-| Main Category      | Examples                         | Event Count | Percentage |
-|--------------------|-------------------------------------|-------------|------------|
-| **Concert**            | Rock, Pop, Electronic               | 38,223      | 38%        |
-| **Broadway & Theater** | Hamilton, Lion King, MJ The Musical | 24,439      | 24%        |
-| **Other**              | Museums, Meow Wolf                  | 16,851      | 17%        |
-| **Comedy**             | Stand-up, Improv, Comedy Specials   | 9,021       | 9%         |
-| **Major Sports**       | NBA, NFL, MLB, NHL, MLS             | 7,814       | 8%         |
-| **Minor/Other Sports** | Tennis, UFC, Rodeo, NCAA            | 3,515       | 3%         |
-| **Festivals**          | Coachella, Lollapalooza, ACL        | 516         | 1%         |
+| **Main Category**        | **Examples**                                           | **Event Count** | **Percentage** |
+|--------------------------|--------------------------------------------------------|-----------------|----------------|
+| **Concerts**             | Justin Timberlake, Bruno Mars                          | 42859           | 37.54          |
+| **Broadway and Theater** | The Phantom of the Opera                               | 31013           | 27.16          |
+| **Other**                | Zentone, Clover County, Fireboy DML                    | 18941           | 16.59          |
+| **Comedy**               | Saturday Standup, Jeff Arcuri                          | 10208           | 8.94           |
+| **Major Sports**         | Miami Marlins at Houston Astros                        | 9300            | 8.15           |
+| **Minor Sports**         | Flint Firebirds at Erie Otters (Ontario Hockey League) | 1356            | 1.19           |
+| **Festivals**            | Sick New World Festival, Badlands Music Festival       | 498             | 0.44           |
 
 I landed on these major categories because I thought there was enough differentiation between them and their target consumers/fans that would be telling for my project. For example, I'm expecting to see professional sports tickets move very differently than concert tickets, and will explore this later!
 
