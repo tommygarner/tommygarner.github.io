@@ -17,4 +17,21 @@ tags:
 excerpt: "How I exported my SeatData.io snapshots into Tableau for end-users with the goal of market valuation"
 ---
 
+## Abstract
+
+When reporting data, stakeholders care less about individual rows of data and more about **quickly undertanding the value** across categories, venues, and cities. This post walks through how I took my SeatData.io snapshots from BigQuery into Tableau to build an **interactive market dashboard that uses StubHub resale as a proxy**. The end result is a tool that lets a pricing or partnership analyst **drill down** from state, veneue and event to answer practical questions.
+
+## Key Contributions
+
+-  Linked Tableau dashboard wired to SeatData.io snapshots
+-  7-day market valuation view by category, venue, and event
+-  Interactive filters and actions designed around an analyst workflow
+
+## 1. Why this Dashboard
+
+The primary goal of this dashboard is to give an end-user (revenue, pricing, or partnerships analyst) a fast way to **value the resale market** without having to write a single query in my database. Instead of static and tabular data, the dashboard centers around the following questions:
+
+-  How big is each category's market in terms of week-long sales and event volume?
+-  
+
 <div class='tableauPlaceholder' id='viz1768953461892' style='position: relative'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ma&#47;market_dashboard_17689534779160&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='market_dashboard_17689534779160&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;ma&#47;market_dashboard_17689534779160&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1768953461892');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.85)+'px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.85)+'px';} else { vizElement.style.width='100%';vizElement.style.height='1577px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
