@@ -15,6 +15,8 @@ tags:
 excerpt: "From raw snapshots to prediction-ready features: the critical transformations that set up successful modeling."
 ---
 
+<img width="421" height="278" alt="image" src="https://github.com/user-attachments/assets/6d70d229-4242-46f3-8d6c-9e5fae2ce4ed" />
+
 ## Abstract
 
 After validating data quality in Part 2's EDA, I faced a critical question: how do I transform 5.7 million raw snapshots into features that models can actually learn from? Feature engineering bridges the gap between raw data and predictive models. Through log transformations, cyclical encoding, and domain-driven interaction terms, I engineered 29 features that capture the temporal dynamics, pricing psychology, and segment-specific behaviors of the secondary ticket market.
