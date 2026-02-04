@@ -3,7 +3,6 @@ title: "The Setlist: A Personalized Concert Recommender"
 collection: portfolio
 excerpt: "Streamlit app that matches your Spotify taste with upcoming concerts using Ticketmaster and SeatGeek APIs."
 date: 2025-12-01
-repo: "https://github.com/tommygarner/setlist" 
 tags:
   - recommender systems
   - live entertainment
@@ -11,6 +10,7 @@ tags:
   - streamlit
   - supabase
 ---
+[<i class="fab fa-github" aria-hidden="true"></i> View Code on GitHub](https://github.com/tommygarner/The-Setlist){: .btn .btn--primary}
 
 The Setlist is a personalized concert recommendation app that connects listeners’ Spotify libraries with real‑time concert data. The app pulls a user’s favorite artists from Spotify, enriches them with metadata, and then queries Ticketmaster and SeatGeek APIs to find matching shows in selected markets.
 
