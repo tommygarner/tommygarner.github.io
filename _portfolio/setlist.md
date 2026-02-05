@@ -2,7 +2,7 @@
 title: "The Setlist: A Personalized Concert Recommender"
 collection: portfolio
 excerpt: "Streamlit app that matches your Spotify taste with upcoming concerts using Ticketmaster and SeatGeek APIs."
-date: 2025-12-01
+date: 2025-11-23
 tags:
   - recommender systems
   - live entertainment
