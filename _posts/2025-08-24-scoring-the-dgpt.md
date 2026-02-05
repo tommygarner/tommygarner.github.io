@@ -155,13 +155,8 @@ This is largely due to the amount of times each course has been played. The Blac
 
 ## Thank you for reading! 
 
-*I hope you enjoyed my ramble about disc golf.*
-
 *My hope is that I've convinced you to try out a JomezPro video next time you're searching YouTube while you eat your food.*
-
--Tommy G
 
 ---
 **Tools used:** Python, Pandas, Web scraping  
 **Data source:** [Statmando](https://statmando.com)  
-[View project on GitHub →](https://github.com/tommygarner)
