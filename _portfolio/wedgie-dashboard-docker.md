@@ -130,17 +130,26 @@
   Here's the scenario every data scientist has experienced:
 
   **You**: "Check out this dashboard I built!"
+  
   **Colleague**: "Okay, running `streamlit run app.py`..."
+  
   **Terminal**: `ModuleNotFoundError: No module named 'nba_api'`
+  
   **Colleague**: "Did you include a requirements.txt?"
+  
   **You**: "Yes, run `pip install -r requirements.txt`"
+  
   **Terminal**: `ERROR: Could not find a version that satisfies the requirement streamlit>=1.32.0`
+  
   **Colleague**: "What Python version are you using?"
+  
   **You**: "3.11"
+  
   **Colleague**: "I'm on 3.9, maybe that's why..."
+  
   **You**: "..."
 
-  This is the **dependency nightmare** problem. Python applications rely on:
+  This is the **dependency nightmare**. Python applications rely on:
 
   - **The right Python version** (3.9 vs 3.11 vs 3.13)
   - **The right package versions** (Streamlit 1.32 has different APIs than 1.28)
@@ -158,32 +167,31 @@
 
   Docker solves this by packaging **everything** your application needs into a single container:
 
-  ┌─────────────────────────────────────┐
-  │         Docker Container            │
-  │                                     │
-  │  ┌──────────────────────────────┐  │
-  │  │  Your Application (app.py)    │  │
-  │  └──────────────────────────────┘  │
-  │                                     │
-  │  ┌──────────────────────────────┐  │
-  │  │  Python 3.11 Runtime          │  │
-  │  └──────────────────────────────┘  │
-  │                                     │
-  │  ┌──────────────────────────────┐  │
-  │  │  All Dependencies             │  │
-  │  │  (streamlit, plotly, pandas)  │  │
-  │  └──────────────────────────────┘  │
-  │                                     │
-  │  ┌──────────────────────────────┐  │
-  │  │  System Libraries             │  │
-  │  │  (gcc, git, etc.)             │  │
-  │  └──────────────────────────────┘  │
-  │                                     │
-  │  ┌──────────────────────────────┐  │
-  │  │  Linux OS (Debian/Alpine)     │  │
-  │  └──────────────────────────────┘  │
-  └─────────────────────────────────────┘
-
+┌───────────────────────────────────────────┐
+│             Docker Container              │
+│                                           │
+│  ┌─────────────────────────────────────┐  │
+│  │      Your Application (app.py)      │  │
+│  └─────────────────────────────────────┘  │
+│                                           │
+│  ┌─────────────────────────────────────┐  │
+│  │         Python 3.11 Runtime         │  │
+│  └─────────────────────────────────────┘  │
+│                                           │
+│  ┌─────────────────────────────────────┐  │
+│  │          All Dependencies           │  │
+│  │     (streamlit, plotly, pandas)     │  │
+│  └─────────────────────────────────────┘  │
+│                                           │
+│  ┌─────────────────────────────────────┐  │
+│  │           System Libraries          │  │
+│  │           (gcc, git, etc.)          │  │
+│  └─────────────────────────────────────┘  │
+│                                           │
+│  ┌─────────────────────────────────────┐  │
+│  │              Linux OS               │  │
+│  └─────────────────────────────────────┘  │
+└───────────────────────────────────────────┘
   **Key Part**: A Docker container is like a lightweight virtual machine that includes the OS, runtime, dependencies,
    and application **but shares the host's kernel**, making it much faster than traditional VMs. To share a kernel means that the container stays lightweight by letting the host machine handle the core system tasks, allowing the app to start instantly and use fewer resources than booting up a VM. 
 
