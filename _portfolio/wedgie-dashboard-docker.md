@@ -1,4 +1,4 @@
-● ---
+---
   layout: single
   title: "Wedgie Heatmap Dashboard: A Docker Deep Dive"
   date: 2026-02-06
@@ -16,7 +16,7 @@
     - python
   excerpt: "How Docker transformed a complex Streamlit app with multiple dependencies into a reproducible, portable
   analytics platform—and why containerization matters for data science projects."
-  ---
+---
 
   [<i class="fab fa-github" aria-hidden="true"></i> View Code on
   GitHub](https://github.com/tommygarner/wedgie-tracker-dashboard){: .btn .btn--primary}
