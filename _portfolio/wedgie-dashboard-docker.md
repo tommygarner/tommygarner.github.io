@@ -385,9 +385,9 @@
         retries: 3
   ```
 
-  Why Docker Compose?
+ **Why Docker Compose?**
 
-  Before Docker Compose (manual commands):
+  **Before** Docker Compose (manual commands):
 
   ```PS
   # Build image
@@ -411,8 +411,11 @@
 
   # Remove container
   docker rm wedgie-dashboard
+  ```
 
-  With Docker Compose (simple commands):
+  **With** Docker Compose (simple commands):
+
+  ```PS
   # Build and start
   docker-compose up --build
 
@@ -433,21 +436,21 @@
   The volume mounts solve three problems:
 
   1. **Data persistence**:
-  - ./data/processed:/app/data/processed
+  - `./data/processed:/app/data/processed`
   When the enrichment pipeline writes to data/processed/wedgies_enriched.csv, it writes to your local filesystem, not
   inside the temporary container.
 
   2. **Cache reuse**:
-  - ./data/cache:/app/data/cache
+  - `./data/cache:/app/data/cache`
   NBA API responses are cached locally. When you rebuild the container, the cache persists, avoiding redundant API
   calls and eventually rate limiting.
 
   3. **Local development**:
   * Optional: for live code editing
-  - ./app.py:/app/app.py
-  - ./dashboard:/app/dashboard
+  - `./app.py:/app/app.py`
+  - `./dashboard:/app/dashboard`
   During development, you can edit code locally and see changes without rebuilding
-  development workflow.)
+  the entire Docker container.
 
 ### 4.4 Multi-Stage Builds
 
@@ -548,7 +551,7 @@
 
 ### 5.3 Transitioning to Cloud Deployment
 
-  Docker's portability shines here: the same image that runs locally can deploy to cloud providers.
+  Docker's portability works great from taking this to a cloud environment, since the same image that runs locally can deploy to cloud providers.
 
   I chose to deploy the dashboard at the very top of this post on Streamlit Cloud, which I have found is the easiest cloud deployment.
 
@@ -562,19 +565,19 @@
   Once my codebase lives in GitHub, I can point a new app on Streamlit Cloud to this repo, where it automatically detects requirements.txt, and begins to build and deploy my dashboard. All free with no configuration. Plus, whenever I push new changes to the dashboard, Streamlit Cloud automatically detects them and rebuilds on push.
 
   ---
-## 6. Docker Best Practices I Learned
+## 6. What I Learned About Docker
 
-  6.1 Keep Images Small
+### 6.1 Keep Images Small
 
-  Before (naive approach):
+  Before:
   FROM python:3.11  # Full image: 1.2 GB
 
-  After (optimized):
+  After:
   FROM python:3.11-slim  # Slim image: 180 MB
 
-  Benefit: 85% size reduction means faster builds, pushes, and pulls.
+  **85% size reduction** means faster builds, pushes, and pulls.
 
-  6.2 Use .dockerignore
+### 6.2 Use .dockerignore
 
   Just like .gitignore, .dockerignore prevents copying unnecessary files:
 
@@ -588,136 +591,55 @@
   venv/
 
   Before: Image includes 500 MB of cached API responses.
+  
   After: Image only includes code, data persists via volumes.
 
-  6.3 Layer Caching is Your Friend
+### 6.3 Layer Caching
 
-  Bad (invalidates cache on every change):
+  ```PS
   COPY . .
   RUN pip install -r requirements.txt
+  ```
 
-  Good (only reinstalls if requirements change):
+  This method is bad because you're invalidating cache upon every change.
+
+  ```PS
   COPY requirements.txt .
   RUN pip install -r requirements.txt
   COPY . .
+  ```
 
-  Impact: Rebuilds take 5 seconds instead of 2 minutes when you only change code.
+  Whereas this code chunk only reinstalls requirements when they change, allowing you to rebuild in a matter of seconds when you only change code.
 
-  6.4 Don't Run as Root
+### 6.5 Health Checks for Reliability
 
-  By default, containers run as root, which is a security risk:
+  As scale increases and you begin to mess around with Kubernetes pods and clusters, I learned that health checks can find if your app experienced any crashes and can automatically restart the build:
 
-  # Create non-root user
-  RUN useradd -m -u 1000 appuser && chown -R appuser /app
-  USER appuser
-
-  For this project, I skipped this (it's not internet-facing), but for production, always use non-root users.
-
-  6.5 Health Checks for Reliability
-
+  ```PS
   HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
-
-  This lets Docker (and orchestrators like Kubernetes) detect if the app crashed and automatically restart it.
-
-  ---
-  7. Common Docker Debugging Scenarios
-
-  7.1 "Container won't start"
-
-  # Check logs
-  docker-compose logs
-
-  # Common causes:
-  # - Port 8501 already in use
-  # - Missing environment variables
-  # - Syntax error in code
-
-  Solution: Logs tell you exactly what failed. Fix the error, rebuild.
-
-  7.2 "Can't access dashboard from browser"
-
-  # Verify container is running
-  docker-compose ps
-
-  # Check port mapping
-  # Should show: 0.0.0.0:8501->8501/tcp
-
-  Common fix: Ensure --server.address 0.0.0.0 in Streamlit command.
-
-  7.3 "Data not persisting"
-
-  # Check if volumes are mounted
-  docker inspect wedgie-dashboard | grep Mounts
-
-  Solution: Verify docker-compose.yml has correct volume paths.
-
-  7.4 "Module not found" inside container
-
-  # Exec into container to debug
-  docker-compose exec dashboard bash
-
-  # Check if package is installed
-  pip list | grep streamlit
-
-  # If missing, rebuild
-  docker-compose up --build
-
-  7.5 "Works locally, fails in cloud"
-
-  Common cause: Different base image or Python version between local and cloud.
-
-  Solution: Pin versions in Dockerfile:
-  FROM python:3.11.8-slim  # Specific version, not "latest"
+  ```
 
   ---
-  8. Docker vs. Alternatives
+## 7. Lessons Learned
 
-  Why not just use virtual environments or conda?
-  Approach: venv/virtualenv
-  Pros: Simple, lightweight, Python-native
-  Cons: Only isolates Python packages, not system dependencies or Python version
-  ────────────────────────────────────────
-  Approach: conda
-  Pros: Handles non-Python dependencies, good for data science
-  Cons: Large environments, slow package resolution, not truly isolated
-  ────────────────────────────────────────
-  Approach: Docker
-  Pros: Full OS isolation, reproducible across any machine, production-ready
-  Cons: Learning curve, slightly more overhead, requires Docker installed
-  When to use each:
+  **Docker is worth the learning curve**: It took me a few hours to understand images vs. containers, volumes, and
+  networking. But once I got it, deployment became a whole lot easier.
 
-  - venv: Simple Python projects, all developers use same OS
-  - conda: Data science with C/C++ dependencies (CUDA, HDF5)
-  - Docker: Multi-dependency apps, deployment to cloud, team collaboration across OSes
-
-  For this project, Docker was the right choice because:
-  - Streamlit + Plotly + NBA API have complex dependencies
-  - I wanted to deploy to cloud (Linux) while developing on Windows
-  - I wanted anyone to run it with one command: docker-compose up
-
-  ---
-  9. Lessons Learned
-
-  Docker is worth the learning curve: It took me a few hours to understand images vs. containers, volumes, and
-  networking. But once I got it, deployment became trivial.
-
-  Start simple, optimize later: My first Dockerfile was 5 lines. Multi-stage builds and optimizations came after the app
+  **Start simple, optimize later**: My first Dockerfile was 5 lines. Multi-stage builds and optimizations came after the app
    worked.
 
-  Docker Compose is essential: Manually running docker run with 10 flags is tedious. Compose files are cleaner and
+  **Docker Compose is a best friend**: Manually running docker run with 10 flags is tedious. Compose files are cleaner and
   version-controlled.
 
-  Volumes save you from data loss: Always mount data directories. Learned this the hard way when I lost enriched CSV
-  after docker-compose down.
-
-  Docker doesn't replace good architecture: Containers won't fix a poorly designed app. Docker just makes a good app
-  easier to deploy.
+  **Volumes save you from data loss**: Always mount data directories. Learned this the hard way when I lost enriched CSV
+  after docker-compose down and had to re-run my scraping pipeline.
 
   ---
-  10. Try It Yourself
+## 8. Try It Yourself
 
   Want to run the Wedgie Dashboard locally?
-
+  
+  ```PS
   # Clone the repo
   git clone https://github.com/tommygarner/wedgie-tracker-dashboard.git
   cd wedgie-tracker-dashboard
@@ -727,14 +649,15 @@
 
   # Open browser
   http://localhost:8501
+  ```
 
-  That's it. Docker handles Python version, dependencies, environment setup—everything.
+  That's it. Docker handles Python version, dependencies, environment setup... everything.
 
   And if you want to deploy it? Push the image to a registry, spin up a cloud server, and run the same docker-compose up
    command. It will work identically.
 
   ---
-  Tech Stack
+# Tech Stack
 
   Containerization:
   - Docker 24.x
@@ -759,9 +682,3 @@
   ---
   If you're building data science applications and haven't tried Docker yet, this project is a great starting point.
   Clone the repo, run docker-compose up, and see how containerization can transform your deployment workflow.
-
-  ---
-  Special thanks to Claude Code for building the dashboard features while I focused on the Docker infrastructure. Turns
-  out, pairing AI for code and humans for DevOps is a pretty good workflow.
-
-  ---
