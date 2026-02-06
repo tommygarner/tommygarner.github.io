@@ -456,7 +456,7 @@
 
   For production deployments, you can optimize image sizes with multi-stage builds:
 
-  # Stage 1: Build dependencies
+#### Stage 1: Build dependencies
 
   ```PS
   FROM python:3.11-slim AS builder
@@ -470,7 +470,7 @@
   RUN pip install --no-cache-dir -r requirements.txt
   ```
 
-  # Stage 2: Production image
+#### Stage 2: Production image
   ```PS
   FROM python:3.11-slim
 
