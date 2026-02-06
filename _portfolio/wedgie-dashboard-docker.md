@@ -216,11 +216,6 @@
   - Share with collaborators (Mac, Linux, Windows)
   - Ensure reproducibility for future me
 
-  **4. Isolation from other projects**:
-  - My machine has other Python projects
-  - Don't want version conflicts
-  - Clean slate for each app
-
   ---
 
 ## 3. Docker Fundamentals
@@ -228,6 +223,10 @@
   Before diving into the implementation, I want to clarify core Docker concepts:
 
 ### 3.1 Images vs. Containers
+
+<img width="1200" height="594" alt="image" src="https://github.com/user-attachments/assets/70129071-27be-453a-b0ec-d9c2838d4b99" />
+
+*Figure 1: Images and Containers*
 
   **Image**: A blueprint or template (like a class in Object Oriented Programming)
   - Read-only filesystem snapshot
@@ -241,7 +240,7 @@
   - Can be started, stopped, deleted
   - Multiple containers can run from one image
 
-  ### 3.2 Dockerfile
+### 3.2 Dockerfile
 
   A `Dockerfile` is a script that defines how to build an image:
 
@@ -266,30 +265,39 @@
 
   # Command to run when container starts
   CMD ["streamlit", "run", "app.py"]
+  ```
 
   Each line creates a layer. Docker caches layers, so if you only change app.py, it doesn't reinstall all
-  dependencies—just copies the new code.
+  dependencies. It just copies the new code.
 
-  3.3 Volumes
+### 3.3 Volumes
 
-  Problem: Containers are ephemeral. When you stop a container, any data written inside is lost.
+  The problem is that containers are temporary. Once you stop a container, that data written inside is lost.
 
-  Solution: Volumes mount external directories into the container:
+  So what can you do? Well, volumes are a feature that can mount external data directories inside a container.
 
+  <img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/034f3fdb-6176-4d05-a901-2746e6d5a676" />
+
+  *Figure 2: How do volumes work?*
+
+  ```dockerfile
   volumes:
     - ./data:/app/data  # Mount local data/ folder to container's /app/data
+  ```
 
-  Now when the container writes to /app/data, it's actually writing to your local ./data folder, which persists after
-  the container stops.
+  Now when the container writes to /app/data, it's actually writing to your local ./data folder, which remains after the container stops.
 
-  3.4 Docker Compose
+### 3.4 Docker Compose
 
-  Problem: Running containers with many options gets verbose:
+  Another problem that Docker sovles is simplifying the entire process of running a container. Take, for instance, a container with many options:
 
+  ```ps
   docker run -p 8501:8501 -v ./data:/app/data -v ./cache:/app/cache --name wedgie-dashboard wedgie-image:latest
+  ```
 
-  Solution: Docker Compose uses a YAML file to define services:
+  To solve this problem, Docker Compose allows you to define an entire app stack in a single configuration file. Instead of the PS command above with options ontop of options, Docker makes it as easy as possible.
 
+  ```YAML
   version: '3.8'
   services:
     dashboard:
@@ -299,8 +307,9 @@
       volumes:
         - ./data:/app/data
         - ./cache:/app/cache
+  ```
 
-  Now just run: docker-compose up
+  Now, all I need to do is just run: ```PS docker-compose up```
 
   ---
   4. Implementing Docker for the Wedgie Dashboard
