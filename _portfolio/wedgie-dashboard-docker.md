@@ -167,31 +167,10 @@
 
   Docker solves this by packaging **everything** your application needs into a single container:
 
-┌───────────────────────────────────────────┐
-│             Docker Container              │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │      Your Application (app.py)      │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │         Python 3.11 Runtime         │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │          All Dependencies           │  │
-│  │     (streamlit, plotly, pandas)     │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │           System Libraries          │  │
-│  │           (gcc, git, etc.)          │  │
-│  └─────────────────────────────────────┘  │
-│                                           │
-│  ┌─────────────────────────────────────┐  │
-│  │              Linux OS               │  │
-│  └─────────────────────────────────────┘  │
-└───────────────────────────────────────────┘
+<img width="1300" height="530" alt="image" src="https://github.com/user-attachments/assets/ecaf82ab-cf26-4849-9ef7-968ce18637e7" />
+
+*Figure 1: What's in Docker?*
+
   **Key Part**: A Docker container is like a lightweight virtual machine that includes the OS, runtime, dependencies,
    and application **but shares the host's kernel**, making it much faster than traditional VMs. To share a kernel means that the container stays lightweight by letting the host machine handle the core system tasks, allowing the app to start instantly and use fewer resources than booting up a VM. 
 
@@ -226,7 +205,7 @@
 
 <img width="1200" height="594" alt="image" src="https://github.com/user-attachments/assets/70129071-27be-453a-b0ec-d9c2838d4b99" />
 
-*Figure 1: Images and Containers*
+*Figure 2: Images and Containers*
 
   **Image**: A blueprint or template (like a class in Object Oriented Programming)
   - Read-only filesystem snapshot
@@ -276,9 +255,9 @@
 
   So what can you do? Well, volumes are a feature that can mount external data directories inside a container.
 
-  <img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/034f3fdb-6176-4d05-a901-2746e6d5a676" />
+<img width="1200" height="630" alt="image" src="https://github.com/user-attachments/assets/7fb567b1-b4b2-42c9-862b-fff7c6c52a2b" />
 
-  *Figure 2: How do volumes work?*
+  *Figure 3: Volumes visualized*
 
   ```dockerfile
   volumes:
@@ -309,15 +288,20 @@
         - ./cache:/app/cache
   ```
 
-  Now, all I need to do is just run: ```PS docker-compose up```
+  Now, all I need to do is just run: 
+  
+  ```PS 
+  docker-compose up
+  ```
 
   ---
-  4. Implementing Docker for the Wedgie Dashboard
+## 4. Implementing Docker for the Wedgie Dashboard
 
-  4.1 The Dockerfile
+### 4.1 The Dockerfile
 
   Here's the actual Dockerfile for the project:
 
+  ```dockerfile
   # Use official Python runtime as base image
   FROM python:3.11-slim
 
@@ -349,30 +333,31 @@
 
   # Run Streamlit when container starts
   CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
+  ```
 
   Key decisions:
 
-  1. python:3.11-slim base image:
+  1. **python:3.11**:
   - slim variant is smaller than full Python image (saves 200+ MB)
   - Includes only essential system libraries
-  - Trade-off: some packages with C extensions might need extra dependencies
 
-  2. gcc installation:
+  2. **gcc** installation:
   - Some Python packages (like pandas native extensions) require a C compiler
   - Installed at system level, then cleaned up to minimize image size
 
-  3. Layer ordering:
+  3. **Layer ordering**:
   - requirements.txt copied before application code
   - Docker caches layers, so if you change app.py, it doesn't reinstall dependencies
   - Only if requirements.txt changes do dependencies reinstall
 
-  4. --server.address 0.0.0.0:
+  4. **--server.address 0.0.0.0**:
   - By default, Streamlit only binds to localhost (127.0.0.1)
   - Inside a container, you need 0.0.0.0 to accept connections from host machine
   - Without this, you couldn't access the dashboard from your browser
 
-  4.2 The Docker Compose Configuration
+### 4.2 The Docker Compose Configuration
 
+  ```YAML
   version: '3.8'
 
   services:
@@ -398,10 +383,13 @@
         interval: 30s
         timeout: 10s
         retries: 3
+  ```
 
   Why Docker Compose?
 
   Before Docker Compose (manual commands):
+
+  ```PS
   # Build image
   docker build -t wedgie-dashboard .
 
@@ -436,38 +424,38 @@
 
   # Rebuild
   docker-compose up --build
+  ```
 
-  Much cleaner, and the configuration is version-controlled in docker-compose.yml.
+  Docker Compose is so much cleaner, and the configuration is version-controlled in docker-compose.yml. As applications scale, you can understand why someone would prefer Docker Compose.
 
-  4.3 Volume Mounting Strategy
-
-<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/a0294526-a19c-483c-b97a-72ad8c4f5479" />
-*Figure 1: Docker Volume, visualized*
+### 4.3 Volume Mounting Strategy
 
   The volume mounts solve three problems:
 
-  1. Data persistence:
+  1. **Data persistence**:
   - ./data/processed:/app/data/processed
   When the enrichment pipeline writes to data/processed/wedgies_enriched.csv, it writes to your local filesystem, not
-  inside the ephemeral container.
+  inside the temporary container.
 
-  2. Cache reuse:
+  2. **Cache reuse**:
   - ./data/cache:/app/data/cache
   NBA API responses are cached locally. When you rebuild the container, the cache persists, avoiding redundant API
-  calls.
+  calls and eventually rate limiting.
 
-  3. Local development:
-  # Optional: for live code editing
+  3. **Local development**:
+  * Optional: for live code editing
   - ./app.py:/app/app.py
   - ./dashboard:/app/dashboard
-  During development, you can edit code locally and see changes without rebuilding. (This adds a "hot reload"
+  During development, you can edit code locally and see changes without rebuilding
   development workflow.)
 
-  4.4 Multi-Stage Builds (Advanced)
+### 4.4 Multi-Stage Builds
 
-  For production deployments, you can optimize image size with multi-stage builds:
+  For production deployments, you can optimize image sizes with multi-stage builds:
 
   # Stage 1: Build dependencies
+
+  ```PS
   FROM python:3.11-slim AS builder
 
   WORKDIR /app
@@ -477,8 +465,10 @@
   RUN python -m venv /opt/venv
   ENV PATH="/opt/venv/bin:$PATH"
   RUN pip install --no-cache-dir -r requirements.txt
+  ```
 
   # Stage 2: Production image
+  ```PS
   FROM python:3.11-slim
 
   WORKDIR /app
@@ -492,27 +482,33 @@
 
   EXPOSE 8501
   CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0"]
+  ```
 
   Why multi-stage?
 
-  - Stage 1 includes build tools (gcc, pip cache)
-  - Stage 2 only includes the virtual environment and code
-  - Final image is ~30% smaller because build tools aren't included
-  - Production image has smaller attack surface
+  - Stage 1 includes **build tools** (gcc, pip cache)
+  - Stage 2 only includes **the virtual environment** and **code**
+  - Final image is **~30% smaller** because build tools aren't included
 
-  For this project, I kept it simple with a single-stage build, but multi-stage is best practice for production.
+  For this project, I kept it simple with a single-stage build, but multi-stage is best practice for production from what I understand.
 
   ---
-  5. Workflow: From Docker to Cloud
+## 5. Workflow: From Docker to Cloud
 
-  5.1 Local Development Workflow
+### 5.1 Local Development Workflow
 
-  Step 1: Clone the repository
+  **Step 1**: Clone the repository
+  
+  ```PS
   git clone https://github.com/tommygarner/wedgie-tracker-dashboard.git
   cd wedgie-tracker-dashboard
+  ```
 
-  Step 2: Build and run with Docker Compose
+  **Step 2**: Build and run with Docker Compose
+  
+  ```PS
   docker-compose up --build
+  ```
 
   This:
   - Builds the Docker image from Dockerfile
@@ -520,88 +516,53 @@
   - Mounts data directories
   - Starts Streamlit on http://localhost:8501
 
-  Step 3: Access the dashboard
-  Open browser to http://localhost:8501 — the dashboard is running inside Docker but accessible from your host machine.
+  **Step 3**: Access the dashboard
+  Open browser to **http://localhost:8501**, and the dashboard will be running inside Docker but accessible from your host machine.
 
-  Step 4: Make changes (optional)
+  **Step 4**: Make changes (optional)
   Edit code locally. If you mounted volumes for code (./app.py:/app/app.py), Streamlit auto-reloads. Otherwise, restart:
+
+  ```PS
   docker-compose restart
+  ```
 
-  Step 5: Stop the container
+  **Step 5**: Stop the container
+
+  ```PS
   docker-compose down
+  ```
 
-  5.2 Running the Data Pipeline in Docker
+### 5.2 Running the Data Pipeline in Docker
 
-  The enrichment pipeline can also run inside the container:
+  The data enrichment pipeline can also run inside the container:
 
+  ```PS
   # Run pipeline inside the running container
   docker-compose exec dashboard python -m scraper.run_pipeline --skip-scrape
 
   # Or run as a one-off command
   docker-compose run dashboard python -m scraper.run_pipeline
+  ```
 
-  This ensures the pipeline runs with the exact same dependencies as the dashboard, avoiding "works in pipeline but not
-  in dashboard" issues.
+  This ensures the pipeline runs with the exact same dependencies as the dashboard.
 
-  5.3 Transitioning to Cloud Deployment
+### 5.3 Transitioning to Cloud Deployment
 
   Docker's portability shines here: the same image that runs locally can deploy to cloud providers.
 
-  Option 1: Streamlit Cloud (Simplest)
+  I chose to deploy the dashboard at the very top of this post on Streamlit Cloud, which I have found is the easiest cloud deployment.
 
   Streamlit Cloud doesn't use Docker directly, but reads requirements.txt:
+
+  ```PS
   # Push to GitHub
   git push origin main
+  ```
 
-  # On Streamlit Cloud dashboard:
-  # 1. Connect GitHub repo
-  # 2. It automatically detects requirements.txt
-  # 3. Builds and deploys
-
-  Advantage: Free, zero configuration, automatic rebuilds on push.
-
-  Disadvantage: Less control over environment, can't run scraping pipeline (cloud runners have limited compute).
-
-  Option 2: Deploy Docker to Cloud VPS (Digital Ocean, AWS EC2, etc.)
-
-  # On cloud server:
-  git clone https://github.com/tommygarner/wedgie-tracker-dashboard.git
-  cd wedgie-tracker-dashboard
-
-  # Install Docker (one-time setup)
-  curl -fsSL https://get.docker.com -o get-docker.sh
-  sudo sh get-docker.sh
-
-  # Run the dashboard
-  docker-compose up -d
-
-  # Access via server IP
-  http://your-server-ip:8501
-
-  Advantage: Full control, can run data pipeline, persistent storage.
-
-  Disadvantage: Costs money, requires server management.
-
-  Option 3: Container Registry + Orchestration (Production Scale)
-
-  # Build and tag image
-  docker build -t your-dockerhub-username/wedgie-dashboard:latest .
-
-  # Push to Docker Hub
-  docker push your-dockerhub-username/wedgie-dashboard:latest
-
-  # Deploy to Kubernetes, AWS ECS, Google Cloud Run, etc.
-  kubectl apply -f deployment.yaml
-
-  Advantage: Scales to many users, load balancing, zero-downtime deployments.
-
-  Disadvantage: Complex, overkill for a personal project.
-
-  My Choice: For this project, I use Streamlit Cloud for public access (simple, free) and local Docker for development
-  and data pipeline work (full control, fast iteration).
+  Once my codebase lives in GitHub, I can point a new app on Streamlit Cloud to this repo, where it automatically detects requirements.txt, and begins to build and deploy my dashboard. All free with no configuration. Plus, whenever I push new changes to the dashboard, Streamlit Cloud automatically detects them and rebuilds on push.
 
   ---
-  6. Docker Best Practices I Learned
+## 6. Docker Best Practices I Learned
 
   6.1 Keep Images Small
 
