@@ -611,7 +611,7 @@
 
   Whereas this code chunk only reinstalls requirements when they change, allowing you to rebuild in a matter of seconds when you only change code.
 
-### 6.5 Health Checks for Reliability
+### 6.4 Health Checks for Reliability
 
   As scale increases and you begin to mess around with Kubernetes pods and clusters, I learned that health checks can find if your app experienced any crashes and can automatically restart the build:
 
