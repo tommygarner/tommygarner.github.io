@@ -24,25 +24,34 @@
   [<i class="fas fa-external-link-alt" aria-hidden="true"></i> View Live
   Dashboard](https://wedgie-tracker-dashboard.streamlit.app/){: .btn .btn--info}
 
-  *Interactive Dashboard*
+  <style>
+    .streamlit-container {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 2rem 0;
+    }
+    .dashboard-loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+      font-style: italic;
+    }
+  </style>
 
-  <div style="background: #f8f9fa; padding: 2rem; border-radius: 8px; text-align: center; margin: 2rem 0;">
-    <h3 style="margin-top: 0;">Wedgie Dashboard</h3>
-    <p style="color: #666; margin-bottom: 1.5rem;">
-      Explore 600+ NBA wedgie events with interactive court visualizations, video playback, and advanced analytics.
-    </p>
-    <a href="https://wedgie-tracker-dashboard.streamlit.app/"
-       target="_blank"
-       style="display: inline-block; padding: 1rem 2.5rem; background: #FF4B4B; color: white; text-decoration: none;
-  border-radius: 8px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform
-   0.2s;"
-       onmouseover="this.style.transform='translateY(-2px)'"
-       onmouseout="this.style.transform='translateY(0)'">
-      Launch Interactive Dashboard →
-    </a>
-    <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
-      Note: Opens in new tab due to Streamlit Cloud iframe restrictions
-    </p>
+  <div class="streamlit-container">
+    <div id="dashboard-loading" class="dashboard-loading">Loading interactive dashboard...</div>
+    <iframe
+      id="wedgie-dashboard"
+      src="https://wedgie-tracker-dashboard.streamlit.app/?embed=true"
+      width="100%"
+      height="1200"
+      frameborder="0"
+      allowfullscreen="true"
+      style="display:none;"
+      onload="document.getElementById('dashboard-loading').style.display='none'; this.style.display='block';">
+    </iframe>
   </div>
 
   ---
