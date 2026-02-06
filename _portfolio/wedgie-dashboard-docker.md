@@ -69,7 +69,7 @@
   it's a deep dive into **why I containerized the application** and **how Docker solves the problem** of different machines, different    outcomes that plagues data science deployments. I'll walk through Dockerfiles, multi-stage builds, volume mounts,
   and the transition from local development to cloud hosting.
 
-  ## Key Contributions
+## Key Contributions
 
   - **Dockerized Streamlit application** with reproducible builds
   - **Multi-stage Docker builds** for development vs. production
@@ -79,11 +79,11 @@
 
   ---
 
-  ## 1. The Dashboard (In Brief)
+## 1. The Dashboard
 
   Before diving into Docker, let me quickly highlight what makes this dashboard interesting:
 
-  ### 1.1 What It Does
+### 1.1 What It Does
 
   The Wedgie Dashboard is an interactive analytics platform that:
 
@@ -93,7 +93,7 @@
   - **Provides player profiles** with filterable video galleries and career statistics
   - **Analyzes patterns** through historical trends, shot clock pressure, and zone evolution charts
 
-  ### 1.2 The Coolest Parts
+### 1.2 The Coolest Parts
 
   **Court Zone System**: Uses trigonometry to classify every shot into precise zones. The restricted area is an arc,
   wing threes are sectors based on angle calculations, and the system validates shot distances to prevent mismatches
@@ -105,9 +105,9 @@
 
   **Smart Data Enrichment**: The NBA API doesn't have a "wedgie" event type, so the pipeline scrapes WedgieTracker.com,
   matches events to official shot data, and validates matches with distance-based scoring. A layup wedgie must be < 10
-  feet, three-pointers must be 22-35 feet, etc.
+  feet, three-pointers must be 22-35 feet, etc. It's not perfect matching, since players miss multiple threes per game, but the logic covers most cases.
 
-  ### 1.3 Built with Claude Code
+### 1.3 Built with Claude Code
 
   Full transparency: **Claude Code built about 80% of this dashboard**. I provided the architecture (zones, video,
   analytics) and Claude Code implemented:
@@ -115,7 +115,7 @@
   - Zone classification algorithms with geometric calculations
   - Video player components with fallback logic
   - Advanced analytics charts (historical trends, shot clock analysis)
-  - UI polish (removing emojis, consolidating shot types)
+  - UI polish (consolidating shot types, tab ideas)
   - Bug fixes (Plotly API updates, scatter plot click handling)
 
   The value I added was product thinking (what features matter?), data quality validation (improved shot matching
@@ -123,9 +123,9 @@
 
   ---
 
-  ## 2. Why Docker? The Deployment Problem
+## 2. Why Docker? The Deployment Problem
 
-  ### 2.1 The "Works on My Machine" Syndrome
+### 2.1 "Works on My Laptop"
 
   Here's the scenario every data scientist has experienced:
 
@@ -140,7 +140,7 @@
   **Colleague**: "I'm on 3.9, maybe that's why..."
   **You**: "..."
 
-  This is the **dependency hell** problem. Python applications rely on:
+  This is the **dependency nightmare** problem. Python applications rely on:
 
   - **The right Python version** (3.9 vs 3.11 vs 3.13)
   - **The right package versions** (Streamlit 1.32 has different APIs than 1.28)
@@ -154,7 +154,7 @@
   - System Python might differ from virtual env Python
   - OS-specific quirks (Windows vs. Mac vs. Linux)
 
-  ### 2.2 The Docker Solution
+### 2.2 The Docker Solution
 
   Docker solves this by packaging **everything** your application needs into a single container:
 
@@ -184,10 +184,10 @@
   │  └──────────────────────────────┘  │
   └─────────────────────────────────────┘
 
-  **Key insight**: A Docker container is like a lightweight virtual machine that includes the OS, runtime, dependencies,
-   and application—**but shares the host's kernel**, making it much faster than traditional VMs.
+  **Key Part**: A Docker container is like a lightweight virtual machine that includes the OS, runtime, dependencies,
+   and application **but shares the host's kernel**, making it much faster than traditional VMs. To share a kernel means that the container stays lightweight by letting the host machine handle the core system tasks, allowing the app to start instantly and use fewer resources than booting up a VM. 
 
-  ### 2.3 Why Docker for This Project
+### 2.3 Why Docker for This Project
 
   For the Wedgie Dashboard specifically, Docker was essential because:
 
@@ -215,13 +215,13 @@
 
   ---
 
-  ## 3. Docker Fundamentals
+## 3. Docker Fundamentals
 
-  Before diving into the implementation, let's clarify core Docker concepts:
+  Before diving into the implementation, I want to clarify core Docker concepts:
 
-  ### 3.1 Images vs. Containers
+### 3.1 Images vs. Containers
 
-  **Image**: A blueprint or template (like a class in OOP)
+  **Image**: A blueprint or template (like a class in Object Oriented Programming)
   - Read-only filesystem snapshot
   - Contains OS, runtime, dependencies, application code
   - Built once, used many times
@@ -229,11 +229,9 @@
 
   **Container**: A running instance of an image (like an object in OOP)
   - Writable layer on top of the image
-  - Isolated process with own filesystem, network, process space
+  - Isolated process with its own filesystem, network, process space
   - Can be started, stopped, deleted
   - Multiple containers can run from one image
-
-  **Analogy**: Image is like a recipe, container is the actual cake you baked from it.
 
   ### 3.2 Dockerfile
 
@@ -425,6 +423,9 @@
   Much cleaner, and the configuration is version-controlled in docker-compose.yml.
 
   4.3 Volume Mounting Strategy
+
+<img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/a0294526-a19c-483c-b97a-72ad8c4f5479" />
+*Figure 1: Docker Volume, visualized*
 
   The volume mounts solve three problems:
 
