@@ -1,6 +1,6 @@
 ---
   layout: single
-  title: "Wedgie Heatmap Dashboard: A Docker Deep Dive"
+  title: "Wedgie Dashboard: Learning Docker"
   date: 2026-02-06
   description: "Building and deploying a Streamlit analytics platform with Docker containers"
   author_profile: true
@@ -17,9 +17,6 @@
   excerpt: "How Docker transformed a complex Streamlit app with multiple dependencies into a reproducible, portable
   analytics platform—and why containerization matters for data science projects."
 ---
-
-  [<i class="fab fa-github" aria-hidden="true"></i> View Code on
-  GitHub](https://github.com/tommygarner/wedgie-tracker-dashboard){: .btn .btn--primary}
 
   [<i class="fas fa-external-link-alt" aria-hidden="true"></i> View Live
   Dashboard](https://wedgie-tracker-dashboard.streamlit.app/){: .btn .btn--info}
@@ -56,29 +53,28 @@
 
   ---
 
-  ## Abstract
+## Abstract
 
-  The Wedgie Heatmap Dashboard visualizes every NBA "wedgie" (ball stuck between rim and backboard) through an
+  The Wedgie Dashboard visualizes every NBA "wedgie" (when the ball gets stuck between the rim and backboard) through an
   interactive Streamlit application with court zone overlays, video integration, and advanced analytics. Built rapidly
   with Claude Code, the dashboard combines web scraping, NBA API enrichment, and Plotly visualizations into a cohesive
   analytics platform.
 
   But here's the challenge: **how do you deploy a multi-dependency Python application consistently across different
-  environments?** The dashboard requires specific versions of Streamlit, Plotly, pandas, and the NBA API—each with their
-   own transitive dependencies. It needs to run identically on my local Windows machine, a colleague's Mac, and a cloud
-  Linux server. Enter Docker.
+  environments?** The dashboard requires specific versions of Streamlit, Plotly, pandas, and the NBA API... each with their
+  own transitive dependencies. It needs to run identically on my local Windows machine, a colleague's Mac, and a cloud
+  Linux server. This is where I turned to Docker.
 
   This post isn't about how I built the dashboard's features (Claude Code handled most of that heavy lifting). Instead,
-  it's a deep dive into **why I containerized the application** and **how Docker solves the "works on my machine"
-  problem** that plagues data science deployments. We'll walk through Dockerfiles, multi-stage builds, volume mounts,
+  it's a deep dive into **why I containerized the application** and **how Docker solves the problem** of different machines, different    outcomes that plagues data science deployments. I'll walk through Dockerfiles, multi-stage builds, volume mounts,
   and the transition from local development to cloud hosting.
 
   ## Key Contributions
 
   - **Dockerized Streamlit application** with reproducible builds
   - **Multi-stage Docker builds** for development vs. production
-  - **Volume mounting strategy** for local data persistence
-  - **Docker Compose orchestration** for simplified workflows
+  - **Volume mounting strategy** for local data
+  - **Docker Compose** for simplified workflows
   - **Deployment path** from local containers to Streamlit Cloud
 
   ---
@@ -89,7 +85,7 @@
 
   ### 1.1 What It Does
 
-  The Wedgie Heatmap Dashboard is an interactive analytics platform that:
+  The Wedgie Dashboard is an interactive analytics platform that:
 
   - **Visualizes 600+ wedgie events** on NBA court heatmaps with scatter, density, and hexbin modes
   - **Integrates video evidence** from YouTube, Cloudinary, and Instagram with click-to-watch functionality
