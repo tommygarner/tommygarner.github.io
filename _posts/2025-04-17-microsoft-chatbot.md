@@ -168,21 +168,20 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ```mermaid
 graph TD
-    %% Use 'direction' to ensure a cleaner vertical flow
+    %% Use direction Top-to-Bottom
     direction TB
     
-    %% Define Node Styles with more padding
+    %% Node Styles
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
     classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
 
-    %% Nodes
-    A["User Question<br/>'How do I find my BitLocker recovery key?'"]:::highlight
+    A["User Question<br/>'How do I find my BitLocker key?'"]:::highlight
     
-    B["<b>Retrieval Layer</b><br/>• Keyword search across indexed content<br/>• Rank by TF-IDF / Keyword matching<br/>• Return top 5 relevant docs"]
+    B["<b>Retrieval Layer</b><br/>• Search indexed content<br/>• Rank by TF-IDF matching<br/>• Return top 5 documents"]
     
-    C["<b>GPT-4 Generation</b><br/>• Prompt: 'Answer based on docs below'<br/>• Context: Top docs + User question<br/>• Response: Natural language + Citations"]
+    C["<b>GPT-4 Generation</b><br/>• Prompt: 'Answer based on docs'<br/>• Context: Top docs + Question<br/>• Output: Natural language + Citations"]
     
-    D["User Response<br/>'Your key is in Microsoft account settings...<br/>See: [Link]'"]:::highlight
+    D["User Response<br/>'Your key is in... [Link]'"]:::highlight
 
     %% Connections
     A --> B
