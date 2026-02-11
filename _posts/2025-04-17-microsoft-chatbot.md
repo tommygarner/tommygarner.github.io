@@ -180,6 +180,10 @@ As the data engineer, I was responsible for:
    - **Microsoft Support Docs:** Scraped public support.microsoft.com articles (HDR settings, BitLocker recovery, Office 365, etc.)
    - **Stack Overflow:** Used Stack Overflow API to collect Microsoft-tagged questions and accepted answers
    - **Reddit:** Pulled posts from r/microsoft, r/Office365, r/Windows10 using Reddit API
+  
+<img width="1349" height="766" alt="image" src="https://github.com/user-attachments/assets/ea127f5e-e092-4bab-ab29-0ebe3abeddf8" />
+
+*Figure 3: Reddit thread r/Office365*
 
 2. **OpenAI API Integration**
    - Set up OpenAI API access (GPT-4 model)
@@ -200,7 +204,9 @@ As the data engineer, I was responsible for:
 
 ### Why Not Vector Databases?
 
-Looking back, we should have used a proper vector database (Pinecone, FAISS, Chroma) for **semantic search** instead of keyword matching. Here's why:
+Looking back, we should have used a proper vector database (Pinecone, FAISS, Chroma) for **semantic search** instead of keyword matching. 
+
+Here's why:
 
 **Keyword Search Limitations:**
 ```
@@ -225,11 +231,11 @@ Retrieves: All login-related articles regardless of exact wording
 
 ---
 
-## Implementation: From Notebooks to Demo
+## Implementation
 
 ### Data Collection
 
-**Week 1-2: Building the Corpus**
+**Building the Corpus**
 
 I wrote Python scripts to collect support content:
 
@@ -266,7 +272,7 @@ For Stack Overflow and Reddit, I used their official APIs to avoid violating ToS
 **Data Quality Challenges:**
 - **Inconsistent formatting** across sources (HTML, Markdown, plain text)
 - **Duplicate content** (same info on support.microsoft.com and community forums)
-- **Noisy Reddit posts** (complaints, off-topic discussions)
+- **Noisy Reddit posts and threads** (complaints, off-topic discussions)
 
 I spent significant time cleaning and deduplicating. Final corpus:
 - **487 Microsoft support articles**
@@ -275,7 +281,7 @@ I spent significant time cleaning and deduplicating. Final corpus:
 
 ### Retrieval System
 
-**Week 3: Building the Search Index**
+**Building the Search Index**
 
 Using scikit-learn's TfidfVectorizer:
 
@@ -315,7 +321,7 @@ Top Results:
 
 ### GPT-4 Integration
 
-**Week 4: Connecting the Pipeline**
+**Connecting the Pipeline**
 
 I integrated OpenAI's API to generate responses based on retrieved docs:
 
@@ -353,7 +359,7 @@ Response:"""
 
     # Call GPT-4
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful Microsoft support assistant."},
             {"role": "user", "content": prompt}
@@ -365,7 +371,7 @@ Response:"""
     return response.choices[0].message.content
 ```
 
-**Example Interaction:**
+**An Example Interaction:**
 
 **User:** "I can't find my BitLocker recovery key"
 
@@ -385,50 +391,13 @@ Response:"""
 > - [Find your BitLocker recovery key](https://support.microsoft.com/en-us/windows/finding-your-bitlocker-recovery-key-6b71ad27-0b89-ea08-f143-056f5ab347d6)
 > - [BitLocker recovery key FAQ](https://support.microsoft.com/en-us/windows/bitlocker-recovery-keys-frequently-asked-questions-9e63b943-e2f3-4b41-96d9-d8c84e2f0f6c)
 
-### Demo Interface
-
-**Week 5: Building the Frontend**
-
-While I focused on the backend, my teammates built a simple Streamlit interface:
-
-```python
-import streamlit as st
-
-st.title("Microsoft Support Assistant (POC)")
-st.write("Ask me anything about Microsoft products!")
-
-user_question = st.text_input("Your question:")
-
-if st.button("Get Help"):
-    with st.spinner("Searching support resources..."):
-        # Retrieve relevant docs
-        docs = retrieve_docs(user_question, top_k=5)
-
-        # Generate response
-        answer = generate_response(user_question, docs)
-
-        st.success("Here's what I found:")
-        st.write(answer)
-
-        # Show sources
-        with st.expander("View Sources"):
-            for doc in docs:
-                st.write(f"- [{doc['title']}]({doc['url']})")
-```
-
-**Demo Features:**
-- Natural language question input
-- GPT-4 powered responses
-- Source citations for transparency
-- Simple, clean UI
-
 ---
 
-## Results: What We Delivered
+## Results
 
 ### Final Presentation (April 2025)
 
-We presented to Microsoft (via the MSBA team) and our faculty advisor. The demo included:
+We presented to our Professor and class at the end of the semester. The demo included:
 
 **Live Chatbot Demonstration:**
 - **Query 1:** "How do I set up HDR on Windows?"
@@ -445,31 +414,14 @@ We presented to Microsoft (via the MSBA team) and our faculty advisor. The demo 
   - Generated clear comparison based on Microsoft docs
   - **Evaluation:** Accurate, well-cited response
 
-**Performance Metrics (Informal Testing):**
-- **Retrieval Precision:** ~70% (top-5 docs contained relevant info 70% of the time)
-- **Response Accuracy:** ~85% (based on team manual evaluation of 50 test questions)
-- **Avg Response Time:** 3-5 seconds (retrieval + GPT-4 generation)
-
 **Limitations We Acknowledged:**
-- ❌ **Keyword search limitations:** Missed semantically similar content
-- ❌ **No conversation history:** Each question treated independently
-- ❌ **Static corpus:** Couldn't update with new support articles without re-indexing
-- ❌ **No user feedback loop:** Couldn't learn from user corrections
-
-### Microsoft's Response
-
-**Positive Feedback:**
-- ✅ "Impressive pivot given the data constraints"
-- ✅ "Addresses a real gap in our self-service experience"
-- ✅ "Proof-of-concept demonstrates feasibility"
-
-**Honest Critique:**
-- ⚠️ "Production deployment would require significant engineering (vector databases, security, compliance)"
-- ⚠️ "Retrieval quality needs improvement for edge cases"
-- ⚠️ "Would need integration with our existing support ticket system"
+- **Keyword search limitations:** Missed semantically similar content
+- **No conversation history:** Each question treated independently
+- **Static corpus:** Couldn't update with new support articles without re-indexing
+- **No user feedback loop:** Couldn't learn from user corrections
 
 **Outcome:**
-While Microsoft didn't commit to implementing our chatbot, they appreciated our **initiative and adaptability**. The MSBA team later told us that Microsoft's CX team was already exploring similar solutions internally—our prototype validated the need.
+While Microsoft didn't commit to implementing our chatbot, they appreciated our **initiative and adaptability**. The MSBA team later told us that Microsoft's CX team was already exploring similar solutions internally, so our prototype validated the need.
 
 ---
 
@@ -490,15 +442,7 @@ Instead, we **reframed the problem**. We identified a genuine gap in Microsoft's
 
 ### 2. Communication Hierarchies Are Hard
 
-Our team structure created friction:
-
-```
-Microsoft Sponsor
-       ↕
-   MSBA Team (5 students)
-       ↕
- Undergrad Team (4 students, including me)
-```
+Our team structure created friction, particularly because of our limited interactions with the Microsoft company sponsors.
 
 **Challenges:**
 - **Delayed feedback:** Questions took days to relay up and back down
@@ -516,23 +460,16 @@ Microsoft Sponsor
 
 **What I'd Do Differently: Use Vector Databases**
 
-Our keyword search worked for the demo, but it was brittle:
-
-**Example Failure:**
-```
-User Query: "I can't log into Outlook"
-Our System: Searches for "log", "Outlook"
-Misses: Articles titled "Sign in issues with Office 365" or "Authentication errors in Outlook"
-```
+Our keyword search worked for the demo, but it was brittle.
 
 With semantic search (embeddings + vector DB), we'd have matched on **meaning**, not just keywords.
 
 **Why We Didn't:**
 - **Time:** 5 weeks for entire project (data collection + engineering + demo)
-- **Knowledge gap:** None of us had used Pinecone/FAISS before March 2025
+- **Knowledge gap:** None of us had used Pinecone/FAISS or even embeddings before March 2025
 - **Good enough:** For a proof-of-concept, keyword search demonstrated the concept
 
-**Lesson:** Technical debt is okay in prototypes, but **acknowledge it**. We clearly listed retrieval limitations in our presentation—Microsoft appreciated the honesty.
+**Lesson:** Technical debt is okay in prototypes, but **acknowledge it**. We clearly listed retrieval limitations in our presentation. Microsoft appreciated the honesty.
 
 ### 4. The Value of RAG (Even If We Didn't Know It)
 
@@ -548,21 +485,15 @@ Months later, I realized we'd built a textbook RAG system:
 
 **Lesson:** Sometimes you're using cutting-edge techniques without realizing it. The fundamentals (retrieval, context, generation) matter more than the terminology.
 
-### 5. Proof-of-Concept Is Enough (For Now)
+### 5. Proof-of-Concept Is Enough
 
 We didn't build a production-ready chatbot. We built a **prototype that proved feasibility**.
 
 **What We Delivered:**
-- ✅ Demonstrated that GPT-4 + support docs can generate accurate answers
-- ✅ Identified data sources Microsoft could leverage (Stack Overflow, Reddit, internal docs)
-- ✅ Showed 3-5 second response times were achievable
-- ✅ Provided a blueprint for future development
-
-**What We Didn't Deliver:**
-- ❌ Scalable infrastructure (it ran on my laptop)
-- ❌ Security/compliance review (didn't handle PII or sensitive data)
-- ❌ Integration with Microsoft's existing systems
-- ❌ User feedback mechanisms or conversation history
+- Demonstrated that GPT-4 + support docs can generate accurate answers
+- Identified data sources Microsoft could leverage (Stack Overflow, Reddit, internal docs)
+- Showed 3-5 second response times were achievable
+- Provided a blueprint for future development
 
 **Lesson:** For a semester-long capstone, a **well-executed proof-of-concept with clear documentation** is more valuable than a half-baked "production" system. Microsoft's engineers can take our prototype and build from there if they choose.
 
@@ -631,47 +562,9 @@ Instructions:
 1. Answer based ONLY on provided documents
 2. Be concise but thorough
 3. Cite sources (title + URL)
-4. If insufficient info, say so—don't hallucinate
+4. If insufficient info, say so. Don't hallucinate
 
 Response:
-```
-
-### Code Repository
-
-*(If you want to include code samples or link to a GitHub repo, you could add them here)*
-
-```python
-# Example: Full question-answering function
-def answer_question(user_question: str) -> dict:
-    """
-    End-to-end pipeline: retrieve docs → generate response.
-
-    Returns:
-        {
-            'answer': str,
-            'sources': list[dict],
-            'retrieval_time': float,
-            'generation_time': float
-        }
-    """
-    import time
-
-    # 1. Retrieve relevant documents
-    start = time.time()
-    docs = retrieve_docs(user_question, top_k=5)
-    retrieval_time = time.time() - start
-
-    # 2. Generate response
-    start = time.time()
-    answer = generate_response(user_question, docs)
-    generation_time = time.time() - start
-
-    return {
-        'answer': answer,
-        'sources': [{'title': d['title'], 'url': d['url']} for d in docs],
-        'retrieval_time': retrieval_time,
-        'generation_time': generation_time
-    }
 ```
 
 ---
@@ -686,22 +579,22 @@ When I started the semester, I thought success meant executing the plan. Now I k
 
 If I were to continue this project (or build something similar), here's my roadmap:
 
-**Phase 1: Improve Retrieval (Week 1-2)**
+**Improve Retrieval**
 - Replace TF-IDF with **vector embeddings** (OpenAI `text-embedding-3-small`)
 - Implement **FAISS or Chroma** for semantic search
 - Benchmark: Compare retrieval precision (keyword vs. semantic)
 
-**Phase 2: Add Conversation Memory (Week 3)**
+**Add Conversation Memory**
 - Store conversation history in session
 - Use GPT-4 to maintain context across multi-turn dialogues
 - Example: "What about for Office 2016?" should reference previous question
 
-**Phase 3: User Feedback Loop (Week 4)**
+**User Feedback Loop**
 - Add "Was this helpful?" thumbs up/down
 - Log which responses users found helpful
 - Fine-tune retrieval based on feedback (re-rank sources)
 
-**Phase 4: Production Infrastructure (Week 5+)**
+**Production Infrastructure**
 - Dockerize the application
 - Deploy to Azure (Microsoft's cloud)
 - Implement caching for common questions
@@ -715,18 +608,9 @@ If I were to continue this project (or build something similar), here's my roadm
 - **Career:** Validated my interest in applied AI and data engineering roles
 
 **What I'd Tell Future Capstone Students:**
-1. **Expect pivots.** Your original plan will change—embrace it.
-2. **Communicate relentlessly.** Especially in multi-team projects.
+1. **Expect pivots.** Your original plan will change.
+2. **Communicate.** Especially in multi-team projects.
 3. **Prototype fast, document well.** POCs are about proving feasibility, not perfection.
-4. **Learn the tools you wish you'd used.** (I'm now proficient in FAISS/Pinecone thanks to this experience.)
+4. **Learn the tools you wish you'd used.** 
 
-**Thank You:**
-- **Microsoft CX Team** for the opportunity (even if the data didn't come through)
-- **MSBA team** for managing stakeholder communication
-- **My undergrad teammates** for rallying when the project pivoted
-- **Faculty advisor** for supporting our direction change
-
----
-
-**Questions or want to chat about RAG systems, capstone projects, or pivoting under pressure?** Feel free to reach out!
 
