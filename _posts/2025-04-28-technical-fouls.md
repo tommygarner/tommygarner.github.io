@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Do Technical Fouls Actually Hurt Your Team? A Statistical Deep Dive"
+title: "Do Technical Fouls Hurt Your Team?"
 date: 2025-04-28
 description: "An analysis of 12,458 NBA technical fouls reveals surprising insights about their impact on team performance"
 author_profile: true
