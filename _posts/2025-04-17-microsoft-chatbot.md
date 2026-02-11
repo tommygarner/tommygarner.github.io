@@ -154,7 +154,7 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-```mermaid
+<div class="mermaid" style="padding-bottom: 50px;">
 graph TD
     %% Define Node Styles
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
@@ -173,7 +173,7 @@ graph TD
     A --> B
     B --> C
     C --> D
-```
+</div>
     
 ### Technical Stack
 
