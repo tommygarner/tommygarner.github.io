@@ -195,11 +195,7 @@ As the data engineer, I was responsible for:
    - **Microsoft Support Docs:** Scraped public support.microsoft.com articles (HDR settings, BitLocker recovery, Office 365, etc.)
    - **Stack Overflow:** Used Stack Overflow API to collect Microsoft-tagged questions and accepted answers
    - **Reddit:** Pulled posts from r/microsoft, r/Office365, r/Windows10 using Reddit API
-  
-<img width="1349" height="766" alt="image" src="https://github.com/user-attachments/assets/ea127f5e-e092-4bab-ab29-0ebe3abeddf8" />
-
-*Figure 4: Reddit thread r/Office365*
-
+     
 2. **OpenAI API Integration**
    - Set up OpenAI API access (GPT-4 model)
    - Designed prompt templates for question-answering
@@ -209,6 +205,10 @@ As the data engineer, I was responsible for:
    - Built basic keyword search using TF-IDF (we didn't have time for vector databases)
    - Indexed ~500 support documents, ~200 Stack Overflow threads, ~100 Reddit posts
    - Ranked results by keyword match relevance
+  
+<img width="1349" height="766" alt="image" src="https://github.com/user-attachments/assets/ea127f5e-e092-4bab-ab29-0ebe3abeddf8" />
+
+*Figure 4: Reddit thread r/Office365*
 
 **Tech Stack:**
 - **Language:** Python 3.11
