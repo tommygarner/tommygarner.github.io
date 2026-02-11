@@ -154,7 +154,7 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/54d85ba0-5d96-4396-be75-f87809bd5792" />
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/54d85ba0-5d96-4396-be75-f87809bd5792" />
 
 ### Technical Stack
 
