@@ -154,16 +154,7 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-```mermaid
-graph LR
-    A["User"]:::highlight
-    B["Retrieve"]
-    C["GPT-4"]
-    D["Answer"]:::highlight
-    A --> B --> C --> D
-
-    classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-```
+<img width="1024" height="1024" alt="image" src="https://github.com/user-attachments/assets/54d85ba0-5d96-4396-be75-f87809bd5792" />
 
 ### Technical Stack
 
