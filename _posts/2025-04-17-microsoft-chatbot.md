@@ -13,7 +13,7 @@ tags:
   - chatbot
   - GPT-4
   - data engineering
-excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns, we pivoted from analyzing support content performance to building a proof-of-concept chatbot—identifying a real gap in their customer experience and learning the value of adaptability under constraints."
+excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns, we pivoted from analyzing support content performance to building a proof-of-concept chatbot, identifying a real gap in their customer experience and learning the value of adaptability under constraints."
 published: true
 ---
 
@@ -24,16 +24,16 @@ During Spring 2025, I worked with Microsoft's Customer Experience Support team a
 We chose to pivot. After analyzing Microsoft's support ecosystem, we identified a critical gap: **no conversational AI on their landing pages to help users with general questions**. Within weeks, we designed and built a **proof-of-concept RAG (Retrieval-Augmented Generation) chatbot** powered by GPT-4, integrating public Microsoft documentation, Stack Overflow Q&A, and Reddit support threads.
 
 **Key Outcomes:**
-- ✅ **Delivered a working prototype** despite never receiving the original dataset
-- ✅ **Demonstrated initiative** by identifying an unmet customer need
-- ✅ **Built a RAG pipeline** using OpenAI API and multi-source retrieval
-- ✅ **Learned adaptability** working under real-world corporate constraints
+- **Delivered a working prototype** despite never receiving the original dataset
+- **Demonstrated initiative** by identifying an unmet customer need
+- **Built a RAG pipeline** using OpenAI API and multi-source retrieval
+- **Learned adaptability** working under real-world corporate constraints
 
-This post chronicles the journey from initial brief to final demo—highlighting the technical decisions, team dynamics, and lessons learned when plans don't go as expected.
+This post chronicles the journey from initial brief to final demo, showcasing the technical decisions, team dynamics, and lessons learned when plans don't go as expected.
 
 ---
 
-## Background: The Original Vision
+## Background
 
 ### The Business Problem
 
@@ -43,6 +43,10 @@ Microsoft's Customer Experience Support team manages a vast ecosystem of self-se
 - **Community platforms** (Stack Overflow, Reddit) where users ask questions
 
 The team wanted to answer a critical question: **Which support content actually helps users, and why?**
+
+<img width="1388" height="818" alt="image" src="https://github.com/user-attachments/assets/4a664680-383a-4cc1-b2b1-f844b07eeb3c" />
+
+*Figure 1: A snapshot of Microsoft's Customer Support YouTube landing page*
 
 ### The Original Scope
 
@@ -63,18 +67,17 @@ Our initial project brief focused on:
    - Dashboard showing performance metrics across platforms
    - Recommendations for content strategy
 
-**It sounded like a dream project.** We'd get real-world data from a Fortune 500 company, build ML models, and deliver actionable insights. What could go wrong?
+**It sounded like a dream project.** We'd get real-world data from a Fortune 500 company, build ML models, and deliver actionable insights.
 
 ---
 
-## The Data Challenge: When Reality Hits
+## The Data Challenge
 
-### Week 3: The Waiting Game
+### Waiting for Data
 
 Our team structure was hierarchical:
 - **4 undergraduate students** (including me) focused on data engineering and analysis
-- **5 MSBA students** who had direct communication with the Microsoft sponsor
-- **Communication flow:** Undergrads → MSBA team → Microsoft sponsor
+- **5 MSBA students** who had direct communication with the Microsoft sponsor and delegated tasks down to us
 
 Early in the semester, we submitted data requests through the MSBA team:
 - YouTube video engagement metrics (CTR, watch time, likes, comments)
@@ -82,13 +85,7 @@ Early in the semester, we submitted data requests through the MSBA team:
 - Social media mentions and sentiment
 - User journey data (how people navigate across platforms)
 
-**Week 3 update:** "Microsoft is working on PII redaction..."
-
-**Week 5 update:** "Still waiting for legal approval..."
-
-**Week 7 update:** "They may not be able to provide the data..."
-
-### The Blocker: PII Concerns
+### PII Concerns
 
 We eventually learned the hard truth: **Microsoft's legal team couldn't clear the social media engagement data** due to:
 
@@ -96,17 +93,7 @@ We eventually learned the hard truth: **Microsoft's legal team couldn't clear th
 - **Comment text** containing potential PII (names, emails, company info)
 - **Internal metrics** that couldn't be shared externally
 
-The MSBA team had received some sanitized webpage traffic data (CTR, visits, engagement rates) but nothing granular enough to build the predictive models we'd planned. We were stuck.
-
-### The Crossroads
-
-Mid-March, our team faced a decision:
-
-**Option 1:** Wait indefinitely for data that might never come
-**Option 2:** Build a toy model on public/synthetic data (low impact)
-**Option 3:** Pivot to a different problem within Microsoft's ecosystem
-
-We chose Option 3.
+The MSBA team had received some sanitized and synthetic webpage traffic data (CTR, visits, engagement rates) that simulated the data, but nothing granular enough to build the predictive models we'd planned. We were stuck.
 
 ---
 
@@ -114,10 +101,14 @@ We chose Option 3.
 
 ### Discovery Through Frustration
 
-While waiting for data, I'd been browsing Microsoft's support pages to understand the user experience. I noticed something odd:
+While waiting for data, our team had been browsing Microsoft's support pages to understand the user experience. We noticed something odd:
 
-**Landing on support.microsoft.com, I had to:**
-1. Search for my issue using keywords
+<img width="1885" height="856" alt="image" src="https://github.com/user-attachments/assets/5b970232-0636-4a52-bfc1-1b2b05ee8b59" />
+
+*Figure 2: Microsoft Support's landing page*
+
+**Landing on support.microsoft.com, we had to:**
+1. Search for issues using keywords
 2. Scan through article titles
 3. Click into multiple articles to find the right one
 4. Often end up on Stack Overflow or Reddit for clearer answers
@@ -126,7 +117,7 @@ While waiting for data, I'd been browsing Microsoft's support pages to understan
 
 ### The New Problem Statement
 
-We pitched a new direction to the MSBA team (who relayed it to Microsoft):
+We pitched a new direction to our Professor for the Capstone project:
 
 > **Problem:** Microsoft's support landing page lacks a conversational AI assistant to help users quickly find answers to common questions.
 >
@@ -138,13 +129,11 @@ We pitched a new direction to the MSBA team (who relayed it to Microsoft):
 >
 > **Value:** Reduce support ticket volume, improve self-service success rates, enhance customer experience.
 
-**Microsoft's response:** "Interesting. Let's see a prototype."
-
-We had our green light. With only 5 weeks left in the semester, we got to work.
+Our Professor gave us the green light. With only 5 weeks left in the semester, we got to work.
 
 ---
 
-## Solution Architecture: Building the RAG Pipeline
+## Building the RAG Pipeline
 
 ### What is RAG?
 
