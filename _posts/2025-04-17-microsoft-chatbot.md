@@ -16,6 +16,7 @@ tags:
 excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns, we pivoted from analyzing support content performance to building a proof-of-concept chatbot, identifying a real gap in their customer experience and learning the value of adaptability under constraints."
 published: true
 ---
+<style>.mermaid { overflow: visible !important; margin-bottom: 50px; }</style>
 
 <img width="360" height="140" alt="image" src="https://github.com/user-attachments/assets/d3aa3a4b-2bbd-4596-9f64-1a27a58309a2" />
 
