@@ -109,6 +109,11 @@ While waiting for data, our team had been browsing Microsoft's support pages to 
 
 *Figure 2: Microsoft Support's landing page*
 
+<img width="960" height="804" alt="image" src="https://github.com/user-attachments/assets/9fc15e87-3b53-4887-b35f-a80e5b594d2a" />
+
+*Figure 3: Search Results for "Bitlocker Key"*
+
+
 **Landing on support.microsoft.com, we had to:**
 1. Search for issues using keywords
 2. Scan through article titles
@@ -183,7 +188,7 @@ As the data engineer, I was responsible for:
   
 <img width="1349" height="766" alt="image" src="https://github.com/user-attachments/assets/ea127f5e-e092-4bab-ab29-0ebe3abeddf8" />
 
-*Figure 3: Reddit thread r/Office365*
+*Figure 4: Reddit thread r/Office365*
 
 2. **OpenAI API Integration**
    - Set up OpenAI API access (GPT-4 model)
