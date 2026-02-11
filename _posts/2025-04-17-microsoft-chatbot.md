@@ -154,20 +154,7 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-<style>
-  .mermaid {
-    display: flex;
-    justify-content: center;
-    overflow: visible !important;
-    margin-bottom: 40px; /* Adds extra room at the bottom */
-  }
-  .mermaid svg {
-    height: auto !important;
-    max-width: 100%;
-  }
-</style>
-
-<div class="mermaid">
+```mermaid
 graph TD
     %% Define Node Styles
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
@@ -195,7 +182,7 @@ graph TD
     A --> B
     B --> C
     C --> D
-</div>
+```
 
 ### Technical Stack
 
