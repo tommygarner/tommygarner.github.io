@@ -16,22 +16,6 @@ tags:
 excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns, we pivoted from analyzing support content performance to building a proof-of-concept chatbot, identifying a real gap in their customer experience and learning the value of adaptability under constraints."
 published: true
 ---
-<style>
-  /* Force the mermaid container to be centered and un-clipped */
-  .mermaid { 
-    overflow: visible !important; 
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 30px 0 60px 0 !important; /* Huge bottom padding to prevent arrow clipping */
-  }
-  
-  /* Ensure the SVG doesn't try to be wider than the blog post */
-  .mermaid svg { 
-    max-width: 90% !important; 
-    height: auto !important;
-  }
-</style>
 
 <img width="360" height="140" alt="image" src="https://github.com/user-attachments/assets/d3aa3a4b-2bbd-4596-9f64-1a27a58309a2" />
 
