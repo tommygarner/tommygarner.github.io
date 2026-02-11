@@ -17,6 +17,8 @@ excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns
 published: true
 ---
 
+<img width="360" height="140" alt="image" src="https://github.com/user-attachments/assets/d3aa3a4b-2bbd-4596-9f64-1a27a58309a2" />
+
 ## Abstract
 
 During Spring 2025, I worked with Microsoft's Customer Experience Support team as part of my senior capstone project at the University of Texas. Our team of 4 undergraduates, paired with 5 MSBA students, was originally tasked with **quantifying the helpfulness of Microsoft's support videos and documentation**. However, when Microsoft couldn't provide social media engagement data due to PII (personally identifiable information) redaction concerns, we faced a choice: abandon the project or adapt.
@@ -99,7 +101,7 @@ The MSBA team had received some sanitized and synthetic webpage traffic data (CT
 
 ## The Pivot: Identifying a Real Gap
 
-### Discovery Through Frustration
+### Discovering a New Problem Statement
 
 While waiting for data, our team had been browsing Microsoft's support pages to understand the user experience. We noticed something odd:
 
@@ -137,7 +139,7 @@ Our Professor gave us the green light. With only 5 weeks left in the semester, w
 
 ### What is RAG?
 
-At the time (March 2025), we didn't know we were building a **Retrieval-Augmented Generation (RAG)** system—we just knew we needed to:
+At the time (March 2025), we didn't know we were building a **Retrieval-Augmented Generation (RAG)** systeme. We just knew we needed to:
 
 1. **Retrieve** relevant support content based on user questions
 2. **Augment** GPT-4's context with that retrieved information
@@ -147,36 +149,27 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        User Question                         │
-│                "How do I find my BitLocker recovery key?"    │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│                  Retrieval Layer                             │
-│  • Keyword search across indexed support content             │
-│  • Rank by relevance (TF-IDF, keyword matching)              │
-│  • Return top 5 most relevant documents                      │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   GPT-4 Generation                           │
-│  • Prompt: "Given these support docs, answer the question"   │
-│  • Context: Retrieved documents + user question              │
-│  • Response: Natural language answer + source citations      │
-└─────────────────────┬───────────────────────────────────────┘
-                      │
-                      ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   User Response                              │
-│  "Your BitLocker recovery key can be found in your Microsoft │
-│   account settings. See: [link to support article]"          │
-└─────────────────────────────────────────────────────────────┘
-```
+```mermaid
+graph TD
+    %% Define Node Styles
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
+    classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
 
+    %% Nodes
+    A["<b>User Question</b><br/>'How do I find my BitLocker recovery key?'"]:::highlight
+    
+    B["<b>Retrieval Layer</b><br/>• Keyword search across indexed content<br/>• Rank by TF-IDF / Keyword matching<br/>• Return top 5 relevant docs"]
+    
+    C["<b>GPT-4 Generation</b><br/>• Prompt: 'Answer based on docs below'<br/>• Context: Top docs + User question<br/>• Response: Natural language + Citations"]
+    
+    D["<b>User Response</b><br/>'Your key is in Microsoft account settings...<br/>See: [Link]'"]:::highlight
+
+    %% Connections
+    A --> B
+    B --> C
+    C --> D
+```
+    
 ### Technical Stack
 
 **My Role: Data Engineering & API Integration**
