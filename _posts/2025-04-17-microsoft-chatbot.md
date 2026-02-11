@@ -17,18 +17,19 @@ excerpt: "When Microsoft couldn't provide the data we needed due to PII concerns
 published: true
 ---
 <style>
+  /* Force the mermaid container to be centered and un-clipped */
   .mermaid { 
-    /* Force visibility and add breathing room */
     overflow: visible !important; 
-    display: flex;
-    justify-content: center;
-    padding: 20px 0; 
-    margin-bottom: 40px;
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 30px 0 60px 0 !important; /* Huge bottom padding to prevent arrow clipping */
   }
-  /* Fix for SVG scaling in responsive layouts */
+  
+  /* Ensure the SVG doesn't try to be wider than the blog post */
   .mermaid svg { 
-    height: auto !important; 
-    max-width: 100% !important;
+    max-width: 90% !important; 
+    height: auto !important;
   }
 </style>
 
@@ -171,16 +172,13 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ```mermaid
 graph LR
-    %% Node Styles
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
-    classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-
-    A["User Question"]:::highlight
-    B["<b>Retrieval</b>"]
-    C["<b>GPT-4 Gen</b>"]
-    D["Response"]:::highlight
-
+    A["User"]:::highlight
+    B["Retrieve"]
+    C["GPT-4"]
+    D["Answer"]:::highlight
     A --> B --> C --> D
+
+    classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
 ```
 
 ### Technical Stack
