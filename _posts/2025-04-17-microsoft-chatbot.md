@@ -18,14 +18,17 @@ published: true
 ---
 <style>
   .mermaid { 
+    /* Force visibility and add breathing room */
     overflow: visible !important; 
-    margin-bottom: 20px;
-    background: white;
-    padding: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0; 
+    margin-bottom: 40px;
   }
+  /* Fix for SVG scaling in responsive layouts */
   .mermaid svg { 
-    max-width: 100% !important; 
     height: auto !important; 
+    max-width: 100% !important;
   }
 </style>
 
