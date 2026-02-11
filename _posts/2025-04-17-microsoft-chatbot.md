@@ -154,27 +154,49 @@ In retrospect, this is textbook RAG. But we learned by doing.
 
 ### System Design
 
-<div class="mermaid" style="padding-bottom: 50px;">
+<style>
+  .mermaid {
+    display: flex;
+    justify-content: center;
+    overflow: visible !important;
+    margin-bottom: 40px; /* Adds extra room at the bottom */
+  }
+  .mermaid svg {
+    height: auto !important;
+    max-width: 100%;
+  }
+</style>
+
+<div class="mermaid">
 graph TD
     %% Define Node Styles
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
     classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
 
-    %% Nodes
-    A["<b>User Question</b><br/>'How do I find my BitLocker recovery key?'"]:::highlight
+    %% Nodes using standard strings to avoid syntax errors
+    A["User Question
+    'How do I find my BitLocker recovery key?'"]:::highlight
     
-    B["<b>Retrieval Layer</b><br/>• Keyword search across indexed content<br/>• Rank by TF-IDF / Keyword matching<br/>• Return top 5 relevant docs"]
+    B["Retrieval Layer
+    • Keyword search across indexed content
+    • Rank by TF-IDF / Keyword matching
+    • Return top 5 relevant docs"]
     
-    C["<b>GPT-4 Generation</b><br/>• Prompt: 'Answer based on docs below'<br/>• Context: Top docs + User question<br/>• Response: Natural language + Citations"]
+    C["GPT-4 Generation
+    • Prompt: 'Answer based on docs below'
+    • Context: Top docs + User question
+    • Response: Natural language + Citations"]
     
-    D["<b>User Response</b><br/>'Your key is in Microsoft account settings...<br/>See: [Link]'"]:::highlight
+    D["User Response
+    'Your key is in Microsoft account settings...
+    See: [Link]'"]:::highlight
 
     %% Connections
     A --> B
     B --> C
     C --> D
 </div>
-    
+
 ### Technical Stack
 
 **My Role: Data Engineering & API Integration**
