@@ -158,14 +158,14 @@ The distributions tell the story visually:
 ### Technical Fouls Throughout the Game
 Technical fouls occur relatively evenly throughout games, across all four quarters. There's no particular "danger zone" where technicals cluster.
 
-<img width="1466" height="454" alt="image" src="https://github.com/user-attachments/assets/1a136296-7f66-4faa-8fa5-93be63d7fb25" />
+<img width="1453" height="710" alt="image" src="https://github.com/user-attachments/assets/e8e5297d-f145-4037-96bb-974e7c09bdd9" />
 
 *Figure 1: The distribution of technical fouls throughout an NBA game*
 
 
 ### Net Rating Before vs. After
 
-<img width="1466" height="454" alt="image" src="https://github.com/user-attachments/assets/0d1e82f9-00ba-437d-99dd-7734768dd930" />
+<img width="1228" height="715" alt="image" src="https://github.com/user-attachments/assets/909ecf2a-515d-4384-a9f7-2248054a75e7" />
 
 *Figure 2: The spread of net rating before and after a sole technical foul*
 
