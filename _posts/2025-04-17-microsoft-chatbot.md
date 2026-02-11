@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Building a Support Chatbot for Microsoft: A Capstone Pivot Story"
+title: "Building a Support Chatbot for Microsoft: UT Austin Senior Capstone"
 date: 2025-04-17
 description: "How my team adapted when data blockers threatened our capstone project with Microsoft's Customer Experience team"
 author_profile: true
@@ -170,26 +170,17 @@ In retrospect, this is textbook RAG. But we learned by doing.
 ### System Design
 
 ```mermaid
-graph TD
-    %% Use direction Top-to-Bottom
-    direction TB
-    
+graph LR
     %% Node Styles
     classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
     classDef highlight fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
 
-    A["User Question<br/>'How do I find my BitLocker key?'"]:::highlight
-    
-    B["<b>Retrieval Layer</b><br/>• Search indexed content<br/>• Rank by TF-IDF matching<br/>• Return top 5 documents"]
-    
-    C["<b>GPT-4 Generation</b><br/>• Prompt: 'Answer based on docs'<br/>• Context: Top docs + Question<br/>• Output: Natural language + Citations"]
-    
-    D["User Response<br/>'Your key is in... [Link]'"]:::highlight
+    A["User Question"]:::highlight
+    B["<b>Retrieval</b>"]
+    C["<b>GPT-4 Gen</b>"]
+    D["Response"]:::highlight
 
-    %% Connections
-    A --> B
-    B --> C
-    C --> D
+    A --> B --> C --> D
 ```
 
 ### Technical Stack
