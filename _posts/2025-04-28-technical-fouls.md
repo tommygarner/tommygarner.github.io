@@ -87,6 +87,9 @@ Surprisingly, the net rating went *up* after the sole technical for the afflicte
 
 In 2001, the NBA implemented the "Defensive Three Seconds" rule, fundamentally changing how defense is played. Maybe this changed the impact of technical fouls?
 
+<img width="275" height="183" alt="image" src="https://github.com/user-attachments/assets/31ebd1c0-2c1d-4012-a5eb-ecbd3f458dc2" />
+
+
 **Pre-2001 Era (Before October 29, 2001):**
 - Mean Net Rating Before: 2.41
 - Mean Net Rating After: 2.57
