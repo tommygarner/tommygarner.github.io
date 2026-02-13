@@ -1,33 +1,31 @@
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1F0CP9TB6Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1F0CP9TB6Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1F0CP9TB6Z', { 'debug_mode': true });
+  </script>
 
-  // Adding debug_mode: true helps you see events in real-time in the GA4 DebugView
-  gtag('config', 'G-1F0CP9TB6Z', { 'debug_mode': true });
-</script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Track LinkedIn clicks
+    document.querySelectorAll('a[href*="linkedin.com"]').forEach(link => {
+      link.addEventListener('click', function() {
+        gtag('event', 'social_engagement', {
+          'platform': 'LinkedIn',
+          'link_url': this.href
+        });
+      });
+    });
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  // 1. Track LinkedIn/Outbound Clicks
-  document.querySelectorAll('a[href*="linkedin.com"]').forEach(link => {
-    link.addEventListener('click', function() {
-      gtag('event', 'social_engagement', {
-        'platform': 'LinkedIn',
-        'link_url': this.href
+    // Track PDF downloads
+    document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
+      link.addEventListener('click', function() {
+        gtag('event', 'file_download', {
+          'file_name': this.href.split('/').pop(),
+          'file_extension': 'pdf'
+        });
       });
     });
   });
-
-  // 2. Track Resume Downloads (Replaced HTML comment with JS comment //)
-  document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
-    link.addEventListener('click', function() {
-      gtag('event', 'file_download', {
-        'file_name': this.href.split('/').pop(),
-        'file_extension': 'pdf'
-      });
-    });
-  });
-});
-</script>
+  </script>
