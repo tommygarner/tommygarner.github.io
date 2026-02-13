@@ -1,3 +1,4 @@
+  <!-- Google Analytics GA4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-1F0CP9TB6Z"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -8,8 +9,7 @@
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Track LinkedIn clicks
-    document.querySelectorAll('a[href*="linkedin.com"]').forEach(link => {
+    document.querySelectorAll('a[href*="linkedin.com"]').forEach(function(link) {
       link.addEventListener('click', function() {
         gtag('event', 'social_engagement', {
           'platform': 'LinkedIn',
@@ -18,8 +18,7 @@
       });
     });
 
-    // Track PDF downloads
-    document.querySelectorAll('a[href$=".pdf"]').forEach(link => {
+    document.querySelectorAll('a[href$=".pdf"]').forEach(function(link) {
       link.addEventListener('click', function() {
         gtag('event', 'file_download', {
           'file_name': this.href.split('/').pop(),
