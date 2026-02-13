@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Validating Google Analytics: Bot Simulation & API Integration"
+title: "Google Analytics: Bot Simulation & API Integration"
 date: 2026-02-13
 description: "Implementing Google Analytics 4 with automated testing, debugging, and data extraction via API"
 author_profile: true
