@@ -1,5 +1,5 @@
 ---
-title: "Detecting Fraudulent Job Postings"
+title: "UT Project: Detecting Fraudulent Job Postings"
 collection: portfolio
 excerpt: "End-to-end machine learning pipeline to flag fraudulent job postings using text, metadata, and calibrated thresholds."
 date: 2025-12-2
