@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "SeatData.io Tableau Dashboard"
+title: "Tableau: SeatData.io Event Dashboard"
 date: 2026-01-20
 description: "Visualizing My Data Snapshots with Tableau"
 author_profile: true
