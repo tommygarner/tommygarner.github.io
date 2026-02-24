@@ -1,6 +1,6 @@
 ---
   layout: single
-  title: "Wedgie Dashboard: Learning Docker"
+  title: "Docker: Wedgie Dashboard"
   date: 2026-02-06
   description: "Building and deploying a Streamlit analytics platform with Docker containers"
   author_profile: true
