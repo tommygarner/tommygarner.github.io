@@ -1,5 +1,5 @@
 ---
-title: "The Setlist: A Personalized Concert Recommender"
+title: "Streamlit: Setlist - Concert Recommendation App"
 collection: portfolio
 excerpt: "Streamlit app that matches your Spotify taste with upcoming concerts using Ticketmaster and SeatGeek APIs."
 date: 2025-11-23
