@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "SeatData.io: What the Secondary Market Tells Primary Pricers"
+title: "Demand Forecasting: Secondary Ticket Sales"
 date: 2026-02-15
 description: "How secondary ticket market velocity signals can inform dynamic primary pricing, and what a 9-part ML project revealed about demand in live events"
 author_profile: true
@@ -11,7 +11,9 @@ tags:
   - machine learning
   - ticket market
   - forecasting
-  - portfolio
+  - feature engineering
+  - database engineering
+  - business impact
 excerpt: "Primary pricing teams at Ticketmaster and LiveNation set prices weeks in advance with limited demand visibility. The secondary market is a great proxy. This project built a system to read the secondary market to demand forecast."
 published: true
 ---
