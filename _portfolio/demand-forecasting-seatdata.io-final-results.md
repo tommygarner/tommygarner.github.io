@@ -45,7 +45,7 @@ This project built a forecasting system that reads those signals at scale: **pre
 
 ## What I Built
 
-I built a forecasting pipeline on four months of daily StubHub snapshot data covering **6 million rows, 114,000 events, and 13,000 venues**. The model predicts how many tickets will sell in the next seven days for any given event on any given day, with a point estimate and a 95% confidence interval.
+I built a forecasting pipeline on 132 days of daily StubHub snapshot data covering **7.5 million rows, 138,000 events, and 14,600 venues**. The model predicts how many tickets will sell in the next seven days for any given event on any given day, with a point estimate and a 95% confidence interval.
 
 **Results at a glance:**
 
@@ -128,9 +128,19 @@ The classifier reliably distinguishes high-demand from dead events. BLACKPINK co
 
 **Super Bowl LX** illustrates the inventory timing opportunity. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured the price appreciation across those three weeks.
 
-[![Scenario analysis showing revenue estimates](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png)](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png)*Revenue estimates across scenarios, grounded in published research and model test-set performance*
+<figure>
+  <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png">
+    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png" alt="Scenario analysis showing revenue estimates" style="width:100%">
+  </a>
+  <figcaption>Revenue estimates across scenarios, grounded in published research and model test-set performance</figcaption>
+</figure>
 
-[![Super Bowl LX velocity surge from D-21 to D-7](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png)](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png)*Super Bowl LX: secondary sales surge from 89 to 717 tickets/week between D-21 and D-7*
+<figure>
+  <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png">
+    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png" alt="Super Bowl LX velocity surge from D-21 to D-7" style="width:100%">
+  </a>
+  <figcaption>Super Bowl LX: secondary sales surge from 89 to 717 tickets/week between D-21 and D-7</figcaption>
+</figure>
 
 ---
 
