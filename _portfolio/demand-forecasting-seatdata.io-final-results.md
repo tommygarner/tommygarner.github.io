@@ -103,43 +103,23 @@ This is a real limitation of any model trained on historical patterns. Macro sho
 
 The model's value comes from two levers: dynamic primary pricing (adjusting face-value prices based on secondary velocity) and strategic inventory timing (holding back supply and releasing as demand confirms). The full analysis is in [Part 13](/seatdata.io-business-impact/).
 
-**Per-event value:** ~$2,100 (conservative) per event on a 10,000-seat venue.
+| Scenario | Per-Event | Annual (500 events) | At LN Scale (20K events) |
+|----------|-----------|-------------------|------------------------|
+| Conservative | $2,100 | **$1.05M** | **$42M** |
+| Moderate | $6,750 | **$3.38M** | $135M |
+| Optimistic | $16,170 | **$8.09M** | $323M |
 
-**Annual value for a 500-event operator:**
+The conservative case assumes 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value). The $42M conservative estimate at Live Nation scale represents roughly 14% of Ticketmaster's 2024 operating profit ($311M).
 
-| Scenario | Annual Revenue |
-|----------|---------------|
-| Conservative | **$1.05M** |
-| Moderate | **$3.38M** |
-| Optimistic | **$8.09M** |
+The classifier reliably separates actionable events from dead inventory. BLACKPINK showed a median classifier probability of 0.98, with 91.6% of snapshots flagged active and 60-90 secondary sales per week. Matilda the Musical showed a median probability of 0.016, with 0% flagged and zero sales at every tracked time point.
 
-**At Live Nation scale (20,000 events):** ~$42M conservative, representing roughly 14% of Ticketmaster's 2024 operating profit ($311M).
-
-The conservative case uses defensible assumptions: 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value).
-
-| Parameter | Conservative | Source |
-|-----------|-------------|--------|
-| Event signal rate | 50% | Below classifier recall (67.6%) |
-| Premium inventory | 8% | LN Platinum baseline |
-| Secondary premium | $35 | Below 2x research average |
-| Capture rate | 15% | vs. LN Platinum 70%+ |
-
-The classifier reliably distinguishes high-demand from dead events. BLACKPINK consistently showed classifier probabilities above 0.90 with 60-90 secondary sales per week. Matilda the Musical showed probabilities below 0.35 with zero sales at every tracked time point. The model does not fire indiscriminately.
-
-**Super Bowl LX** illustrates the inventory timing opportunity. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured the price appreciation across those three weeks.
+**Super Bowl LX** illustrates inventory timing. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**, an 8x increase. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured three weeks of price appreciation.
 
 <figure>
   <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png">
-    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png" alt="Scenario analysis showing revenue estimates" style="width:100%">
+    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png" alt="Scenario analysis showing revenue estimates across conservative, moderate, and optimistic assumptions" style="width:100%">
   </a>
   <figcaption>Revenue estimates across scenarios, grounded in published research and model test-set performance</figcaption>
-</figure>
-
-<figure>
-  <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png">
-    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png" alt="Super Bowl LX velocity surge from D-21 to D-7" style="width:100%">
-  </a>
-  <figcaption>Super Bowl LX: secondary sales surge from 89 to 717 tickets/week between D-21 and D-7</figcaption>
 </figure>
 
 ---
