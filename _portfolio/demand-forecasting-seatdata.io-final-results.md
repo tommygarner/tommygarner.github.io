@@ -242,6 +242,21 @@ The result was stronger than Part 8's. With more features, the segment models ha
 
 [Read the full post](/seatdata.io-segmenting-2/)
 
+### Part 13: Business Impact
+
+The first 12 parts built the model. Part 13 quantifies what acting on it is worth. Two revenue mechanisms have the clearest path: dynamic primary pricing based on secondary velocity, and strategic inventory release timed to demand curves.
+
+The scenario analysis, grounded in published research from MLB variable pricing (3% revenue lift), Live Nation Platinum (70% premium seat revenue increase), and airline ML pricing ($72.2M revenue increase), produces a conservative estimate of **$1.05M per year** for a 500-event operator and **$42M at Live Nation scale**. The Super Bowl LX case study shows the signal in action: secondary velocity surged 8x from D-21 to D-7, with the classifier holding above 0.93 throughout.
+
+<figure>
+  <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png">
+    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png" alt="Super Bowl LX: secondary sales surge from 89 to 717 tickets/week between D-21 and D-7" style="width:100%">
+  </a>
+  <figcaption>Super Bowl LX: classifier confidence stays above 0.93 as velocity surges 8x in three weeks</figcaption>
+</figure>
+
+[Read the full post](/seatdata.io-business-impact/)
+
 ---
 
 ## Where the Model Works Best
