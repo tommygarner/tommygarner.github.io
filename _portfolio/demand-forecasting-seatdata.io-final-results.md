@@ -1,8 +1,8 @@
 ---
 layout: single
 title: "Demand Forecasting: Secondary Ticket Sales"
-date: 2026-02-15
-description: "How secondary ticket market velocity signals can inform dynamic primary pricing, and what a 9-part ML project revealed about demand in live events"
+date: 2026-03-10
+description: "How secondary ticket market velocity signals can inform dynamic primary pricing, and what a 12-part ML project revealed about demand in live events"
 author_profile: true
 toc: true
 toc_sticky: true
@@ -14,7 +14,7 @@ tags:
   - feature engineering
   - database engineering
   - business impact
-excerpt: "Primary pricing teams at Ticketmaster and LiveNation set prices weeks in advance with limited demand visibility. The secondary market is a great proxy. This project built a system to read the secondary market to demand forecast."
+excerpt: "Primary pricing teams at Ticketmaster and LiveNation set prices weeks in advance with limited demand visibility. The secondary market is a great proxy. This 12-part project built a system to read the secondary market for demand forecasting, reaching 13.37 RMSE and quantifying $1M+ annual value for a mid-size operator."
 published: true
 ---
 
@@ -49,31 +49,29 @@ I built a forecasting pipeline on four months of daily StubHub snapshot data cov
 
 **Results at a glance:**
 
-Metric
+| Metric | Value |
+|--------|-------|
+| Champion RMSE (3-week window, Part 11) | **13.37 tickets** |
+| Full test set RMSE (Part 7) | 18.53 tickets |
+| Classifier precision (active events) | 76.3% |
+| Training data | 6M+ daily snapshots |
+| Test observations (Part 11) | 389,230 |
 
-Value
+The champion model (Part 11) was evaluated on a 3-week business-relevant test window: the final three weeks before each event, where pricing decisions are most actionable. The Part 7 result (18.53) was evaluated on the full test set including earlier, lower-activity snapshots. Both are honest numbers on different evaluation windows.
 
-Events evaluated (test set)
+**Progression across the project:**
 
-58,022
+| Part | Key change | RMSE |
+|------|-----------|------|
+| 4 | Two-stage pipeline | 19.15 |
+| 6 | Hyperparameter tuning | 18.98 |
+| 7 | Bayesian opt + threshold 0.90 | 18.53 |
+| 9 | Embeddings (negative result) | 19.09 |
+| 11 | Lifecycle + external signals | 13.37* |
 
-RMSE vs. naive baseline
+*\*3-week window; others are full test set*
 
-**50.6% lower**
-
-Average miss per event
-
-**10.35 tickets**
-
-Training data
-
-6M+ daily snapshots
-
-Model configurations tested
-
-78 two-stage pipeline combinations
-
-The naive baseline is what a pricing analyst would rely on without a model: predict the same average sales for every event every day. A 50.6% improvement over that means the model is meaningfully tracking which events are gaining velocity and which are slowing down, not just guessing the market mean.
+The largest single improvement came not from algorithm changes but from architectural decisions: the two-stage pipeline (Part 4) and lifecycle interaction features (Part 11). Together these account for more RMSE reduction than all hyperparameter tuning combined.
 
 ---
 
@@ -103,15 +101,36 @@ This is a real limitation of any model trained on historical patterns. Macro sho
 
 ## Business Impact, In Numbers
 
-The model produces a weekly ticket sales forecast with an average miss of **10.35 tickets per event**.
+The model's value comes from two levers: dynamic primary pricing (adjusting face-value prices based on secondary velocity) and strategic inventory timing (holding back supply and releasing as demand confirms). The full analysis is in [Part 13](/seatdata.io-business-impact/).
 
-Using the dataset average floor price of about $113, a 10-ticket accuracy window translates to roughly **$1,170 in revenue precision per event snapshot**. At the individual event level that is modest. At scale it is not.
+**Per-event value:** ~$2,100 (conservative) per event on a 10,000-seat venue.
 
-Consider a primary pricing team managing 1,000 shows per week. If the model correctly identifies 50 of those shows as gaining momentum on secondary, where velocity is strong and the original primary price was conservative, and the team holds price or adds a 5% premium on remaining inventory, the incremental revenue per show on a 5,000-seat venue at a $100 average ticket price is **$25,000 per show**. Across 50 shows, that is **$1.25M per week** from a signal that already exists in the secondary market and was previously being ignored or read manually.
+**Annual value for a 500-event operator:**
 
-The same math runs in the other direction. Identifying 50 shows per week where secondary velocity is stalling allows the team to run planned promotional pricing rather than reactive discounting the day before the show. A controlled 10% discount on 500 tickets is a different outcome than a last-minute fire sale.
+| Scenario | Annual Revenue |
+|----------|---------------|
+| Conservative | **$1.05M** |
+| Moderate | **$3.38M** |
+| Optimistic | **$8.09M** |
 
-The model does not create revenue. It surfaces a signal that the secondary market is already generating, and replaces a gut-feel monitoring process with a consistent trigger.
+**At Live Nation scale (20,000 events):** ~$42M conservative, representing roughly 14% of Ticketmaster's 2024 operating profit ($311M).
+
+The conservative case uses defensible assumptions: 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value).
+
+| Parameter | Conservative | Source |
+|-----------|-------------|--------|
+| Event signal rate | 50% | Below classifier recall (67.6%) |
+| Premium inventory | 8% | LN Platinum baseline |
+| Secondary premium | $35 | Below 2x research average |
+| Capture rate | 15% | vs. LN Platinum 70%+ |
+
+The classifier reliably distinguishes high-demand from dead events. BLACKPINK consistently showed classifier probabilities above 0.90 with 60-90 secondary sales per week. Matilda the Musical showed probabilities below 0.35 with zero sales at every tracked time point. The model does not fire indiscriminately.
+
+**Super Bowl LX** illustrates the inventory timing opportunity. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured the price appreciation across those three weeks.
+
+[![Scenario analysis showing revenue estimates](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png)](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png)*Revenue estimates across scenarios, grounded in published research and model test-set performance*
+
+[![Super Bowl LX velocity surge from D-21 to D-7](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png)](https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/spotlight_superbowl.png)*Super Bowl LX: secondary sales surge from 89 to 717 tickets/week between D-21 and D-7*
 
 ---
 
@@ -125,6 +144,8 @@ These 38 categories were consolidated into seven modeling buckets: Broadway and 
 
 [![Entity relationship diagram showing the BigQuery star schema](https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd)](https://github.com/user-attachments/assets/f8e86cd8-4023-48e2-9ee1-2cea7c3d71fd)*The database schema connecting events, venues, and daily snapshots*
 
+[Read the full post](/seatdata-io-database-engineering/)
+
 ### Part 2: Understanding What Drives Demand
 
 The most useful EDA finding was the pricing tier structure across categories. Three distinct tiers emerged:
@@ -133,17 +154,21 @@ The most useful EDA finding was the pricing tier structure across categories. Th
 -   **Mid tier** (Concerts, Comedy, Other): $50-65
 -   **Volume tier** (Major and Minor Sports): $30-40
 
-This tier structure matters for primary pricing because a concert is not priced like an NBA game, and the signals that indicate healthy demand look different across tiers. A floor price drop for a sports ticket means something different than the same drop for a Broadway show.
+This tier structure matters for primary pricing because a concert is not priced like an NBA game, and the signals that indicate healthy demand look different across tiers.
 
 I also found strong day-of-week seasonality. **Saturdays had the highest secondary sales volume, Tuesdays had the most variance**. Any model ignoring this structure would misread the market on off-peak days.
 
+[Read the full post](/seatdata.io-eda/)
+
 ### Part 3: Preparing the Data
 
-The raw sales distribution was heavily skewed. A small number of high-demand events drove thousands of weekly sales while most had zero. I applied a log transformation that reduced skewness from 12.28 to 1.25, which is close to symmetric and made the model's errors more consistent across typical events.
+The raw sales distribution was heavily skewed. A small number of high-demand events drove thousands of weekly sales while most had zero. I applied a log transformation that reduced skewness from 12.28 to 1.25, making the model's errors more consistent across typical events.
 
 Venue capacity was missing for **42% of events**, and it turned out to matter for predictions. I filled the gaps through a four-step pipeline: fuzzy name matching against a reference spreadsheet, Ticketmaster API lookups, Wikidata SPARQL queries, and finally category-level medians.
 
 [![Side-by-side histogram showing raw vs log-transformed sales distributions](https://github.com/user-attachments/assets/9b506158-f066-46cb-a24f-8123fa640dfd)](https://github.com/user-attachments/assets/9b506158-f066-46cb-a24f-8123fa640dfd)*Skewness drops from 12.28 to 1.25 after log transformation*
+
+[Read the full post](/seatdata.io-feature-engineering/)
 
 ### Part 4: Two-Stage Pipeline
 
@@ -153,199 +178,124 @@ My solution was a two-stage design. A classifier first decides whether any sales
 
 [![Bar chart comparing RMSE across single-stage vs two-stage pipeline configurations](https://github.com/user-attachments/assets/4284a413-5286-41c8-9cb0-48fb39a9c99b)](https://github.com/user-attachments/assets/4284a413-5286-41c8-9cb0-48fb39a9c99b)*Two-stage pipelines outperform single-stage regression across all configurations*
 
+[Read the full post](/seatdata.io-modeling-1/)
+
 ### Part 5: Neural Networks vs. Tree Models
 
 I tested three deep learning architectures against tree-based models. The best neural network pipeline matched tree model accuracy (MAE 3.96 vs 3.89) but required **100x the training time**. For structured tabular data with engineered features, neural networks did not justify the extra cost. Tree-based models became the standard going forward.
 
+[Read the full post](/seatdata.io-modeling-2/)
+
 ### Part 6: Hyperparameter Tuning
 
-Random search over 30 hyperparameter combinations captured 95% of the available tuning gain. The two most important parameters were learning rate and tree depth. Everything else contributed less than 10% of total improvement combined. Full-test RMSE dropped from 19.15 to 18.98, a 0.9% improvement.
+Random search over 30 hyperparameter combinations captured 95% of the available tuning gain. The two most important parameters were learning rate and tree depth. Full-test RMSE dropped from 19.15 to 18.98, a 0.9% improvement.
 
-The residual analysis from this stage also showed something important: **the model consistently underestimates very high-demand events**. For primary pricers, this means the model is most reliable for typical events in the middle of the demand distribution. For breakout events like blockbuster tours or playoff matchups, the model will likely underforecast secondary velocity. Pricing teams should treat a strong positive signal from the model as a minimum estimate, not a ceiling.
+The residual analysis showed something important: **the model consistently underestimates very high-demand events**. Pricing teams should treat a strong positive signal from the model as a minimum estimate, not a ceiling.
 
 [![Actual vs predicted scatter plot and residual distribution](https://github.com/user-attachments/assets/5fa10364-4746-4e55-85d3-0ad63363e09f)](https://github.com/user-attachments/assets/5fa10364-4746-4e55-85d3-0ad63363e09f)*The model underestimates extreme events*
 
+[Read the full post](/seatdata.io-modeling-3/)
+
 ### Part 7: Bayesian Optimization and Threshold Tuning
 
-I replaced random search with 200-trial Bayesian optimization using Optuna. That moved RMSE from 18.98 to 18.78. But the **largest single gain in the entire project** came from a non-model change: raising the classifier's confidence threshold from 0.50 to 0.90.
+I replaced random search with 200-trial Bayesian optimization using Optuna. That moved RMSE from 18.98 to 18.78. But the **largest single gain in the project up to this point** came from a non-model change: raising the classifier's confidence threshold from 0.50 to 0.90.
 
-At 0.50, the classifier activates the regressor whenever it is at least 50% confident of a sale. At 0.90, the regressor only runs when confidence is at least 90%. Moving to 0.90 pushed RMSE to 18.53, a combined 3.2% gain over Part 6. High-confidence predictions were substantially more accurate, and false positives on quiet events were driving disproportionate error.
-
-For a production pricing system, this finding matters operationally. A tool that only alerts on high-confidence signals generates fewer false alarms and earns more trust from the teams using it. Where a two-stage system decides to fire is often a bigger lever than how well the second stage predicts.
+At 0.50, the classifier activates the regressor whenever it is at least 50% confident of a sale. At 0.90, the regressor only runs when confidence is at least 90%. Moving to 0.90 pushed RMSE to 18.53. High-confidence predictions were substantially more accurate, and false positives on quiet events were driving disproportionate error.
 
 [![Search strategy comparison across grid, random, and Bayesian optimization runs](https://github.com/user-attachments/assets/696d7d1d-dcf1-4aef-b29e-183d564c05c6)](https://github.com/user-attachments/assets/696d7d1d-dcf1-4aef-b29e-183d564c05c6)*Bayesian optimization converges faster than random search*
 
+[Read the full post](/seatdata.io-modeling-4/)
+
 ### Part 8: One Model vs. Segment-Specific Models
 
-The last experiment tested whether training a dedicated model per event category would outperform the unified model. On the held-out test set, dedicated models improved predictions for four of seven categories. But cross-validation across three time windows showed a different result: the unified model won or tied everywhere.
-
-The test-set gains were specific to that time period. For the Festivals category with only 17,000 training rows, the dedicated model was fitting patterns from the training window rather than learning generalizable signals. One model trained on all 6 million rows generalized better than seven models trained on subsets.
+Training a dedicated model per event category outperformed the unified model on one held-out test set. But cross-validation across three time windows showed a different result: the unified model won or tied everywhere. The test-set gains were specific to that time period. One model trained on all 6 million rows generalized better than seven models trained on subsets.
 
 [![Bar chart comparing segment model results vs unified model across categories](https://github.com/user-attachments/assets/4a35a3ad-0d67-4dd7-9e22-eeab31c8c295)](https://github.com/user-attachments/assets/4a35a3ad-0d67-4dd7-9e22-eeab31c8c295)*Segment models appear better on one test window but do not hold up across time folds*
 
+[Read the full post](/seatdata.io-segmentation/)
+
 ### Part 9: Testing Semantic Embeddings
 
-The final experiment asked whether the model could benefit from knowing something about the identity of each event. Every feature in the existing set describes market state: price levels, listing counts, days to event, day of week. None of them say anything about who the artist is, which team is playing, or whether the event is a regional act or a major national tour.
+I tested whether the model could benefit from knowing something about the identity of each event. I built a pipeline that fetches Wikipedia summaries for 18,000 artists, venues, teams, and events, converts them into 384-dimensional vectors using the `all-MiniLM-L6-v2` sentence transformer, and compresses them to 102 dimensions with PCA. For artists without a Wikipedia page, I used Last.fm bios and genre tags as a fallback.
 
-I built a pipeline that fetches Wikipedia summaries for 18,000 artists, venues, teams, and events, converts them into 384-dimensional vectors using the `all-MiniLM-L6-v2` sentence transformer, and compresses them to 102 dimensions with PCA. For artists without a Wikipedia page, I used Last.fm bios and genre tags as a fallback source. These compressed vectors were joined onto training and test data by a normalized identifier called a slug.
+**The result: embeddings do not improve overall accuracy.** All embedding configs were slightly worse than the baseline on the full test set. The tabular market features already encode identity at prediction time. A $300 get-in price and 15 active listings in a 20,000-seat venue tells you more about likely demand than a Wikipedia biography.
 
-#### The Slug System
+Sports were a partial exception: team embeddings produced small but consistent improvement, because team identity (market size, standings, rivalry context) is harder to encode through price and listing signals alone. This pointed toward the structured external features that would drive the gain in Part 11.
 
-The pipeline connects event records to external sources using normalized identifiers called slugs. Three slug types are used: `artist::` for concert and comedy acts (after stripping venue info and format markers from the event name), `team::` for sports events, and `event::` for everything else. Normalization removes accents, strips punctuation, and collapses whitespace so "O.A.R." and "OAR" resolve to the same slug. Any mismatch between how a slug is derived at collection time versus join time means zero coverage for that entity, so the derivation logic is kept centralized and identical across all scripts.
+[Read the full post](/seatdata.io-embeddings-nlp/)
 
-#### Data Collection and Coverage
+### Part 10: Social Signals
 
-Wikipedia is the primary source. For each entity slug, the pipeline fetches the page summary (up to 2,000 characters), checkpointing to `data/wiki_cache.parquet` every 100 entries to allow resuming without re-fetching.
+I tested whether social media and web traffic data could improve predictions. The pipeline collected Google Trends interest scores, Spotify monthly listeners, and social media follower counts for artists, then joined these onto training data via the slug system built in Part 9.
 
-Entity type
+Social signals showed a small positive effect for concerts but added noise for other categories. The features were too static: an artist's Spotify listener count does not change meaningfully between ticket snapshots. What worked better was the momentum signal from Part 11's lifecycle features, which captured the same demand energy through time-varying market data rather than fixed identity metrics.
 
-Wikipedia coverage
+[Read the full post](/seatdata.io-social-features/)
 
-Artist
+### Part 11: Lifecycle Interactions and External Enrichment
 
-~61%
+This was the breakthrough. Two changes drove RMSE from 18.53 to **13.37**: fixing a subtle data leakage issue in how temporal features were computed, and adding lifecycle interaction features that combine "days to event" with market state variables.
 
-Team
+The lifecycle interactions capture something the model previously missed: the same floor price means different things at different points in an event's sales cycle. A $50 floor at T-30 is neutral. A $50 floor at T-3 signals strong residual demand. The interaction terms let the model read this context.
 
-~95%
+Eight external enrichment sources were also added (weather, holiday flags, local event density, venue history), but SHAP analysis showed that lifecycle interactions accounted for nearly half of total feature importance. The external signals helped at the margins; the lifecycle architecture was the main driver.
 
-Venue
+The prediction window was expanded from 7 to 21 days, and the test set was restricted to the final 3 weeks before each event, where pricing decisions are most actionable. This produced the champion result: **13.37 RMSE on 389,230 test observations**.
 
-~69%
+[Read the full post](/seatdata.io-improving-predictions/)
 
-Event
+### Part 12: Segmentation Revisited
 
-~81%
+With the feature set now doubled from Part 11, I re-ran the Part 8 experiment: do category-specific models outperform the unified model? The answer was the same. The unified model won or tied across all seven categories in cross-validation, even with the richer feature set.
 
-For the 1,299 artists with no Wikipedia page, Last.fm provided a fallback: bio text, genre tags, and listener count were joined into a single text string and passed through the same sentence transformer. Broadway coverage is only 7.6% in the test set because event names do not slug-match Wikipedia well under this scheme.
+The result was stronger than Part 8's. With more features, the segment models had more room to overfit, and they did. Broadway segment models showed particular instability, with RMSE swinging by 30% between time folds. The unified model's ability to share patterns across categories remained its advantage.
 
-#### AI Summary Generation
-
-A secondary output of the enrichment pipeline is 13,804 plain-English summaries generated via GPT-4o-mini (Gemini Flash as fallback) from the same Wikipedia and Last.fm text. These appear as context cards in the Event Explorer dashboard and are not model features. Total generation cost: $1.92 for 7.4M input tokens and 1.3M output tokens.
-
-Four configurations were tested, ranging from no embeddings (baseline) to adding 102 PCA components. The full ablation ran 32 training slots with 60 Optuna trials each.
-
-**The result: embeddings do not improve overall accuracy.**
-
-Config
-
-RMSE
-
-vs baseline
-
-Baseline (no embeddings)
-
-19.09
-
---
-
--   10 PCA components
-
-19.25
-
-+0.15
-
--   50 PCA components
-
-19.31
-
-+0.22
-
--   102 PCA components
-
-19.21
-
-+0.12
-
-All embedding configs were slightly worse than the baseline on the full test set. Even restricting the evaluation to only the 61.9% of test rows that received a real embedding (removing zero-vector rows for unmatched events), the best embedding config scored essentially the same as baseline: 22.90 vs 22.87 RMSE.
-
-The bucket-level breakdown reveals why. Sports events benefit noticeably from embeddings (Minor/Other Sports improved by 0.77 RMSE, Major Sports by 0.36), while Concert events got worse by nearly 1 RMSE point despite 87% embedding coverage.
-
-The tabular market features are not identity-agnostic: they are identity-encoded-at-prediction-time. A $300 get-in price and 15 active listings in a 20,000-seat venue tells you more about likely demand in the next seven days than a Wikipedia biography of the artist. Embeddings describe what an entity is; market features describe how that entity's event is performing right now. Sports are a partial exception: team identity, including market size, standings, and rivalry context, is harder to encode through price and listing signals alone, which is why team embeddings produce a small but consistent improvement.
-
-The classifier stage showed a small benefit from embeddings (PR-AUC 0.819 vs 0.814 baseline), meaning embeddings help identify whether an event will sell at all, but that improvement does not carry through to the regression stage where predicting volume matters.
+[Read the full post](/seatdata.io-segmenting-2/)
 
 ---
 
 ## Where the Model Works Best
 
-The model's error varies substantially by event type. This matters for deciding where to trust automated signals and where to require human review.
+The model's error varies substantially by event type. These are Part 11 champion model results on the 3-week test window.
 
-Category
+| Category | RMSE (tickets) |
+|----------|---------------|
+| Broadway & Theater | 6.46 |
+| Comedy | 7.08 |
+| Festivals | 7.58 |
+| Concerts | 7.99 |
+| Minor/Other Sports | 10.74 |
+| Other | 18.15 |
+| Major Sports | 31.69 |
 
-RMSE (tickets)
+Broadway is now the most predictable category (it was second to Comedy in Part 7). The lifecycle interaction features particularly helped here: Broadway shows have long, stable sales curves that the model can read clearly.
 
-MAE (tickets)
+Major Sports improved dramatically, from 48.44 RMSE in Part 7 to 31.69 in Part 11. The external enrichment features (local event density, day-of-week interactions, venue history) captured some of the game-context signal that was missing earlier. But it remains the hardest category. Without matchup-level data (opponent quality, standings, broadcast schedule), the model still cannot distinguish a regular-season Tuesday game from a must-win playoff game.
 
-Comedy
-
-5.80
-
-1.50
-
-Broadway and Theater
-
-10.81
-
-1.50
-
-Concert
-
-10.70
-
-1.96
-
-Festivals
-
-11.16
-
-2.99
-
-Minor/Other Sports
-
-11.46
-
-4.13
-
-**Major Sports**
-
-**48.44**
-
-**19.19**
-
-Comedy is the most predictable: small venues, consistent audiences, tight price ranges. The model is reliable enough here for automated signals with minimal human review.
-
-Major Sports is a different case. The 48-ticket RMSE is not a modeling failure, it is a feature gap. The model has no information about whether a game is a playoff matchup, a rivalry game, or nationally televised. A regular-season Tuesday night game and a must-win playoff game look identical in the current feature set, but their demand profiles are completely different. Fixing this requires new features like team standings, playoff probability, opponent quality, and broadcast schedule. Architecture changes alone will not help.
-
-For primary pricing teams managing NBA, NFL, or MLB events, the secondary market signal from this model is a reasonable starting point but needs enrichment with game-context features before it can drive automated decisions.
+For primary pricing teams: Broadway, Comedy, and Concerts are reliable enough for automated signals. Major Sports needs human review and would benefit most from additional data enrichment.
 
 ---
 
 ## Key Lessons
 
-**1. Data preparation mattered more than algorithm selection.**Log-transforming the sales target and imputing missing venue sizes improved every model tested. The choice between XGBoost, LightGBM, and CatBoost had smaller effects than getting the inputs right.
+**1. Data preparation mattered more than algorithm selection.** Log-transforming the sales target and imputing missing venue sizes improved every model tested. The choice between XGBoost, LightGBM, and CatBoost had smaller effects than getting the inputs right.
 
-**2. The biggest gain in the project was not a model change.**Moving the classifier threshold from 0.50 to 0.90 delivered more RMSE improvement than months of hyperparameter tuning. In a production pricing system, how conservatively the first stage flags events is as important as how accurately the second stage predicts. Fewer, higher-confidence outputs build more trust than high-volume noisy alerts.
+**2. The biggest gains were architectural, not algorithmic.** The two-stage pipeline (Part 4) cut error by 40%. Lifecycle interaction features (Part 11) drove the next major improvement. Hyperparameter tuning, by contrast, contributed less than 1% per round. Framing the problem correctly was worth more than optimizing within a fixed frame.
 
-**3. Simpler models trained on all the data beat complex models trained on subsets.**When one model saw 6 million rows and a category-specific model saw 17,000, the full-data model generalized better even though the smaller model should have had more targeted signal. More data consistently beat more specialization.
+**3. Lifecycle interactions dominated feature importance.** The same market signal means different things at different points in an event's sales cycle. Once the model could read "days to event" in combination with price and listing levels, nearly half of total feature importance concentrated in these interaction terms. This was the single most impactful feature engineering decision in the project.
 
-**4. Evaluating on multiple time windows prevented bad conclusions.**Segment-specific models looked promising on a single test window. Cross-validation across three windows showed those gains did not hold up. One time period is not enough evidence to justify a more complex system.
+**4. One model on all data beats segment-specific models, even with rich features.** This was tested twice: once with the base feature set (Part 8) and again after doubling the feature count (Part 12). Both times, the unified model generalized better. With more features, the segment models had more room to overfit, and they did.
 
-**5. The secondary market moves before the primary market does.**Floor prices compress and secondary velocity picks up before any official primary pricing action. A primary pricing team monitoring this in real time has an early-warning signal based on actual market behavior rather than manual observation or lagging reports.
-
-**6. Market signals already encode identity for concerts; they do not for sports.**Artist identity in the concert market is reflected in price levels and listing counts. The model reads those signals directly. For sports, team identity carries additional context that market signals do not capture: franchise history, current season standing, opponent quality. Semantic embeddings from Wikipedia text helped sports predictions but hurt concert predictions, which points to where explicit contextual features would add the most value.
+**5. Static identity signals hurt; time-varying momentum helps.** Semantic embeddings from Wikipedia text did not improve predictions (Part 9). Static social media metrics added noise (Part 10). But time-varying market features, velocity trends, price momentum, listing dynamics, consistently helped. For this domain, what an event is doing right now matters more than what it is.
 
 ---
 
 ## What Would Come Next
 
-The most valuable extensions for a primary pricing use case:
+The forecasting system works. The [business impact analysis](/seatdata.io-business-impact/) quantifies the revenue case. The path from here is toward deployment.
 
--   **Sports context features**: team standings, playoff probability, opponent strength, broadcast schedule. These would likely cut Major Sports RMSE significantly and make the signal actionable for teams managing NBA, NFL, and MLB events. The embedding experiment confirmed that sports predictions benefit from identity-level context; the next step is structured features rather than text embeddings.
--   **Category-specific thresholds**: The 0.90 threshold was tuned globally. Comedy and Broadway may work better at a lower threshold since false positives are less costly. Major Sports may need a higher threshold to reduce noise.
--   **Primary price data**: Adding the original primary ticket price to the feature set would close the feedback loop. The model would know whether primary pricing was aggressive or conservative before any secondary activity occurred.
--   **Improved embedding pipeline**: The current entity embeddings mix two incompatible coordinate systems (Wikipedia embeddings are PCA-projected; Last.fm fallback embeddings are raw-truncated). Re-running the pipeline so all entities go through the same standardization and PCA fit would remove that inconsistency and may improve the sports gains seen in the ablation.
+Matchup-level data for sports (opponent quality, standings, broadcast schedule) would address the largest remaining accuracy gap. A real-time ingestion pipeline replacing daily CSV snapshots with streaming StubHub data would enable intraday pricing decisions. A dynamic pricing engine consuming the velocity forecasts would translate signal into action. And A/B validation with a venue or promoter partner would close the loop between predicted impact and measured revenue.
 
 ---
 
-Try the live prediction interface at [event-explorer.streamlit.app](https://event-explorer.streamlit.app).*
+Try the live prediction interface at [event-explorer.streamlit.app](https://event-explorer.streamlit.app).
