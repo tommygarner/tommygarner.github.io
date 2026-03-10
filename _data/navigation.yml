@@ -12,6 +12,8 @@ main:
     url: /
   - title: "Projects"
     url: /portfolio/
+  - title: "SeatData.io Series"
+    url: /seatdata-series/
   - title: "Blog"
     url: /posts/
   - title: "Resume"

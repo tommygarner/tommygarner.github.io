@@ -6,6 +6,7 @@ description: "Designing a Star Schema and ETL Pipeline in BigQuery for High-Freq
 author_profile: true
 toc: true
 toc_sticky: true
+series: seatdata
 tags:
   - database management
   - sql
