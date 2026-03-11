@@ -23,21 +23,21 @@ But on March 3, 2026, the trial began. The federal trial opened in Manhattan and
 
 ## What the Government Is Arguing
 
-The DOJ's theory is structural. Their opening line in court was direct:
+The government's opening line in court was direct:
 
 > "Today, the concert ticket industry is broken. It is controlled by a monopolist." [^1]
 
-The argument is not that Live Nation behaved badly on a particular day. The argument is that the 2010 merger of Live Nation and Ticketmaster created a configuration where a single company controls the dominant concert promoter, the dominant ticketing platform, and a large share of major venues simultaneously. That vertical integration is what the government says functions as a lever.
+The argument is not that Live Nation behaved badly on a particular day. It is about what happened when Live Nation and Ticketmaster merged in 2010. After the merger, one company ended up controlling the biggest concert promoter, the biggest ticketing platform, and a large share of major venues all at once. The government says that combination gives Live Nation too much power over how the whole industry operates.
 
-Here is the mechanism the DOJ describes. Live Nation promotes the tours that fill arenas. Ticketmaster sells the tickets for those arenas. A venue that switches to a competing ticketing platform like SeatGeek does not just change its software vendor. That venue risks being deprioritized for Live Nation-promoted shows. No threat needs to be made explicitly for this risk, either. Venues know it, and so do competing ticketing companies. The result is that anyone trying to displace Ticketmaster must price in the possibility of retaliation simply to operate; not because a contract requires it, but because the market structure makes it credible. 
+Here is the core concern. Live Nation decides which tours go to which arenas. Ticketmaster sells the tickets for those arenas. So if a venue decides to switch to a competing ticketing company like SeatGeek, they are not just changing software. They are risking that Live Nation starts routing its biggest shows somewhere else. Nobody has to say that out loud for venues to understand the risk. Competing ticketing companies know it too. The result is that any company trying to compete with Ticketmaster has to factor in the possibility that Live Nation will punish their clients just for switching, and that fear shapes decisions before anyone even picks up the phone. 
 
 ## What Live Nation Is Arguing
 
 Live Nation's defense opened with scale. In 2025, 159 million people attended 55,000 concerts featuring 11,000 artists. Their attorney disputed the government's financial framing directly, stating that Ticketmaster nets approximately $5 per ticket in gross revenue, not $7 as the DOJ claimed, and clears under $2 after expenses [^1].
 
-On the structural retaliation argument, the defense countered that venues make autonomous business decisions, that switching ticketing systems carries genuine operational complexity regardless of who promotes their shows. For example, new venue entrants like UBS Arena in New York compete for and win marquee bookings through their own merits, not because Live Nation directed routing as punishment elsewhere.
+On the retaliation argument, the defense countered that venues make their own business decisions, and that switching ticketing systems is genuinely complicated regardless of who promotes their shows. As an example, they pointed to UBS Arena in New York, a newer building that competed for and won major concert bookings on its own merits, not because Live Nation was punishing Barclays Center.
 
-One significant development before opening statements came as a partial case dismissal already removed the most aggressive remedy. A court-ordered Ticketmaster spinoff is no longer a possible outcome of this trial. Other remedies remain available, but the breakup scenario that drew most of the public attention is off.
+One significant development before the trial even got started: a judge already dismissed the most aggressive possible outcome. Forcing Ticketmaster to fully split off from Live Nation is no longer on the table. Other outcomes are still possible, but the full breakup scenario that drew most of the public attention is off.
 
 ## The Evidence That Will Define the Case
 
@@ -51,19 +51,19 @@ There are three pieces of evidence from the opening week that will prove to be t
 
 Live Nation's financial results for 2025 are not in dispute: $25.2 billion in revenue, up 9% year over year, with record concert attendance and a deferred revenue balance of $4 billion that shows 2026 demand is already pre-loaded [^3]. The defense will use these numbers to argue that a broken market does not look like this.
 
-The problem with that argument is that output metrics and competitive structure metrics measure different things. A market can grow rapidly while becoming less competitive. The question isn't whether the industry is large or whether fans are showing up. It is whether the conditions under which competing ticketers, promoters, and venues operate are fair. 
+The problem with that argument is that a big, growing market and a fair market are two different things. The question is not whether fans are buying tickets. It is whether the companies trying to compete with Ticketmaster are operating on a level playing field.
 
-Amazon grew for years while simultaneously making it harder for third-party sellers to operate outside its platform. The FTC's case against Amazon didn't argue that e-commerce was shrinking. It argued that the terms of competition were being set by one party in ways that prevented alternatives.
+Amazon is a useful comparison. Amazon's revenue grew for years while it was simultaneously making things harder for third-party sellers who depended on its platform. The FTC's case against Amazon was not about e-commerce shrinking. It was about one company setting the rules for everyone else.
 
-The same logic applies here. The $4 billion in deferred revenue is real demand. It doesn't tell us whether SeatGeek can win a fair bid against Ticketmaster, or whether a venue that switches ticketers will lose concert supply. Those are the questions I think this trial is actually about.
+The same question applies here. The $4 billion in pre-sold tickets is real demand. But it does not tell us whether SeatGeek can win a fair bid to become a venue's ticketing partner, or whether a venue that switches away from Ticketmaster will start losing concerts. Those are the questions this trial is actually about.
 
-## What Remedies Are Left
+## What Can Actually Be Done
 
-With the forced spinoff out of the picture, the remedies available to the court are moreso behavioral. Can these actually address what the Barclays and Minnesota testimonies describe?
+With a full breakup off the table, the court can only impose rules on how Live Nation operates going forward. The question is whether any set of rules actually changes the behavior described in the Barclays and Minnesota testimony.
 
-A consent decree requiring Live Nation to separate its promotion decisions from its ticketing sales relationships would directly target the structural argument. If the entity booking tours can no longer communicate with the entity setting venue ticketing requirements, the lever the DOJ describes loses its power. The 2010 merger was approved under a consent decree with behavioral restrictions that critics have argued were unenforceable for 15 years. A stronger version of the same approach has this same problem.
+One option is a court-ordered agreement that requires Live Nation to keep its concert promotion decisions separate from its ticketing relationships. In theory, if the team booking tours cannot coordinate with the team managing venue ticketing deals, the power dynamic the DOJ is describing goes away. But it is worth noting that when the 2010 merger was first approved, it came with exactly this kind of rule-based restriction, and critics have argued for 15 years that it was never meaningfully enforced.
 
-More targeted remedies could focus on the specific dynamics in evidence. Prohibiting the venue-level routing retaliation with real penalties and a clear evidentiary standard would address Barclays, while requiring non-discriminatory access for competing tickets to Live Nation-promoted shows would address Minnesota. Whether a court can define and enforce those terms precisely enough to change venue behavior is a bigger puzzle to solve. 
+More targeted rules could address the specific situations in evidence. A clear prohibition on routing shows away from venues that switch ticketing providers, backed by real financial penalties, would speak directly to the Barclays situation. Requiring Live Nation to give competing ticketing companies equal access to its shows would speak to the Minnesota situation. Whether a court can write and enforce those rules precisely enough to actually change how the industry operates is the hard part. 
 
 ## What I'm Watching
 

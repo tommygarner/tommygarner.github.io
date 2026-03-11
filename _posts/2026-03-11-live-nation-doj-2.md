@@ -19,10 +19,7 @@ what the remedies actually do."
 
 ## It Ended Faster Than It Started
 
-[Part 1 of this series](https://tommygarner.github.io/usa-v-live-nation-what-the-trial-is-actually-about/) covered the
-structural argument the DOJ opened with on March 3: that Live Nation's vertical control of promotion, venues, and ticketing
-functions as a lever that forecloses competition without requiring explicit threats. The Barclays Center and Minnesota Wild
-testimony made that argument concrete.
+[Part 1 of this series](https://tommygarner.github.io/usa-v-live-nation-what-the-trial-is-actually-about/) covered what the government was arguing on March 3: that Live Nation's control over concert promotion, venues, and ticketing gives it so much power that competitors and venues are afraid to act against it, even without anyone making an explicit threat. The Barclays Center and Minnesota Wild testimony made that real.
 
 The trial settled six days later.
 
@@ -45,7 +42,7 @@ Ticketmaster. The 2010 merger stays intact. What Live Nation agreed to instead:
 - **Divestitures:** Live Nation must sell at least 13 amphitheaters, including Germania Insurance Amphitheater in Austin
 - **API access:** Ticketmaster must build third-party distribution APIs within nine months, opening its platform to competing
 sellers
-- **Penalties:** $200M to $280M distributed across 40 states; eight-year decree duration with $5 million per violation[^2]
+- **Penalties:** $200M to $280M distributed across 40 states; the agreement lasts eight years, with a $5 million fine for each violation[^2]
 
 However, there's another piece of news having to do with Oak View Group that is worth a larger discussion.
 
@@ -81,33 +78,22 @@ length and exclusivity of its contracts. Capping exclusivity at four years and p
 regular window where venues can run genuine competitive bids. Whether they use it depends on what the API access provisions
 actually produce.
 
-The API requirement is the one with the most uncertain upside. Forced interoperability has a track record in tech antitrust of
-being technically satisfied without producing real competition. An API that exists but is poorly documented, rate-limited, or
-commercially structured to disadvantage third parties achieves the letter of the consent decree without the intent. Whether the nine-month build timeline and $5 million violation penalties are enough to produce something SeatGeek or AXS can actually use is the question that will define whether this provision matters in practice.
+The API requirement is the one with the most uncertain upside. In tech, there is a long history of companies being forced to open their platforms to competitors on paper, while building something technically compliant but practically unusable. An API can exist and still be so slow, limited, or poorly documented that nobody can actually build on it. Whether what Ticketmaster ships in nine months is something SeatGeek or AXS can genuinely use is the question that will determine whether this provision means anything.
 
 ## The Microsoft Comparison
 
 Live Nation's attorney opened the trial by saying "we do not have monopoly power." Six days later, the company settled for $200 million and structural concessions across every core business line. The gap between that courtroom posture and settlement
 behavior is telling on its own.
 
-The more useful comparison is Microsoft's antitrust case in the late 1990s. The government won, a breakup was ordered, the
-breakup was reversed on appeal, and behavioral remedies were put in place instead. Microsoft went on to maintain its dominance
-for another decade by which point the browser market the case was about had been disrupted by forces entirely outside the
-litigation. The remedies were not irrelevant, but they did not restore the competition the government's case was premised on.
+The more useful comparison is Microsoft's antitrust case in the late 1990s. The government won. A breakup was ordered. The breakup was reversed on appeal, and a set of behavioral rules was put in place instead. Microsoft went on to dominate for another decade, at which point the browser market the whole case was about got disrupted by the internet itself, not by the lawsuit. The rules were not pointless, but they did not restore the competition the government was trying to protect.
 
-Live Nation's situation is different in one important way. The consent decree that approved the 2010 merger already imposed
-behavioral restrictions that critics argued were unenforceable for fifteen years. The DOJ's 2024 lawsuit was partly a
-concession that the 2010 decree had failed. A stronger version of the same approach faces the same enforcement problem. The $5
-million per violation penalty is real, but Live Nation cleared $25.2 billion in revenue last year. At that scale, a penalty
-only changes behavior if the violation detection rate is high enough to make compliance the cheaper option.
+Live Nation's situation has one important parallel. When the Live Nation and Ticketmaster merger was approved in 2010, it came with a set of rules designed to prevent exactly the kind of behavior now being litigated. Critics have argued for 15 years that those rules were never actually enforced. The DOJ filing this new lawsuit in 2024 was essentially an admission that the original rules failed. Writing a stronger version of the same kind of rules carries the same enforcement problem. And on $25.2 billion in annual revenue, a $5 million fine per violation only changes behavior if Live Nation expects to get caught often enough that following the rules is the cheaper option.
 
 ## What I'm Watching From Here on Out
 
-The judge has not approved this. Subramanian's anger at the process was not procedural frustration; it signals that he may
-scrutinize the terms more aggressively than the parties anticipated when they struck the deal on Thursday and let him find out
-on Sunday.
+The judge has not approved this yet. His anger was not just about being left out of the loop. A judge who finds out about a deal four days after it was struck, after sitting through jury selection and opening arguments, is not going to sign off without a hard look at whether the terms actually accomplish anything. He may reject it entirely.
 
-The 27 states continuing independent action are the more significant wildcard. New York, California, and Colorado have consumer protection postures that historically exceed federal minimums. If any of those state cases proceeds to trial, the evidence from the first week of federal testimony, the Barclays routing data, the Minnesota Wild deposition, the OVG $20 million payment disclosure, becomes available to state attorneys general who were not party to this settlement.
+The bigger wildcard is the 27 states still pursuing their own cases. New York, California, and Colorado tend to push harder on consumer protection than the federal government does. If any of those state cases goes to trial, all of the evidence from the first week of federal testimony, the Barclays concert data, the Minnesota Wild's internal communications, the details of the OVG payment, gets handed to state prosecutors who were not part of this deal and are not bound by it.
 
 For the industry, the API access deadline is the concrete thing to monitor. If Ticketmaster ships a functional, commercially
 viable third-party distribution API within nine months, it would represent a genuine structural shift. If the API is
