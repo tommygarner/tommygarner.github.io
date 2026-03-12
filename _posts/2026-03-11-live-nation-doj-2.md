@@ -82,17 +82,14 @@ For the industry, **the API access deadline is the concrete thing to monitor**. 
 
 ---
 
-*This is Part 2 of a two-part series. [Part
-1](https://tommygarner.github.io/usa-v-live-nation-what-the-trial-is-actually-about/) covers the structural argument and
+*This is Part 2 of a two-part series. [Part 1](https://tommygarner.github.io/usa-v-live-nation-what-the-trial-is-actually-about/) covers the structural argument and
 opening testimony.*
 
 ### References
-[^1]: [NBC News. "Ticketmaster, Live Nation Settle Antitrust Case." March 9,
-2026.](https://www.nbcnews.com/business/consumer/ticketmaster-live-nation-settles-antitrust-case-rcna262392)
+
+[^1]: [NBC News. "Ticketmaster, Live Nation Settle Antitrust Case." March 9, 2026.](https://www.nbcnews.com/business/consumer/ticketmaster-live-nation-settles-antitrust-case-rcna262392)
 [^2]: [Sports Business Journal. "Live Nation Must Terminate OVG Contract as Part of Proposed DOJ Settlement." March 10,
-2026.](https://www.sportsbusinessjournal.com/Articles/2026/03/10/live-nation-must-terminate-ovg-contract-as-part-of-proposed-do
-j-settlement/)
-[^3]: [The Wrap. "Live Nation, Ticketmaster Reach Monopoly Deal With Justice Department." March 9, 2026.](https://www.thewrap.c
-om/industry-news/public-policy-legal/live-nation-ticketmaster-monopoly-deal-justice-department-antitrust/)
+2026.](https://www.sportsbusinessjournal.com/Articles/2026/03/10/live-nation-must-terminate-ovg-contract-as-part-of-proposed-doj-settlement/)
+[^3]: [The Wrap. "Live Nation, Ticketmaster Reach Monopoly Deal With Justice Department." March 9, 2026.](https://www.thewrap.com/industry-news/public-policy-legal/live-nation-ticketmaster-monopoly-deal-justice-department-antitrust/)
 
 ---
