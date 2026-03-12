@@ -13,6 +13,11 @@ I'm a current Masters of Science in Business Analytics student at The University
 
 Most of my projects live at the intersection between music, sports, and media and I've enjoyed building an album recommendation system, a concert discovery app, and modeling for ticket demand forecasting. I've also worked on exploratory data analysis projects and end-to-end projects that help me improve my storytelling with the help of data, such as a fraudulent job posting detection application. 
 
+{: .notice--info}
+**Featured Project: [Demand Forecasting for Secondary Ticket Sales](/portfolio/demand-forecasting-seatdata.io-final-results/)**  
+Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+ in annual value** for mid-size operators. Includes an interactive Streamlit dashboard.  
+[View Project Details](/portfolio/demand-forecasting-seatdata.io-final-results/){: .btn .btn--info} [Open Dashboard](https://event-explorer.streamlit.app/){: .btn .btn--light}
+
 Currently, I help volunteer with SIL Global, a faith-based NP langugage development organization, as a Data and Business Analyst. My most recent work experience includes joining iHeartMedia's Austin Promotions team doing content creation, giveaways, and event activations. I've also had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
 
 I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
