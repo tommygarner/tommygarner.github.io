@@ -1,44 +1,33 @@
 ---
-permalink: /
-title: "Tommy Garner"
+permalink: /about/
+title: "About"
 author_profile: true
-redirect_from: 
-  - /about/
-  - /about.html
 ---
 
 Hi, I'm Tommy Garner!
 
-I'm a current Masters of Science in Business Analytics student at The University of Texas at Austin. I am getting quite excited about working with data to solve problems, and excited to showcase it here. Specifically, I want to build models, visualizations, and algorithms that make the live entertainment industry a little smarter and a lot more fun!
+I'm a current **Masters of Science in Business Analytics (MSBA)** student at **The University of Texas at Austin (UT)**. I am getting quite excited about working with data to solve problems, and excited to showcase it here. Specifically, I want to build models, visualizations, and algorithms that make the **live entertainment industry** a little smarter and a lot more fun!
 
-Most of my projects live at the intersection between music, sports, and media and I've enjoyed building an album recommendation system, a concert discovery app, and modeling for ticket demand forecasting. I've also worked on exploratory data analysis projects and end-to-end projects that help me improve my storytelling with the help of data, such as a fraudulent job posting detection application. 
+Most of my projects live at the intersection between **music**, **sports**, and **media** and I've enjoyed building an album recommendation system, a concert discovery app, and modeling for ticket demand forecasting. I've also worked on exploratory data analysis projects and end-to-end projects that help me improve my storytelling with the help of data, such as a fraudulent job posting detection application. 
 
-{: .notice--info}
-**Featured Project: [Demand Forecasting for Secondary Ticket Sales](/portfolio/demand-forecasting-seatdata.io-final-results/)**  
-Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+ in annual value** for mid-size operators. Includes an interactive Streamlit dashboard.  
-[View Project Details](/portfolio/demand-forecasting-seatdata.io-final-results/){: .btn .btn--info} [Open Dashboard](https://event-explorer.streamlit.app/){: .btn .btn--light}
+Currently, I help volunteer with **SIL Global**, a faith-based NP language development organization, as a **Data and Business Analyst**. My most recent work experience includes joining **iHeartMedia's** Austin Promotions team doing content creation, giveaways, and event activations. I've also had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
 
-Currently, I help volunteer with SIL Global, a faith-based NP langugage development organization, as a Data and Business Analyst. My most recent work experience includes joining iHeartMedia's Austin Promotions team doing content creation, giveaways, and event activations. I've also had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
-
-I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
+I'm a huge **San Antonio Spurs** fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
 
 <style>
   .image-collage {
-    column-count: 2; /* Default to 2 columns for mobile */
+    column-count: 2;
     column-gap: 15px;
   }
-  
-  /* On larger screens (laptops), increase to 3 columns */
   @media (min-width: 768px) {
     .image-collage {
       column-count: 3; 
     }
   }
-
   .image-collage img {
     width: 100%;
-    margin-bottom: 15px; /* Space between photos */
-    border-radius: 8px; /* Optional: rounds the corners */
+    margin-bottom: 15px;
+    border-radius: 8px;
     display: block;
   }
 </style>
