@@ -225,6 +225,8 @@ The lifecycle interactions capture something the model previously missed: the sa
 
 Eight external enrichment sources were also added (weather, holiday flags, local event density, venue history), but SHAP analysis showed that lifecycle interactions accounted for **nearly half of total feature importance**. The external signals helped at the margins; the lifecycle architecture was the main driver.
 
+[![Top 20 features by combined classifier and regressor importance](/portfolio/feature_importance.png)](/portfolio/feature_importance.png)*Lifecycle interactions (red) dominate the top 20, with "Final 3W x Major Sports" alone accounting for more importance than any market signal*
+
 The prediction window was expanded from 7 to 21 days, and the test set was restricted to the final 3 weeks before each event, where pricing decisions are most actionable. This produced the final result: **13.37 RMSE on 389,230 test observations**.
 
 [Read the full post](/seatdata.io-improving-predictions/)
@@ -251,7 +253,7 @@ The scenario analysis, grounded in published research from MLB variable pricing 
 
 ## Where the Model Works Best
 
-The model's error varies substantially by event type. These are Part 11 champion model results on the 3-week test window.
+The model's error varies substantially by event type. These are the final model results on the 3-week test window.
 
 | Category | RMSE (tickets) |
 |----------|---------------|
@@ -263,15 +265,15 @@ The model's error varies substantially by event type. These are Part 11 champion
 | Other | 18.15 |
 | Major Sports | 31.69 |
 
-Broadway is now the **most predictable category** (it was second to Comedy in Part 7). The lifecycle interaction features particularly helped here: Broadway shows have long, stable sales curves that the model can read clearly.
+Broadway is now the **most predictable category**. The lifecycle interaction features particularly helped here: Broadway shows have long, stable sales curves that the model can read clearly.
 
-Major Sports improved dramatically, from **48.44 RMSE in Part 7 to 31.69 in Part 11**. The external enrichment features (local event density, day-of-week interactions, venue history) captured some of the game-context signal that was missing earlier. But it remains the hardest category. Without matchup-level data (opponent quality, standings, broadcast schedule), the model still cannot distinguish a regular-season Tuesday game from a must-win playoff game.
+Major Sports improved dramatically by **improving 17 RMSE points**. The external enrichment features (local event density, day-of-week interactions, venue history) captured some of the game-context signal that was missing earlier. But it remains the hardest category. Without matchup-level data (opponent quality, standings, broadcast schedule), the model still cannot distinguish a regular-season Tuesday game from a must-win playoff game.
 
 For primary pricing teams: Broadway, Comedy, and Concerts are reliable enough for automated signals. Major Sports needs human review and would benefit most from additional data enrichment.
 
 ---
 
-## Key Lessons
+## Key Takeaways
 
 **1. Data preparation mattered more than algorithm selection.** Log-transforming the sales target and imputing missing venue sizes improved every model tested. The choice between XGBoost, LightGBM, and CatBoost had smaller effects than getting the inputs right.
 
@@ -289,7 +291,7 @@ For primary pricing teams: Broadway, Comedy, and Concerts are reliable enough fo
 
 The forecasting system works. The [business impact analysis](/seatdata.io-business-impact/) quantifies the revenue case. The path from here is toward deployment.
 
-Matchup-level data for sports (opponent quality, standings, broadcast schedule) would address the largest remaining accuracy gap. A real-time ingestion pipeline replacing daily CSV snapshots with streaming StubHub data would enable intraday pricing decisions. A dynamic pricing engine consuming the velocity forecasts would translate signal into action. And A/B validation with a venue or promoter partner would close the loop between predicted impact and measured revenue.
+Matchup-level data for sports (opponent quality, standings, broadcast schedule) would address the largest remaining accuracy gap. A real-time ingestion pipeline replacing daily CSV snapshots with streaming StubHub data would enable intraday pricing decisions. A **dynamic pricing** engine consuming the velocity forecasts would translate signal into action. And A/B validation with a venue or promoter partner would close the loop between predicted impact and measured revenue.
 
 ---
 
