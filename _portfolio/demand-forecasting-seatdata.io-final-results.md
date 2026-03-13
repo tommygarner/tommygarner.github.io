@@ -37,7 +37,7 @@ When Ticketmaster or LiveNation price a concert, they are making a decision week
 
 StubHub already has a cleaner read on demand.
 
-Secondary market listings and sales velocity update daily. If floor prices are holding firm ten days out and tickets are moving, demand is strong and the primary market likely underpriced the show. If floor prices are compressing at day five with little buyer activity, demand is soft and the primary market overpriced. Secondary market behavior is a leading indicator that most primary pricing teams monitor manually, if at all.
+Secondary market listings and sales velocity update daily. If floor prices are holding firm ten days out and tickets are moving, demand is strong and the primary market likely underpriced the show. If floor prices are compressing at day five with little buyer activity, demand is soft and the primary market overpriced. Secondary market behavior is **a leading indicator** that most primary pricing teams monitor manually, if at all.
 
 This project built a forecasting system that reads those signals at scale: **predicting 7-day secondary ticket sales for any event, using only the daily market snapshot data that StubHub reports**. The secondary forecast serves as the demand proxy. A primary pricing team using it can ask whether a show is gaining momentum or losing it, and whether they need to act before the final week.
 
@@ -51,13 +51,13 @@ I built a forecasting pipeline on 132 days of daily StubHub snapshot data coveri
 
 | Metric | Value |
 |--------|-------|
-| Champion RMSE (3-week window, Part 11) | **13.37 tickets** |
-| Full test set RMSE (Part 7) | 18.53 tickets |
-| Classifier precision (active events) | 76.3% |
-| Training data | 6M+ daily snapshots |
-| Test observations (Part 11) | 389,230 |
+| Champion RMSE (3-week window) | **13.37 tickets** |
+| Full test set RMSE | 18.53 tickets |
+| Classifier precision | 76.3% |
+| Training data | 7.5M+ daily snapshots |
+| Test data | 389,230 |
 
-The champion model (Part 11) was evaluated on a 3-week business-relevant test window: the final three weeks before each event, where pricing decisions are most actionable. The Part 7 result (18.53) was evaluated on the full test set including earlier, lower-activity snapshots. Both are honest numbers on different evaluation windows.
+The final model in Part 11 was evaluated on a 3-week business-relevant test window: the final three weeks before each event, where pricing decisions are most actionable. The Part 7 result (18.53) was evaluated on the full test set including earlier, lower-activity snapshots. Both are honest numbers on different evaluation windows.
 
 **Progression across the project:**
 
@@ -65,13 +65,13 @@ The champion model (Part 11) was evaluated on a 3-week business-relevant test wi
 |------|-----------|------|
 | 4 | Two-stage pipeline | 19.15 |
 | 6 | Hyperparameter tuning | 18.98 |
-| 7 | Bayesian opt + threshold 0.90 | 18.53 |
-| 9 | Embeddings (negative result) | 19.09 |
+| 7 | Bayesian optimization | 18.53 |
+| 9 | Embeddings | 19.09 |
 | 11 | Lifecycle + external signals | 13.37* |
 
 *\*3-week window; others are full test set*
 
-The largest single improvement came not from algorithm changes but from architectural decisions: the two-stage pipeline (Part 4) and lifecycle interaction features (Part 11). Together these account for more RMSE reduction than all hyperparameter tuning combined.
+The largest single improvement came not from algorithm changes but from architectural decisions: the two-stage pipeline (Part 4) and lifecycle interaction features (Part 11). Together these account for **more RMSE reduction than all hyperparameter tuning combined**.
 
 ---
 
@@ -91,36 +91,31 @@ For a primary pricing team, a stable secondary floor at day ten is a sign that t
 
 Sales activity picks up significantly in the last seven days before an event. This is the window where the model is most useful: predictions are still actionable, but time to intervene is limited.
 
+[![Market-wide average daily sales accelerating as events approach](image.png)](image.png)*Sales velocity increases 15x from 60+ days out to day-of*
+
 ### External shocks hit every category at once
 
-On November 4th, Election Day, secondary sales dropped significantly across every event category with meaningful inventory. I confirmed this with seasonal z-scores, which compare each day to the distribution for that same day of the week. **The drop was statistically anomalous for a Tuesday.**
+On November 4th, Election Day, secondary sales dropped significantly across every event category with meaningful inventory. I confirmed this with seasonal z-scores, which compare each day to the distribution for that same day of the week. **The drop was statistically anomalous for a Tuesday,** as were several other days in my snapshots.
 
-This is a real limitation of any model trained on historical patterns. Macro shocks from elections, major news events, or unexpected cancellations are not predictable from market signals alone. A production deployment would need external override triggers for days where context clearly breaks the normal pattern.
+[![Seasonal anomaly detection showing actual vs expected daily sales](image-1.png)](image-1.png)*Election Day (Nov 4) produced the largest anomaly in the dataset, with a z-score of -2.6*
+
+This is a real limitation of any model trained on historical patterns. Macro shocks from elections, major news events, or unexpected cancellations are **not predictable from market signals alone**. A production deployment would need override triggers for days where context clearly breaks the normal pattern.
 
 ---
 
-## Business Impact, In Numbers
+## Business Impact
 
 The model's value comes from two levers: dynamic primary pricing (adjusting face-value prices based on secondary velocity) and strategic inventory timing (holding back supply and releasing as demand confirms). The full analysis is in [Part 13](/seatdata.io-business-impact/).
 
-| Scenario | Per-Event | Annual (500 events) | At LN Scale (20K events) |
-|----------|-----------|-------------------|------------------------|
-| Conservative | $2,100 | **$1.05M** | **$42M** |
-| Moderate | $6,750 | **$3.38M** | $135M |
-| Optimistic | $16,170 | **$8.09M** | $323M |
+![Three scenarios of how better demand forecasting can impact the bottom line](image-3.png)
 
-The conservative case assumes 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value). The $42M conservative estimate at Live Nation scale represents roughly 14% of Ticketmaster's 2024 operating profit ($311M).
+The conservative case assumes 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value). The $42M conservative estimate at Live Nation scale represents about **14% of Ticketmaster's 2024 operating profit** ($311M).
 
-The classifier reliably separates actionable events from dead inventory. BLACKPINK showed a median classifier probability of 0.98, with 91.6% of snapshots flagged active and 60-90 secondary sales per week. Matilda the Musical showed a median probability of 0.016, with 0% flagged and zero sales at every tracked time point.
+The classifier reliably separates actionable events from dead inventory. For example, BLACKPINK showed a median classifier probability of 0.98, with 91.6% of snapshots flagged active and 60-90 secondary sales per week. Matilda the Musical showed a median probability of 0.016, with 0% flagged and zero sales at every tracked time point.
 
 **Super Bowl LX** illustrates inventory timing. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**, an 8x increase. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured three weeks of price appreciation.
 
-<figure>
-  <a href="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png">
-    <img src="https://github.com/tommygarner/tommygarner.github.io/releases/download/part13-images/business_impact_scenario_analysis.png" alt="Scenario analysis showing revenue estimates across conservative, moderate, and optimistic assumptions" style="width:100%">
-  </a>
-  <figcaption>Revenue estimates across scenarios, grounded in published research and model test-set performance</figcaption>
-</figure>
+[![Super Bowl LX actual vs predicted velocity over the event lifecycle](image-2.png)](image-2.png)*Super Bowl LX: secondary velocity surged from 89 to 717 tickets per week in the final two weeks*
 
 ---
 
@@ -128,7 +123,7 @@ The classifier reliably separates actionable events from dead inventory. BLACKPI
 
 ### Part 1: Structuring the Data
 
-Four months of daily StubHub CSV snapshots were loaded into BigQuery and organized into a star schema connecting events, venues, and daily market readings. I also built an automated classification system that labeled 114,000 events into 38 categories using regex patterns, distinguishing "Concert-Pop/A-List" from "Concert-Legacy/Tribute" from "NBA" without manual tagging after the rules were written.
+Four months of daily StubHub CSV snapshots were loaded into BigQuery and organized into a star schema connecting events, venues, and daily market readings. I also built an automated classification system that labeled the nearly **140,000 events into 38 categories** using regex patterns, distinguishing "Concert-Pop/A-List" from "Concert-Legacy/Tribute" from "NBA" without manual tagging after the rules were written.
 
 These 38 categories were consolidated into seven modeling buckets: Broadway and Theater, Comedy, Concert, Festivals, Major Sports, Minor/Other Sports, and Other.
 
@@ -146,13 +141,15 @@ The most useful EDA finding was the pricing tier structure across categories. Th
 
 This tier structure matters for primary pricing because a concert is not priced like an NBA game, and the signals that indicate healthy demand look different across tiers.
 
-I also found strong day-of-week seasonality. **Saturdays had the highest secondary sales volume, Tuesdays had the most variance**. Any model ignoring this structure would misread the market on off-peak days.
+[![Median get-in price by event category showing three pricing tiers](image-4.png)](image-4.png)*Three distinct pricing tiers: Premium ($80+), Mid ($50-65), Volume ($30-40)*
+
+I also found strong day-of-week seasonality. **Saturdays had the highest secondary sales volume, Tuesdays had the most variance**. Any model ignoring this structure would misread the market on off-peak days. Also, just a good-to-know if you want to go see a concert next weekend!
 
 [Read the full post](/seatdata.io-eda/)
 
 ### Part 3: Preparing the Data
 
-The raw sales distribution was heavily skewed. A small number of high-demand events drove thousands of weekly sales while most had zero. I applied a log transformation that reduced skewness from 12.28 to 1.25, making the model's errors more consistent across typical events.
+The raw sales distribution was heavily skewed. A small number of high-demand events drove thousands of weekly sales while most had zero. I applied a log transformation that **reduced skewness from 12.28 to 1.25**, making the model's errors more consistent across typical events.
 
 Venue capacity was missing for **42% of events**, and it turned out to matter for predictions. I filled the gaps through a four-step pipeline: fuzzy name matching against a reference spreadsheet, Ticketmaster API lookups, Wikidata SPARQL queries, and finally category-level medians.
 
@@ -162,11 +159,9 @@ Venue capacity was missing for **42% of events**, and it turned out to matter fo
 
 ### Part 4: Two-Stage Pipeline
 
-**72% of daily snapshots have zero sales.** A standard regression model predicting into that structure spends most of its capacity learning to predict near zero, and fails on the events that actually matter.
+In fact, sales were so sparse that **72% of daily snapshots had zero sales.** A standard regression model predicting into that structure spends most of its capacity learning to predict near zero, and fails on the events that actually matter.
 
 My solution was a two-stage design. A classifier first decides whether any sales will happen at all. Then a separate regressor estimates how many, but only on the events the classifier flagged. This split alone cut prediction error by **40%** compared to single-stage regression. The gain came entirely from architecture, not from tuning.
-
-[![Bar chart comparing RMSE across single-stage vs two-stage pipeline configurations](https://github.com/user-attachments/assets/4284a413-5286-41c8-9cb0-48fb39a9c99b)](https://github.com/user-attachments/assets/4284a413-5286-41c8-9cb0-48fb39a9c99b)*Two-stage pipelines outperform single-stage regression across all configurations*
 
 [Read the full post](/seatdata.io-modeling-1/)
 
@@ -178,7 +173,7 @@ I tested three deep learning architectures against tree-based models. The best n
 
 ### Part 6: Hyperparameter Tuning
 
-Random search over 30 hyperparameter combinations captured 95% of the available tuning gain. The two most important parameters were learning rate and tree depth. Full-test RMSE dropped from 19.15 to 18.98, a 0.9% improvement.
+Random search over 30 hyperparameter combinations captured **95% of the available tuning gain**. The two most important parameters were learning rate and tree depth. Full-test RMSE dropped from 19.15 to 18.98, a 0.9% improvement.
 
 The residual analysis showed something important: **the model consistently underestimates very high-demand events**. Pricing teams should treat a strong positive signal from the model as a minimum estimate, not a ceiling.
 
@@ -198,7 +193,7 @@ At 0.50, the classifier activates the regressor whenever it is at least 50% conf
 
 ### Part 8: One Model vs. Segment-Specific Models
 
-Training a dedicated model per event category outperformed the unified model on one held-out test set. But cross-validation across three time windows showed a different result: the unified model won or tied everywhere. The test-set gains were specific to that time period. One model trained on all 6 million rows generalized better than seven models trained on subsets.
+Training a dedicated model per event category outperformed the unified model on one held-out test set. But cross-validation across three time windows showed a different result: **the unified model won or tied everywhere**. The test-set gains were specific to that time period. One model trained on all 7.5 million rows generalized better than seven models trained on subsets.
 
 [![Bar chart comparing segment model results vs unified model across categories](https://github.com/user-attachments/assets/4a35a3ad-0d67-4dd7-9e22-eeab31c8c295)](https://github.com/user-attachments/assets/4a35a3ad-0d67-4dd7-9e22-eeab31c8c295)*Segment models appear better on one test window but do not hold up across time folds*
 
@@ -228,9 +223,9 @@ This was the breakthrough. Two changes drove RMSE from 18.53 to **13.37**: fixin
 
 The lifecycle interactions capture something the model previously missed: the same floor price means different things at different points in an event's sales cycle. A $50 floor at T-30 is neutral. A $50 floor at T-3 signals strong residual demand. The interaction terms let the model read this context.
 
-Eight external enrichment sources were also added (weather, holiday flags, local event density, venue history), but SHAP analysis showed that lifecycle interactions accounted for nearly half of total feature importance. The external signals helped at the margins; the lifecycle architecture was the main driver.
+Eight external enrichment sources were also added (weather, holiday flags, local event density, venue history), but SHAP analysis showed that lifecycle interactions accounted for **nearly half of total feature importance**. The external signals helped at the margins; the lifecycle architecture was the main driver.
 
-The prediction window was expanded from 7 to 21 days, and the test set was restricted to the final 3 weeks before each event, where pricing decisions are most actionable. This produced the champion result: **13.37 RMSE on 389,230 test observations**.
+The prediction window was expanded from 7 to 21 days, and the test set was restricted to the final 3 weeks before each event, where pricing decisions are most actionable. This produced the final result: **13.37 RMSE on 389,230 test observations**.
 
 [Read the full post](/seatdata.io-improving-predictions/)
 
@@ -244,7 +239,7 @@ The result was stronger than Part 8's. With more features, the segment models ha
 
 ### Part 13: Business Impact
 
-The first 12 parts built the model. Part 13 quantifies what acting on it is worth. Two revenue mechanisms have the clearest path: dynamic primary pricing based on secondary velocity, and strategic inventory release timed to demand curves.
+The first 12 parts built the model. Part 13 quantifies what acting on it is worth. Two revenue mechanisms have the clearest path: dynamic primary pricing based on secondary velocity (the unpopular choice), and strategic inventory release timed to demand curves.
 
 The scenario analysis, grounded in published research from MLB variable pricing (3% revenue lift), Live Nation Platinum (70% premium seat revenue increase), and airline ML pricing ($72.2M revenue increase), produces a conservative estimate of **$1.05M per year** for a 500-event operator and **$42M at Live Nation scale**. The Super Bowl LX case study shows the signal in action: secondary velocity surged 8x from D-21 to D-7, with the classifier holding above 0.93 throughout.
 
@@ -269,9 +264,9 @@ The model's error varies substantially by event type. These are Part 11 champion
 | Other | 18.15 |
 | Major Sports | 31.69 |
 
-Broadway is now the most predictable category (it was second to Comedy in Part 7). The lifecycle interaction features particularly helped here: Broadway shows have long, stable sales curves that the model can read clearly.
+Broadway is now the **most predictable category** (it was second to Comedy in Part 7). The lifecycle interaction features particularly helped here: Broadway shows have long, stable sales curves that the model can read clearly.
 
-Major Sports improved dramatically, from 48.44 RMSE in Part 7 to 31.69 in Part 11. The external enrichment features (local event density, day-of-week interactions, venue history) captured some of the game-context signal that was missing earlier. But it remains the hardest category. Without matchup-level data (opponent quality, standings, broadcast schedule), the model still cannot distinguish a regular-season Tuesday game from a must-win playoff game.
+Major Sports improved dramatically, from **48.44 RMSE in Part 7 to 31.69 in Part 11**. The external enrichment features (local event density, day-of-week interactions, venue history) captured some of the game-context signal that was missing earlier. But it remains the hardest category. Without matchup-level data (opponent quality, standings, broadcast schedule), the model still cannot distinguish a regular-season Tuesday game from a must-win playoff game.
 
 For primary pricing teams: Broadway, Comedy, and Concerts are reliable enough for automated signals. Major Sports needs human review and would benefit most from additional data enrichment.
 
@@ -281,13 +276,13 @@ For primary pricing teams: Broadway, Comedy, and Concerts are reliable enough fo
 
 **1. Data preparation mattered more than algorithm selection.** Log-transforming the sales target and imputing missing venue sizes improved every model tested. The choice between XGBoost, LightGBM, and CatBoost had smaller effects than getting the inputs right.
 
-**2. The biggest gains were architectural, not algorithmic.** The two-stage pipeline (Part 4) cut error by 40%. Lifecycle interaction features (Part 11) drove the next major improvement. Hyperparameter tuning, by contrast, contributed less than 1% per round. Framing the problem correctly was worth more than optimizing within a fixed frame.
+**2. The biggest gains were architectural, not algorithmic.** The two-stage pipeline (Part 4) cut error by 40%. Lifecycle interaction features (Part 11) drove the next major improvement. Hyperparameter tuning, by contrast, contributed **less than 1%** per round. Framing the problem correctly was worth more than optimizing within a fixed frame.
 
 **3. Lifecycle interactions dominated feature importance.** The same market signal means different things at different points in an event's sales cycle. Once the model could read "days to event" in combination with price and listing levels, nearly half of total feature importance concentrated in these interaction terms. This was the single most impactful feature engineering decision in the project.
 
 **4. One model on all data beats segment-specific models, even with rich features.** This was tested twice: once with the base feature set (Part 8) and again after doubling the feature count (Part 12). Both times, the unified model generalized better. With more features, the segment models had more room to overfit, and they did.
 
-**5. Static identity signals hurt; time-varying momentum helps.** Semantic embeddings from Wikipedia text did not improve predictions (Part 9). Static social media metrics added noise (Part 10). But time-varying market features, velocity trends, price momentum, listing dynamics, consistently helped. For this domain, what an event is doing right now matters more than what it is.
+**5. Static identity signals hurt; time-varying momentum helps.** Semantic embeddings from Wikipedia text did not improve predictions (Part 9). Static social media metrics added noise (Part 10). But time-varying market features, velocity trends, price momentum, listing dynamics, consistently helped. For this domain, **what an event is doing right now matters more than what it is**.
 
 ---
 
