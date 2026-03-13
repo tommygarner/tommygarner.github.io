@@ -33,9 +33,9 @@ published: true
 
 ## The Problem With Primary Pricing
 
-When Ticketmaster or LiveNation price a concert, they are making a decision weeks or months before the show with limited real-time demand data. Price too low and they leave revenue on the table. Price too high and tickets stall, the show looks empty, and the artist's team gets unhappy.
+When a promoter prices a concert, the decision is made weeks or months before the tickets go on sale, with input from the artist's team, but limited real-time demand data. Price too low, and you leave revenue on the table. Price too high, and inventory won't sell. The best proxy they have are historical, comparable shows. 
 
-StubHub already has a cleaner read on demand.
+But secondary marketplaces like StubHub already have a cleaner read on demand.
 
 Secondary market listings and sales velocity update daily. If floor prices are holding firm ten days out and tickets are moving, demand is strong and the primary market likely underpriced the show. If floor prices are compressing at day five with little buyer activity, demand is soft and the primary market overpriced. Secondary market behavior is **a leading indicator** that most primary pricing teams monitor manually, if at all.
 
