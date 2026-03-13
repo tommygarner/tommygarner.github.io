@@ -23,25 +23,26 @@ Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+
 ## Technical Skills
 
 **Programming and Databases:** Python (Pandas, Scikit-Learn, XGBoost, Optuna), SQL (BigQuery, PostgreSQL), R  
-**Visualization:** Power BI, Tableau, Amazon QuickSight, Streamlit, Matplotlib/Seaborn  
-**Tools and Cloud:** AWS, Google Cloud Platform (GCP), Git/GitHub, Docker, BigQuery  
-**Expertise:** Machine Learning (Regression, Classification, NLP), Demand Forecasting, EDA, Data Storytelling
+**Visualization:** Power BI, Tableau, Amazon QuickSight, Streamlit, Grafana, Prometheus  
+**Tools and Cloud:** AWS, Google Cloud Platform (GCP), Git/GitHub, Docker, Kubernetes (K8s), Helm Charts, BigQuery  
+**Expertise:** Machine Learning (Regression, Classification, NLP), Observability Engineering, Demand Forecasting, EDA
 
 ## Professional Experience
 
-**Cisco | [Your Title Here]**  
-*Location | Dates*
-*   *[Bullet Point 1: What did you build/optimize? Use action verbs and metrics.]*
-*   *[Bullet Point 2: What tools did you use? (e.g., Python, SQL, Tableau)]*
-*   *[Bullet Point 3: What was the business impact?]*
+**Cisco | Business Analyst Intern (MSBA Capstone)**  
+*Austin, TX | January 2026 - Present*
+*   **Observability Engineering:** Architecting a real-time observability pipeline using **OpenTelemetry (OTEL)** for Cisco's internal Google ADK agent to streamline firewall connectivity troubleshooting.
+*   **KPI & Metric Design:** Defined and instrumented key performance indicators (KPIs) in **Python** to quantify user interaction patterns and agent reliability across the enterprise.
+*   **Data Visualization:** Developing **Grafana** dashboards connected to **Prometheus** metrics to provide stakeholders with actionable transparency into agent usage and performance.
+*   **Environment:** Managing deployments within a cloud-native ecosystem using **GitHub, Kubernetes (K8s), and Helm Charts**.
 
 **iHeartMedia | Promotions and Content Creation**  
-*Austin, TX | [Dates]*
+*Austin, TX | 2024 - 2025*
 *   **Data Visualization:** Architected Power BI dashboards integrating cross-platform promotional, content, and audience engagement data to support B2B sales and local client strategy.
 *   **Media Operations:** Executed high-impact event activations and content creation for Austin's top media markets, ensuring seamless brand integration.
 
 **SIL Global | Data and Business Analyst (Volunteer)**  
-*Remote | [Dates]*
+*Remote | 2024 - Present*
 *   **Reporting:** Developed Amazon QuickSight dashboards to visualize key organizational impact metrics for stakeholders.
 *   **API Integration:** Facilitated technical integration of new APIs and collaborated with leadership to define and track new KPIs.
 
