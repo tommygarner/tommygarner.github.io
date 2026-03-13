@@ -15,8 +15,9 @@ redirect_from:
 
 [Download my full Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
 
-{: .notice--primary}
-**I bridge the gap between complex datasets and the live entertainment industry.** By combining a technical foundation in MS Business Analytics with hands-on experience at Cisco and iHeartMedia, I build data products that predict market demand, optimize enterprise performance, and tell the story behind the numbers.
+<p style="font-size: 1.25em; line-height: 1.5;">
+  <strong>I bridge the gap between complex datasets and the live entertainment industry.</strong> By combining a technical foundation in MS Business Analytics with hands-on experience at Cisco and iHeartMedia, I build data products that predict market demand, optimize enterprise performance, and tell the story behind the numbers.
+</p>
 
 {: .notice--info}
 **Featured Project: [Demand Forecasting for Secondary Ticket Sales](/portfolio/demand-forecasting-seatdata.io-final-results/)**  
