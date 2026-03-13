@@ -13,7 +13,9 @@ redirect_from:
 ## Data Scientist and Business Analyst
 **MS Business Analytics Student at The University of Texas at Austin (May 2026)**
 
-Results-driven Data Scientist specializing in the intersection of **media, sports, and live entertainment**. Experienced in building end-to-end ML pipelines, interactive dashboards, and demand forecasting models that translate complex datasets into actionable business strategy.
+[Download my full Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
+
+I bridge the gap between complex datasets and the live entertainment industry. By combining a technical foundation in MS Business Analytics with hands-on experience at Cisco and iHeartMedia, I build data products that predict market demand, optimize enterprise performance, and tell the story behind the numbers.
 
 {: .notice--info}
 **Featured Project: [Demand Forecasting for Secondary Ticket Sales](/portfolio/demand-forecasting-seatdata.io-final-results/)**  
@@ -44,7 +46,7 @@ Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+
 **SIL Global | Data and Business Analyst (Volunteer)**  
 *Remote | 2024 - Present*
 *   **Reporting:** Developed Amazon QuickSight dashboards to visualize key organizational impact metrics for stakeholders.
-*   **API Integration:** Facilitated technical integration of new APIs and collaborated with leadership to define and track new KPIs.
+*   **API Integration:** Reviewed new API integration and collaborated with the data team to define and track new data.
 
 ## Education
 

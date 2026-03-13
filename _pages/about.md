@@ -12,7 +12,7 @@ Most of my projects live at the intersection between **music**, **sports**, and 
 
 Currently, I help volunteer with **SIL Global**, a faith-based NP language development organization, as a **Data and Business Analyst**. My most recent work experience includes joining **iHeartMedia's** Austin Promotions team doing content creation, giveaways, and event activations. I've also had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
 
-I'm a huge **San Antonio Spurs** fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
+I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
 
 <style>
   .image-collage {
