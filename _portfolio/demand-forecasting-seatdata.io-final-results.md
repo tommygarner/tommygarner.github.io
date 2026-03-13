@@ -107,7 +107,7 @@ This is a real limitation of any model trained on historical patterns. Macro sho
 
 The model's value comes from two levers: dynamic primary pricing (adjusting face-value prices based on secondary velocity) and strategic inventory timing (holding back supply and releasing as demand confirms). The full analysis is in [Part 13](/seatdata.io-business-impact/).
 
-![Three scenarios of how better demand forecasting can impact the bottom line](/portfolio/image-3.png)
+[![Revenue impact vs operator scale, from mid-size to Live Nation](/portfolio/image-5.png)](/portfolio/image-5.png)*$42M to $323M annual revenue impact at Live Nation scale (20k events), depending on scenario assumptions*
 
 The conservative case assumes 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value). The $42M conservative estimate at Live Nation scale represents about **14% of Ticketmaster's 2024 operating profit** ($311M).
 
@@ -243,8 +243,7 @@ The first 12 parts built the model. Part 13 quantifies what acting on it is wort
 
 The scenario analysis, grounded in published research from MLB variable pricing (3% revenue lift), Live Nation Platinum (70% premium seat revenue increase), and airline ML pricing ($72.2M revenue increase), produces a conservative estimate of **$1.05M per year** for a 500-event operator and **$42M at Live Nation scale**. The Super Bowl LX case study shows the signal in action: secondary velocity surged 8x from D-21 to D-7, with the classifier holding above 0.93 throughout.
 
-<img width="1784" height="704" alt="image" src="https://github.com/user-attachments/assets/3d314f1d-faa0-4b88-ac05-e6001c432024" />
-*Looking closely at the case of Superbowl LX sales*
+[![Scenario analysis: $1.05M conservative, $3.38M moderate, $8.08M optimistic for a 500-event operator](/portfolio/image-6.png)](/portfolio/image-6.png)*Dynamic pricing revenue uplift for a 500-event, 10K-capacity operator across three scenarios*
 
 [Read the full post](/seatdata.io-business-impact/)
 
