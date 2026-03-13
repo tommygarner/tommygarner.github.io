@@ -91,13 +91,13 @@ For a primary pricing team, a stable secondary floor at day ten is a sign that t
 
 Sales activity picks up significantly in the last seven days before an event. This is the window where the model is most useful: predictions are still actionable, but time to intervene is limited.
 
-[![Market-wide average daily sales accelerating as events approach](image.png)](image.png)*Sales velocity increases 15x from 60+ days out to day-of*
+[![Market-wide average daily sales accelerating as events approach](/portfolio/image.png)](/portfolio/image.png)*Sales velocity increases 15x from 60+ days out to day-of*
 
 ### External shocks hit every category at once
 
 On November 4th, Election Day, secondary sales dropped significantly across every event category with meaningful inventory. I confirmed this with seasonal z-scores, which compare each day to the distribution for that same day of the week. **The drop was statistically anomalous for a Tuesday,** as were several other days in my snapshots.
 
-[![Seasonal anomaly detection showing actual vs expected daily sales](image-1.png)](image-1.png)*Election Day (Nov 4) produced the largest anomaly in the dataset, with a z-score of -2.6*
+[![Seasonal anomaly detection showing actual vs expected daily sales](/portfolio/image-1.png)](/portfolio/image-1.png)*Election Day (Nov 4) produced the largest anomaly in the dataset, with a z-score of -2.6*
 
 This is a real limitation of any model trained on historical patterns. Macro shocks from elections, major news events, or unexpected cancellations are **not predictable from market signals alone**. A production deployment would need override triggers for days where context clearly breaks the normal pattern.
 
@@ -107,7 +107,7 @@ This is a real limitation of any model trained on historical patterns. Macro sho
 
 The model's value comes from two levers: dynamic primary pricing (adjusting face-value prices based on secondary velocity) and strategic inventory timing (holding back supply and releasing as demand confirms). The full analysis is in [Part 13](/seatdata.io-business-impact/).
 
-![Three scenarios of how better demand forecasting can impact the bottom line](image-3.png)
+![Three scenarios of how better demand forecasting can impact the bottom line](/portfolio/image-3.png)
 
 The conservative case assumes 50% event signal rate (below the classifier's 67.6% recall), 8% premium inventory, 15% capture rate (well below LN Platinum's 70%+), and a $35 secondary premium (below the research average of 2x face value). The $42M conservative estimate at Live Nation scale represents about **14% of Ticketmaster's 2024 operating profit** ($311M).
 
@@ -115,7 +115,7 @@ The classifier reliably separates actionable events from dead inventory. For exa
 
 **Super Bowl LX** illustrates inventory timing. Secondary velocity surged from 89 tickets per week at D-21 to **717 tickets per week at D-7**, an 8x increase. The classifier stayed above 0.93 throughout. A hold-back strategy releasing inventory in tranches as velocity confirmed would have captured three weeks of price appreciation.
 
-[![Super Bowl LX actual vs predicted velocity over the event lifecycle](image-2.png)](image-2.png)*Super Bowl LX: secondary velocity surged from 89 to 717 tickets per week in the final two weeks*
+[![Super Bowl LX actual vs predicted velocity over the event lifecycle](/portfolio/image-2.png)](/portfolio/image-2.png)*Super Bowl LX: secondary velocity surged from 89 to 717 tickets per week in the final two weeks*
 
 ---
 
@@ -141,7 +141,7 @@ The most useful EDA finding was the pricing tier structure across categories. Th
 
 This tier structure matters for primary pricing because a concert is not priced like an NBA game, and the signals that indicate healthy demand look different across tiers.
 
-[![Median get-in price by event category showing three pricing tiers](image-4.png)](image-4.png)*Three distinct pricing tiers: Premium ($80+), Mid ($50-65), Volume ($30-40)*
+[![Median get-in price by event category showing three pricing tiers](/portfolio/image-4.png)](/portfolio/image-4.png)*Three distinct pricing tiers: Premium ($80+), Mid ($50-65), Volume ($30-40)*
 
 I also found strong day-of-week seasonality. **Saturdays had the highest secondary sales volume, Tuesdays had the most variance**. Any model ignoring this structure would misread the market on off-peak days. Also, just a good-to-know if you want to go see a concert next weekend!
 
