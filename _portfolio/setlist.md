@@ -20,7 +20,7 @@ The Setlist is a personalized concert discovery app built for music fans who wan
 
 The core ranking system combines Spotify's short and medium-term top artist data with explicit swipe preferences to produce an affinity score for each discovered event. Artists you've liked get a boost; artists you've disliked are filtered out entirely. Scores are computed at discovery time and updated live as you swipe, so the list re-sorts without requiring a full re-fetch.
 
-<img width="882" height="818" alt="image" src="https://github.com/user-attachments/assets/a2762e8f-3875-4dc5-af87-f3b8b8b29180" />
+<img width="864" height="734" alt="image" src="https://github.com/user-attachments/assets/5adb501e-74ff-47f3-b6d7-771c2c9720e1" />
 *Ticketmaster's Discovery API architecture*
 
 Concert discovery fans out async requests to Ticketmaster across all of your Spotify artists in parallel using aiohttp, then deduplicates and caches results for 24 hours to stay within API rate limits. A streaming progress bar (via Server-Sent Events) shows each step in real time rather than leaving the user staring at a spinner.
