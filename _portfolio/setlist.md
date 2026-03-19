@@ -1,19 +1,25 @@
 ---
-title: "Streamlit: Setlist - Concert Recommendation App"
+title: "Setlist - Personalized Concert Discovery"
 collection: portfolio
-excerpt: "Streamlit app that matches your Spotify taste with upcoming concerts using Ticketmaster and SeatGeek APIs."
+excerpt: "Full-stack concert discovery app that matches your Spotify taste with upcoming shows, with a Tinder-style artist swipe queue and real-time friend coordination."
 date: 2025-11-23
 tags:
   - recommender systems
   - live entertainment
+  - react
+  - fastapi
   - python
-  - streamlit
   - supabase
 ---
 [<i class="fab fa-github" aria-hidden="true"></i> View Code on GitHub](https://github.com/tommygarner/setlist){: .btn .btn--primary}
+[<i class="fas fa-play" aria-hidden="true"></i> Live Demo](https://thesetlist.streamlit.app/){: .btn}
 
-The Setlist is a personalized concert recommendation app that connects listeners’ Spotify libraries with real‑time concert data. The app pulls a user’s favorite artists from Spotify, enriches them with metadata, and then queries Ticketmaster and SeatGeek APIs to find matching shows in selected markets.
+The Setlist is a personalized concert discovery app built for music fans who want to stop missing shows by artists they actually like. It connects to your Spotify account, analyzes your listening history, and surfaces upcoming concerts ranked by how well they match your taste.
 
-Users can swipe through suggested artists in a Tinder‑style interface, save favorites, and explore upcoming events tailored to their taste. The app is built in Python with Streamlit for the UI and deployed as an interactive web app, tying together API integration, recommendation logic, and a smooth fan‑facing experience.
+The core ranking system combines Spotify's short and medium-term top artist data with explicit swipe preferences to produce an affinity score for each discovered event. Artists you've liked get a boost; artists you've disliked are filtered out entirely. Scores are computed at discovery time and updated live as you swipe, so the list re-sorts without requiring a full re-fetch.
 
-This app was refined using Claude Code to make the repo compatible with Docker containers and local hosting, but also runs a lighter version on [Streamlit Cloud](https://thesetlist.streamlit.app/). Feel free to test it out and push my API rate limits to the max to figure out your next concert!
+Concert discovery fans out async requests to Ticketmaster across all of your Spotify artists in parallel using aiohttp, then deduplicates and caches results for 24 hours to stay within API rate limits. A streaming progress bar (via Server-Sent Events) shows each step in real time rather than leaving the user staring at a spinner.
+
+The app also includes an artist swipe queue that shows each artist's top tracks with album art and Spotify/YouTube links, a Music Discovery section with tabs for similar artists and surprise picks, and a friends system with direct messaging and inline concert sharing.
+
+The project started as a Streamlit prototype and was later rebuilt as a React 18 + FastAPI application, containerized with Docker, and deployed behind nginx with SSE proxy buffering disabled for the streaming endpoint. The demo above runs the original Streamlit version.
