@@ -139,13 +139,24 @@ Broadway, Comedy, and Concerts are reliable enough for automated signals. Major 
 
 ## Business Case
 
-The model's value runs through two mechanisms: adjusting primary face-value prices on events where secondary velocity signals strong demand, and timing inventory release to capture price appreciation in the final weeks. The conservative revenue estimate for a 500-event, 10,000-capacity operator is $1.05M annually, built from the following assumptions. Fifty percent of events generate an actionable signal, which is below the classifier's measured 67.6% recall and accounts for human review overhead. Eight percent of venue capacity is eligible for dynamic pricing, a figure consistent with premium seating tiers at mid-size venues. The capture rate on that premium is 15%, which is intentionally conservative relative to Live Nation Platinum's reported 70%+ capture on premium seats. The secondary-to-primary price gap is $35 per ticket, below the roughly 2x face value average documented in academic secondary market research. Multiplied together: 500 events, 50% signal rate, 800 eligible tickets per event, 15% capture, $35 gap, gives $1.05M. At Live Nation's scale of roughly 20,000 events annually, the same per-event math produces a conservative estimate of $42M, representing about 14% of Ticketmaster's reported 2024 operating profit of $311M. These are scenario projections, not observed revenue; the full assumption set and sensitivity analysis are in [Part 13](/seatdata.io-business-impact/).
+The model creates value through two mechanisms: adjusting primary prices when secondary velocity signals strong demand, and timing inventory release as demand confirms in the final weeks.
+
+Conservative estimate for a 500-event, 10,000-capacity operator:
+
+| Assumption | Value | Benchmark |
+|---|---|---|
+| Events with actionable signal | 50% of events | Below classifier recall of 67.6%; accounts for human review |
+| Premium inventory per event | 8% of capacity (800 seats) | Typical premium tier at mid-size venues |
+| Capture rate | 15% | Conservative vs. Live Nation Platinum's reported 70%+ |
+| Secondary price gap | $35 per ticket | Below the ~2x face value average in published research |
+
+$$500 \times 0.50 \times 800 \times 0.15 \times \$35 = \$1{,}050{,}000 \text{ per year}$$
+
+At Live Nation's scale of 20,000 events annually, the same per-event math gives $42M, roughly 14% of Ticketmaster's reported 2024 operating profit. These are scenario projections, not observed revenue. Full sensitivity analysis in [Part 13](/seatdata.io-business-impact/).
 
 ---
 
 ## What's Next
-
-The forecasting system works, and the signal is real. The Super Bowl LX case study illustrates it: secondary velocity surged from 89 tickets per week at 21 days out to 717 at 7 days out, an 8x increase, with the classifier holding above 0.93 throughout.
 
 Three additions would have the clearest impact on accuracy and deployability. Matchup-level data for sports (opponent quality, standings, broadcast schedule) would address the largest remaining gap in the segment table above. A real-time ingestion pipeline replacing daily CSV snapshots with streaming StubHub data would enable intraday decisions instead of next-day ones. And A/B validation with a venue or promoter partner would close the loop between predicted demand and measured revenue.
 
