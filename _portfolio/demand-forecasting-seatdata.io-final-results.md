@@ -60,7 +60,7 @@ Before building any model, I needed to confirm that secondary market data actual
 
 ### Searching for Signal 
 
-Secondary sellers reprice constantly based on real buyer activity. Across all event types, floor prices drop roughly 10% in the final week before showtime. This isn't random, but it reflects how sellers are responding to weakening demand before any official action happens on the primary side.
+Secondary sellers reprice constantly based on real buyer activity. Across all event types, **floor prices drop roughly 10%** in the final week before showtime. This isn't random, but it reflects how sellers are responding to weakening demand before any official action happens on the primary side.
 
 [![Chart showing floor price declining as days to event approach zero](https://github.com/user-attachments/assets/bd32f380-278b-4d95-a28d-e5e5c4c25e6d)](https://github.com/user-attachments/assets/bd32f380-278b-4d95-a28d-e5e5c4c25e6d)*Floor price falls predictably as the event date approaches*
 
@@ -68,7 +68,7 @@ This is the demand signal that primary pricing teams would love to have. A stabl
 
 ### Sales Happen Quick
 
-That signal gets louder as the event draws near. Sales activity picks up quickly in the last week, roughly 15x the daily volume seen 2 months out from the event. This is the window where a forecast is most valuable. Demand is growing but the time for price adjustments is running out.
+That signal gets louder as the event draws near. Sales activity picks up quickly in the last week, **roughly 15x the daily volume** seen 2 months out from the event. This is the window where a forecast is most valuable. Demand is growing but the time for price adjustments is running out.
 
 [![Market-wide average daily sales accelerating as events approach](/portfolio/image.png)](/portfolio/image.png)*Sales velocity increases roughly 15x from 60+ days out to day-of*
 
@@ -102,11 +102,13 @@ Four months of daily files were loaded into BigQuery and organized into a star s
 
 ### Two-Stage Design
 
-With the dataset structured, EDA also revealed how sparse my distribution of sales was. 72% of daily snapshots had zero sales. A standard regression model trained on this distribution would just memorize to predict zero, and fail on the events where the signal actually matters.
+With the dataset structured, EDA also revealed how sparse my distribution of sales was. **72% of daily snapshots had zero sales**. A standard regression model trained on this distribution would just memorize to predict zero, and fail on the events where the signal actually matters.
 
 The solution was to split the problem into two. A classifier first decided whether any sales will happen for a given event. A regressor then estimates how many tickets will sell, but only for the events that the classifier flags.
 
-This split alone cut prediction error by 40% compared to a single-stage regression. The gain came entirely from this decision to split up the problem as opposed to jumping into feature engineering or tuning.
+<img width="1492" height="619" alt="two_stage_pipeline" src="https://github.com/user-attachments/assets/e6fd4ee2-4c67-4bc1-b761-49030a450669" />
+
+This split alone **cut prediction error by 40%** compared to a single-stage regression. The gain came entirely from this decision to split up the problem as opposed to jumping into feature engineering or tuning.
 
 [Read the modeling post](/seatdata.io-modeling-1/)
 
@@ -118,7 +120,7 @@ To be able to read timing alongside price, I added interaction features that com
 
 > A $50 floor price at 30 days out is fine. But a $50 floor price 3 days away with inventory still on the digital shelf signals a strong residual demand!
 
-Nearly half of total feature importance concentrated in these lifecycle interaction terms. The RMSE gain from this change was larger than any algorithm and hyperparameter work combined.
+**Nearly half of total feature importance** concentrated in these lifecycle interaction terms. The RMSE gain from this change was larger than any algorithm and hyperparameter work combined.
 
 [![Top 20 features by combined classifier and regressor importance](/portfolio/feature_importance.png)](/portfolio/feature_importance.png)*Lifecycle interactions dominate the top 20 features; "Final 3W x Major Sports" alone outweighs any single market signal*
 
@@ -138,11 +140,13 @@ Therefore, the daily market snapshot is already dense with information about the
 
 The model is evaluated on the final 3-week window before each event, a period where pricing decisions are most actionable, across 389,230 daily snapshots in the test set. 
 
-For Broadway, Comedy, Festivals and Concerts, predictions land within 6-8 tickets of actual sales. That's reliable enough to power automated alerts flagging events gaining (or losing) momentum, letting the pricing team focus on exceptions.
+For Broadway, Comedy, Festivals and Concerts, predictions land **within 6-8 tickets** of actual sales. That's reliable enough to power automated alerts flagging events gaining (or losing) momentum, letting the pricing team focus on exceptions.
+
+<img width="1492" height="764" alt="segment_rmse" src="https://github.com/user-attachments/assets/c6a23597-ba57-47a3-92bf-f453b94f9d7b" />
 
 Minor Sports and Other events are noisier at 10-18 tickets RMSE, but still useful for directional signals. The model can still tell a pricing team whether demand is trending up or down, even if the exact number is rough.
 
-Major Sports is the clear gap, at nearly 32 tickets RMSE. The reason ties back to what the model can and can't see. Secondary market signals capture price and volume. But for Major Sports, the demand drivers that matter most live outside of this data in the form of playoff standings, opponent quality, and maybe the broadcast schedule. The model also can't distinguish a regular season Tuesday from a must-win playoff clincher.
+Major Sports is the clear gap, at **nearly 32 tickets RMSE**. The reason ties back to what the model can and can't see. Secondary market signals capture price and volume. But for Major Sports, the demand drivers that matter most live outside of this data in the form of playoff standings, opponent quality, and maybe the broadcast schedule. The model also can't distinguish a regular season Tuesday from a must-win playoff clincher.
 
 The residual analysis also shows a consistent pattern across all events: the model underestimates the highest-demand events. A pricing team should treat a strong positive prediction as a floor, then!
 
@@ -156,9 +160,9 @@ The opening question was whether secondary market signals can inform primary pri
 
 A pricing team watching StubHub and other secondary platforms starts to notice floor price sink around a week before the show. By then, most pricing decisions are already locked. The model sees this sooner. 
 
-Running the classifier across all lifecycle stages, detection of active events holds above 91% from 6 weeks out, and above 97% inside two weeks. For the highest-demand events (100+ tickets per week), the classifier is pretty much perfect from 8 weeks out.
+Running the classifier across all lifecycle stages, detection of active events holds **above 91% from 6 weeks out**, and **above 97% inside two weeks**. For the highest-demand events (100+ tickets per week), the classifier is pretty much perfect from 8 weeks out.
 
-Detection rates by window:
+<img width="1492" height="765" alt="detection_rates" src="https://github.com/user-attachments/assets/d8606281-c985-4e53-baac-5b830c0af815" />
 
 This early read is the whole value prop. A pricing team that knows demand is strong at 4 weeks out can hold a price or move premium inventory up. Another team that seeks decaying demand 4 weeks out can run a targeted promotion before being forced into a fire sale. Both of those decisions are invisible when it comes to the week of show!
 
@@ -177,7 +181,7 @@ A conservative scenario for a single mid-tier venue (10K seater) running about 1
 
 $$100 \times 0.50 \times 800 \times 0.15 \times \$35 = \$210{,}000 \text{ per year}$$
 
-At Live Nation's scale of 20K annual events, the same math gives $42M, about 14% of Ticketmaster's reported 2024 operating profit.
+At Live Nation's scale of 20K annual events, the same math gives **$42M**, about 14% of Ticketmaster's reported 2024 operating profit.
 
 These are scenario projections, not observed revenue, and I'm assuming dynamic pricing infrastructure is already in place. But, the mechanics are still logical: better demand information earlier means fewer tickets resold at a premium that the primary seller could've captured.
 
@@ -185,7 +189,7 @@ These are scenario projections, not observed revenue, and I'm assuming dynamic p
 
 ## What's Next
 
-Three gaps remain. 
+I've identified three gaps that, with more time and data, I'd love to explore. 
 
 Major Sports accuracy lags because the model can't see what drives demand for those events in the form of opponent quality, standings, and playoff implications. Adding matchup-level data might address the largest segment gap.
 
