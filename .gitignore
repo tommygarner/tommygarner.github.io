@@ -19,5 +19,8 @@ package-lock.json
 # Ignore folders related to IDEs
 .vscode/
 
+# Ignore Claude Code local settings
+.claude/settings.local.json
+
 # Ignore files created by MacOS
 .DS_Store
