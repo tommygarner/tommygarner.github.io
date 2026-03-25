@@ -37,12 +37,10 @@ redirect_from:
   white-space: nowrap;
 }
 .employer-logo {
-  height: 20px;
+  height: 32px;
   width: auto;
   vertical-align: middle;
-  margin-right: 7px;
-  filter: grayscale(100%);
-  opacity: 0.7;
+  margin-right: 10px;
 }
 </style>
 
