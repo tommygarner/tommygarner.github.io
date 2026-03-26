@@ -1,346 +1,137 @@
 ---
 layout: single
-title: "Ecommerce: H&M Optimization"
+title: "UT Project: Ecommerce Analytics"
 date: 2026-03-25
-description: "A 6-phase analytics framework that increased demand forecasting accuracy by 6x and identified $100K+ revenue opportunities for ecommerce optimization"
+description: "A six-phase analytics framework exploring how ecommerce businesses can use data to make better decisions about pricing, inventory, and customer retention"
 author_profile: true
 toc: true
 toc_sticky: true
 classes: wide
 tags:
-  - ecommerce analytics
+  - ecommerce
+  - price elasticity
   - demand forecasting
   - revenue optimization
-  - machine learning
-  - business impact
-  - data leakage
-excerpt: "Most ecommerce companies optimize pricing, inventory, and customer retention in silos. I built an integrated 6-phase framework that improved demand forecasting from 13% to 80% accuracy and caught my own data leakage in the process."
-published: false
+  - customer analytics
+  - inventory planning
+excerpt: "Most ecommerce companies make pricing and inventory decisions based on intuition. This project builds a connected analytics framework across six phases to show what those decisions look like when grounded in data."
+published: true
 ---
 
-<style>
-.metric-box { 
-  background: #f8f9fa; 
-  border-left: 4px solid #007bff; 
-  padding: 15px; 
-  margin: 10px 0; 
-}
-.improvement-highlight { 
-  background: #d4edda; 
-  border: 1px solid #c3e6cb; 
-  border-radius: 4px; 
-  padding: 10px; 
-  margin: 15px 0; 
-}
-</style>
+## TL;DR
 
-## The Business Challenge
-
-**Revenue optimization in ecommerce is fragmented.** Marketing runs pricing A/B tests, operations manages inventory by spreadsheet, and finance forecasts using last year's trends. This siloed approach misses the interconnections that actually drive profitability.
-
-For my OneLive site visit preparation, I built a comprehensive analytics framework that treats revenue optimization as a connected system. **The result: 6x improvement in demand forecasting accuracy and specific $100K+ optimization opportunities.**
-
-<div class="improvement-highlight">
-<strong>Key Achievement:</strong> Improved demand forecasting from 13.4% to 80.0% R² accuracy while catching and correcting my own data leakage - demonstrating both technical skill and intellectual honesty.
-</div>
+- **Goal:** Explore ecommerce analytics end-to-end, from pricing strategy to customer retention to inventory planning
+- **Data:** Synthetic apparel store — 15 SKUs, 800 customers, ~10,000 order line items, 7 discount campaigns with known depth
+- **Methods:** Price elasticity (log-log OLS), revenue optimization (SciPy), time-series forecasting (Prophet), survival analysis (Kaplan-Meier, Cox PH), safety stock modeling
+- **Key finding:** Elasticity varies sharply by category. Hats (-1.77) and Accessories (-1.72) benefit from discounts; Jackets (-0.76) and Bags (-0.40) do not. Treating them the same leaves revenue on the table either way.
 
 ---
 
-## Framework Overview
+## Why This Project
 
-![Framework Overview](../images/portfolio/ecommerce/framework_overview.png)
+Ecommerce is a domain where intuition often substitutes for analysis. Merchants mark things down because it feels like it drives sales. They reorder when shelves look empty. They offer the same discount to every customer segment.
 
-**Six integrated phases that work together:**
-
-1. **Data Foundation** → Understanding baseline patterns and data quality
-2. **Price Elasticity** → Quantifying demand responses to pricing changes  
-3. **Revenue Optimization** → Finding pricing sweet spots with timing insights
-4. **Demand Forecasting** → Predicting future demand with advanced ML
-5. **Customer Analytics** → Retention insights and lifetime value optimization
-6. **Inventory Planning** → Stock optimization across distribution centers
+The goal of this project was to work through each of those decisions analytically — not to prescribe a single strategy, but to understand the mechanics well enough to know when the intuition holds and when it doesn't. Each of the six phases approaches a different part of the business.
 
 ---
 
-## Key Results Summary
+## The Data
 
-<div class="metric-box">
-<strong>Demand Forecasting Breakthrough:</strong><br>
-• Original model: 13.4% R² accuracy<br>
-• Enhanced features: 55.2% R² accuracy<br>  
-• Final model: 80.0% R² accuracy<br>
-• <strong>6x improvement</strong> enabling precise inventory management
-</div>
+The dataset simulates a direct-to-consumer apparel store: t-shirts, hoodies, hats, jackets, sweatpants, and totes across multiple size and color variants. Each product has a known price elasticity baked into how demand responds to price changes — this is what makes the synthetic approach useful here. You can check whether the models recover the right answer.
 
-<div class="metric-box">
-<strong>Revenue Optimization Opportunities:</strong><br>
-• Dynamic pricing: 15-25% revenue upside from timing-based strategies<br>
-• Inventory optimization: $50K+ working capital freed up<br>
-• Customer retention: $76/customer recovery through churn prevention<br>
-• Promotional timing: 32.6% demand lift from strategic discount placement
-</div>
+Seven promotional campaigns are embedded in the data with known discount depths, ranging from a 10% New Year sale to a 30% Black Friday event. These are treated as controlled experiments for the elasticity and forecasting models.
 
-<div class="metric-box">
-<strong>Business Intelligence Insights:</strong><br>
-• Positive price elasticity (+0.133) suggesting premium brand positioning<br>
-• 18.1% discount penetration with strong seasonal patterns<br>
-• 7.3% customer churn rate with tier-based retention strategies<br>
-• 57% of inventory at stockout risk requiring optimization
-</div>
+![Monthly revenue trend with promotional periods highlighted](/images/shopify-revenue-trend.png)
+*Orange bands mark active discount campaigns. Revenue spikes align with the two deepest promotions (BFCM at 30%, Holiday at 25%).*
+
+Total revenue across the dataset: **$582K** across ~10,000 line items. Discount penetration sits at **18.1%** of orders.
 
 ---
 
-## The Data Leakage Discovery
+## Phase 2: Price Elasticity
 
-### The "Perfect" Result That Wasn't
+The central question in pricing is: if I raise (or lower) my price by 1%, how much does my sales volume change? The ratio of those two percentages is the price elasticity of demand.
 
-My initial demand forecasting model achieved **99.0% R² accuracy.** I was thrilled - until I realized this was completely unrealistic for demand forecasting.
+A simple calculation won't get you there. Prices and discounts move together with seasonality, product lifecycle, and customer mix — all of which also affect demand. The solution is a log-log OLS regression that controls for time and isolates price as the causal variable.
 
-![Data Leakage Investigation](../images/portfolio/ecommerce/leakage_investigation.png)
-*Feature correlation analysis revealed circular logic in seasonal features*
+**Model:** `ln(Units Sold) = α + ε · ln(Price) + β · time + error`
 
-**Investigation revealed the problems:**
-- **Weekly seasonality: 98.9% correlation** with target (circular feature)
-- **Monthly seasonality: 80.7% correlation** with target (target leakage)  
-- **Moving averages including current values** instead of proper lags
-- **Random train/test splits** allowing future information in training
+The coefficient ε is the elasticity estimate. A value of -1.5 means a 10% price increase reduces volume by 15%.
 
-### The Fix and Honest Results
+![Price elasticity by product category](/images/shopify-elasticity-by-category.png)
+*Red bars are elastic categories (|ε| > 1): discounts pay for themselves in volume. Blue bars are inelastic: volume barely moves with price, so discounts just give away margin.*
 
-After correcting the leakage with proper time series validation:
+The range is wide. **Hats (-1.77) and Accessories (-1.72)** are highly elastic — a discount generates enough incremental volume to grow total revenue. **Jackets (-0.76) and Bags (-0.40)** are inelastic — customers who want them will buy regardless of a 15% discount, and customers who don't want them won't be moved. Discounting inelastic categories is just margin erosion.
 
-**Realistic accuracy: 80% R² - still an excellent 6x improvement**
-
-![Corrected Results](../images/portfolio/ecommerce/corrected_forecasting.png)
-
-**This taught me a crucial lesson:** Be suspicious of any model that seems too good to be true. **80% accuracy for demand forecasting is actually excellent** - 99% should have been an immediate red flag.
+The practical implication: a flat 20%-off sitewide sale is a bad deal. It overpays for volume in categories that don't need it.
 
 ---
 
-## Phase 1: Data Foundation & EDA
+## Phase 3: Revenue Optimization
 
-**Starting with synthetic H&M-style data:** 10,056 transactions across 800 customers and 210 products over 13 months.
+With elasticity estimates in hand, the optimization question is: what price maximizes total revenue for each category?
 
-![EDA Overview](../images/portfolio/ecommerce/eda_overview.png)
+This is a one-dimensional optimization problem per category. Given the elasticity and current average price, find the price where the marginal revenue from an additional unit equals zero. SciPy's `minimize_scalar` handles it directly.
 
-**Key patterns discovered:**
-- **$582K total revenue** with $73K in discounts (12.5% margin impact)
-- **18.1% discount penetration** - higher than expected
-- **Clear seasonal trends** - holidays drive 2x normal demand
-- **Weekend effects** - counterintuitively, weekends showed lower demand
+![Revenue uplift from optimal vs. current pricing by category](/images/shopify-revenue-uplift.png)
+*Green annotations show projected revenue gain at the optimal price. Elastic categories show the largest upside because volume response is strong enough to more than offset price reductions.*
 
-**The insight:** Discount timing mattered more than discount depth. Strategic 20% discounts during natural purchase cycles outperformed aggressive 30% campaigns during low-demand periods.
+The projected aggregate uplift across the catalog is **32.9%**, driven mostly by Hats (+71%) and Accessories (+65%). These numbers are model-dependent — they assume elasticity estimates generalize — but the directional signal is clear: the biggest opportunity is in categories where price reductions are being withheld.
 
 ---
 
-## Phase 2: Price Elasticity Analysis
+## Phase 4: Demand Forecasting
 
-**Standard economics says higher prices reduce demand. Ecommerce reality is more nuanced.**
+Pricing decisions made today affect demand next week and next quarter. A forecast model makes that connection explicit and gives a pricing calendar something to anchor to.
 
-![Price Elasticity Results](../images/portfolio/ecommerce/elasticity_analysis.png)
+The model uses Prophet, Facebook's open-source time-series library, trained on weekly aggregated units sold. Promotional periods are passed as explicit binary regressors so the model learns that BFCM weeks look different from normal ones — rather than treating them as noise.
 
-**Surprising findings:**
-- **Price elasticity: +0.133** (demand increases with price!)
-- **Discount effect: +0.326** (32.6% demand boost from promotions)
-- **Weekend effect: -0.045** (slight weekend demand reduction)
+![Weekly demand forecast with 95% confidence interval](/images/shopify-forecast-plot.png)
+*The red dashed line is the train/test split. Orange bands are active promo periods. The shaded region is the 95% confidence interval on the forecast.*
 
-**The positive price elasticity suggested premium brand dynamics** - higher prices signaled quality to customers, particularly for fashion items. This explained why aggressive discounting often cannibalized regular-price sales without increasing total revenue.
+Holdout accuracy: **7.7% MAPE** (mean absolute percentage error) on a 12-week test set. A feature importance analysis run separately found that **total discount depth** was the single strongest predictor of weekly demand at 39.7% importance — more than price, seasonality, or any other variable. That's consistent with the elasticity findings: promotional activity is the primary lever driving volume.
 
 ---
 
-## Phase 3: Revenue Optimization Engine
+## Phase 5: Customer Retention and LTV
 
-**With elasticity quantified, I built optimization algorithms to find revenue-maximizing prices.**
+Retention is where the long-run revenue math lives. A customer who churns after two purchases is worth a fraction of one who buys for two years. The question is which customers are at risk and when.
 
-![Optimization Results](../images/portfolio/ecommerce/optimization_results.png)
+Survival analysis treats customer retention the same way actuarial science treats mortality: each customer has a "survival time" (how long until they stop buying), and the goal is to model that distribution. Kaplan-Meier curves describe median survival by segment. Cox Proportional Hazards regression identifies which variables predict churn.
 
-**Strategy insights:**
-- **15 products analyzed** with sufficient transaction history
-- **Dynamic pricing opportunities** - different optimal prices for different demand cycles
-- **Timing arbitrage** - raise prices during peak demand, lower during shoulder periods
-- **Strategic discounting** - use timing rather than depth for maximum impact
+![Kaplan-Meier survival curves by membership tier](/images/shopify-survival-curves.png)
+*The y-axis is retention rate. The dotted horizontal line marks 50% retention — where it crosses each curve is that tier's median survival. Premium members (blue) retain significantly longer than Basic (green).*
 
-**Key finding:** Revenue optimization isn't about finding the "right" price - it's about **pricing different moments in the demand cycle differently**.
+![LTV and churn rate by membership tier](/images/shopify-ltv-by-tier.png)
+*Left: average lifetime value split between subscription revenue and merchandise spend. Right: churn rate by tier. Premium members churn at roughly half the rate of Basic members and generate 3x the LTV.*
 
----
+The Cox model identified **merchandise purchase frequency in the first 30 days** as the strongest predictor of long-term retention. A member who buys three times in the first month is dramatically less likely to churn than one who buys once and goes quiet. This creates a concrete intervention window: the first 30 days after signup are when retention campaigns have the most leverage.
 
-## Phase 4: Advanced Demand Forecasting
-
-**This phase showcased both technical achievement and intellectual honesty.**
-
-### Enhanced Feature Engineering
-
-**Advanced time series features:**
-- **Lag variables** (1, 7, 14, 30 day lookbacks)
-- **Moving averages** (properly lagged to avoid leakage)
-- **Seasonal decomposition** (weekly/monthly patterns without circular logic)
-- **Trend analysis** (momentum, volatility indicators)
-- **External signals** (customer counts, product diversity)
-
-### Multiple Algorithm Testing
-
-**Tested approaches from coursework:**
-- **Traditional ML**: Random Forest, Gradient Boosting, XGBoost
-- **Time series**: ARIMA, Exponential Smoothing (Holt-Winters)
-- **Advanced stats**: C-Log-Log GLM for zero-inflated demand
-- **Survival analysis**: Weibull models for purchase timing
-- **Neural networks**: Deep and wide architectures
-- **Ensemble methods**: Combined top performers
-
-![Model Comparison](../images/portfolio/ecommerce/model_comparison.png)
-
-### The Breakthrough
-
-**Final model achieved 80% R² accuracy** using Extra Trees ensemble with:
-1. **Total discounts (40.8%)** - Promotional activity drives demand
-2. **Unique customers (30.4%)** - Market size indicator
-3. **Unique products (7.6%)** - Catalog diversity effect  
-4. **Monthly seasonality (7.1%)** - Properly lagged seasonal patterns
-5. **Historical trends (6.7%)** - Moving averages without leakage
+LTV by tier: **$1,247 for Premium, $731 for active Standard, $382 for Basic.**
 
 ---
 
-## Phase 5: Customer Churn Analysis
+## Phase 6: Inventory Planning
 
-**Understanding which customers are at risk and the revenue impact.**
+Demand forecasts only matter if inventory is there to fulfill them. The final phase translates the weekly forecast into safety stock and reorder recommendations for each SKU.
 
-![Churn Analysis](../images/portfolio/ecommerce/churn_analysis.png)
+Safety stock is a buffer against two sources of uncertainty: demand variability (will we sell more or less than expected?) and lead time variability (will the supplier deliver on schedule?). The model computes both, combines them into a reorder point, and flags which SKUs are at risk of stocking out before the next order arrives.
 
-**Retention insights:**
-- **286 total members** across Basic, Premium, and Standard tiers
-- **7.3% overall churn rate** - healthy for subscription ecommerce
-- **Premium advantage**: 4.3% churn vs 8.8% for Basic tier customers
-- **Revenue gap**: $76 average lifetime value difference between churned and active customers
-
-**Actionable insight:** Customers showed declining engagement **30 days before churning**, creating a clear window for proactive retention campaigns.
+Across the catalog, **319 SKU-location combinations** were flagged as stockout risks. Lead time variability turned out to be the larger driver — demand uncertainty was more predictable than supplier schedule uncertainty. This is a common pattern in practice and suggests that vendor reliability is often a higher-leverage investment than forecast accuracy.
 
 ---
 
-## Phase 6: Inventory Optimization
+## What the Project Covers
 
-**Translating demand forecasts into distribution center stock decisions.**
+Each phase of this project corresponds to a real decision a DTC operator makes:
 
-![Inventory Planning](../images/portfolio/ecommerce/inventory_planning.png)
+| Phase | Decision | Method |
+|---|---|---|
+| EDA | What's actually driving revenue? | Descriptive analytics |
+| Elasticity | Which products are price-sensitive? | Log-log OLS regression |
+| Optimization | What should prices be? | SciPy numerical optimization |
+| Forecasting | What will demand look like? | Prophet + ML ensembles |
+| Churn | Which customers are at risk? | Kaplan-Meier, Cox PH |
+| Inventory | How much stock do we need? | Safety stock modeling |
 
-**Supply chain findings:**
-- **12,000 customers** across 4 distribution centers for US expansion modeling
-- **319 SKU-location combinations at stockout risk** (57% of total inventory)
-- **135 unique SKUs affected** across all distribution centers  
-- **Lead time variability** caused more issues than demand uncertainty
-
-**The insight:** Better demand forecasting enables **smaller safety stock buffers**, freeing up $50K+ in working capital while maintaining service levels.
-
----
-
-## Business Impact & ROI
-
-### Quantified Revenue Opportunities
-
-**Dynamic Pricing Implementation**
-- 15-25% revenue upside from timing-based pricing strategies
-- Premium positioning supported by positive elasticity findings
-- Strategic discount timing vs. aggressive depth discounting
-
-**Inventory Optimization**  
-- $50K+ working capital reduction through precise demand forecasting
-- 57% reduction in stockout risk through better planning
-- Improved customer satisfaction via product availability
-
-**Customer Retention**
-- $76/customer value recovery through proactive churn prevention  
-- Tier-specific retention strategies based on behavioral differences
-- 30-day early warning system for at-risk customers
-
-**Promotional Strategy**
-- 32.6% demand lift from strategic discount timing
-- Data-driven campaign planning vs. intuition-based promotions
-- ROI-focused promotional calendar optimization
-
-### Framework Advantages
-
-**Connected Analytics:** Each phase informs the others rather than operating in isolation
-
-**Actionable Outputs:** Specific recommendations for pricing, inventory, and marketing teams
-
-**Scalable Methodology:** Applicable across product categories and geographic markets  
-
-**Honest Validation:** Includes self-correction and realistic performance expectations
-
----
-
-## Technical Implementation
-
-### Data Pipeline
-```python
-# 6-phase analytics pipeline structure
-phases = {
-    'data_collection': 'Shopify API integration + data quality checks',
-    'price_elasticity': 'Statistical modeling with controls',
-    'optimization': 'Constrained optimization algorithms', 
-    'forecasting': 'Ensemble ML with proper time series validation',
-    'churn_analysis': 'Survival analysis + segmentation',
-    'inventory_planning': 'Multi-location demand distribution'
-}
-```
-
-### Key Technologies
-- **Data Processing**: Python, Pandas, NumPy
-- **Modeling**: Scikit-learn, XGBoost, Statsmodels, Lifelines
-- **Visualization**: Matplotlib, Seaborn
-- **Validation**: Time series splits, bootstrap sampling
-- **Optimization**: SciPy optimization algorithms
-
-### Model Performance
-- **Demand Forecasting**: 80% R² accuracy (6x improvement)
-- **Churn Prediction**: 85% AUC for 30-day advance warning
-- **Price Elasticity**: Statistically significant coefficients with 95% confidence
-- **Inventory Optimization**: 43% reduction in projected stockouts
-
----
-
-## Key Learnings
-
-### Technical Lessons
-1. **Feature engineering quality matters more than algorithm choice** - proper time series features drove most accuracy gains
-2. **Always validate against domain expertise** - unrealistic performance usually indicates technical errors  
-3. **Time series data requires specialized validation** - random splits allow dangerous future leakage
-4. **Ensemble methods provide robustness** - combining approaches improved real-world performance
-
-### Business Lessons  
-1. **Revenue optimization is a system, not isolated models** - pricing, inventory, and retention are interconnected
-2. **Timing beats magnitude in pricing** - when you change prices matters more than how much
-3. **Premium positioning enables counter-intuitive dynamics** - higher prices can increase demand
-4. **Connected analytics beat siloed optimization** - integrated insights drive better decisions
-
-### Process Lessons
-1. **Start simple, enhance systematically** - 6x improvement came from careful iteration
-2. **Be suspicious of perfect results** - intellectual honesty builds long-term credibility
-3. **Document the journey honestly** - including mistakes and corrections shows growth mindset
-4. **Focus on deployment, not just accuracy** - an implemented 80% model beats a perfect 99% model on a laptop
-
----
-
-## What's Next
-
-This framework provides a foundation for systematic ecommerce optimization, but implementation requires ongoing development:
-
-### Immediate Deployment
-- **Dynamic pricing engine** based on demand forecast integration
-- **Inventory optimization** recommendations across distribution network
-- **Customer retention campaigns** targeting 30-day early warning signals
-- **Promotional calendar** optimized for timing over depth
-
-### Future Enhancements  
-- **Real-time demand sensing** integration with web analytics
-- **Multi-channel attribution** modeling across digital touchpoints
-- **Customer lifetime value** optimization with predictive segmentation
-- **Supply chain integration** for end-to-end demand planning
-
-The framework demonstrates that **sophisticated analytics can drive measurable ecommerce revenue impact** when built with technical rigor, business focus, and honest validation practices.
-
----
-
-## Project Files
-
-- **[Complete Analysis Notebooks](https://github.com/tommygarner/ecommerce-optimization)**
-- **[Interactive Dashboard](https://ecommerce-insights.streamlit.app/)**  
-- **[Technical Documentation](../files/ecommerce_technical_report.pdf)**
+The goal wasn't to build a production system — it was to understand how these decisions connect. Pricing affects demand, which affects inventory, which affects fulfillment, which affects retention. Treating any one of them in isolation misses the feedback loops that determine whether the business grows.
