@@ -2,7 +2,7 @@
 layout: single
 title: "UT Project: Ecommerce Analytics"
 date: 2026-03-25
-description: "A six-phase analytics framework exploring how ecommerce businesses can use data to make better decisions about pricing, inventory, and customer retention"
+description: "A seven-phase analytics framework exploring how ecommerce businesses can use data to make better decisions about pricing, inventory, customer retention, and supply chain distribution"
 author_profile: true
 toc: true
 toc_sticky: true
@@ -14,15 +14,17 @@ tags:
   - revenue optimization
   - customer analytics
   - inventory planning
-excerpt: "Most ecommerce companies make pricing and inventory decisions based on intuition. This project builds a connected analytics framework across six phases to show what those decisions look like when grounded in data."
+  - supply chain
+  - operations research
+excerpt: "Most ecommerce companies make pricing and inventory decisions based on intuition. This project builds a connected analytics framework across seven phases to show what those decisions look like when grounded in data."
 published: true
 ---
 
 ## TL;DR
 
-- **Goal:** Explore ecommerce analytics end-to-end, from pricing strategy to customer retention to inventory planning
+- **Goal:** Explore ecommerce analytics end-to-end, from pricing strategy to customer retention to inventory planning to supply chain optimization
 - **Data:** Synthetic apparel store — 15 SKUs, 800 customers, ~10,000 order line items, 7 discount campaigns with known depth
-- **Methods:** Price elasticity (log-log OLS), revenue optimization (SciPy), time-series forecasting (Prophet), survival analysis (Kaplan-Meier, Cox PH), safety stock modeling
+- **Methods:** Price elasticity (log-log OLS), revenue optimization (SciPy), time-series forecasting (Prophet), survival analysis (Kaplan-Meier, Cox PH), safety stock modeling, Gurobi MIP (transportation LP, TSP, newsvendor, zone skipping)
 - **Key finding:** Elasticity varies sharply by category. Hats (-1.77) and Accessories (-1.72) benefit from discounts; Jackets (-0.76) and Bags (-0.40) do not. Treating them the same leaves revenue on the table either way.
 
 ---
@@ -121,17 +123,53 @@ Across the catalog, **319 SKU-location combinations** were flagged as stockout r
 
 ---
 
+## Phase 7: Supply Chain Optimization
+
+Inventory planning answers how much to stock. Distribution optimization answers how to get it there — which warehouse ships to which region, in what order, by what route, and whether air freight to a regional hub beats direct ground.
+
+This phase uses Gurobi to solve four connected optimization problems, each with a different mathematical structure.
+
+**Transportation LP.** Which DC should serve which state? Each DC has a capacity constraint (inventory position from Phase 6). Each region has a demand requirement. The LP minimizes total shipping cost weighted by distance and product weight. The LP assignment beats nearest-DC heuristic because it avoids overloading a geographically close DC that happens to be capacity-constrained.
+
+![Transportation LP results: optimal vs. nearest-DC cost and states per DC](/images/shopify-transportation-lp.png)
+*Left: weekly shipping cost under the LP vs. the naive nearest-DC rule. Right: how many states each DC serves under the optimal assignment.*
+
+**TSP Route Optimization.** Once each DC's service territory is fixed, what order should deliveries happen in? One vehicle departs the DC, visits all assigned states, and returns. The model uses the Miller-Tucker-Zemlin (MTZ) formulation to eliminate subtours — the same auxiliary variable trick used in CVaR models to enforce global ordering.
+
+![Optimal TSP routes per DC](/images/shopify-tsp-routes.png)
+*One optimal route per DC. Stars are DC depots; dots are demand region centroids. Arrows show travel direction.*
+
+**Newsvendor (Stochastic MIP).** How much of each SKU should each DC order given uncertain demand? This is a direct extension of the classic newsvendor model: order too little and you pay a shortage penalty (lost margin plus goodwill); order too much and you pay a holding cost. The model generates 200 demand scenarios per SKU from a normal distribution with the Phase 6 mean and standard deviation, then solves for the quantity that maximizes expected profit across all scenarios.
+
+![Newsvendor optimal vs. Phase 6 recommended quantities](/images/shopify-newsvendor.png)
+*Left: scatter of optimal order quantity vs. Phase 6 recommendation. Points above the diagonal mean the stochastic model recommends ordering more. Right: percentage adjustment by DC and product type.*
+
+**Delivery Guarantee (Chance-Constrained MIP).** Can the business promise a 3-day delivery window to every customer? The model simulates 1,000 delivery scenarios per region (base transit + processing time + variability) and computes T95 — the delivery time guaranteed for 95% of orders. A second MIP then reassigns DCs to regions to minimize the worst-case T95 across all states. The tradeoff is explicit: the min-cost LP assignment leaves some distant states with T95 above the SLA, while the min-max assignment compresses worst-case delivery at a shipping cost premium.
+
+![Delivery guarantee results: T95 distribution and cost tradeoff](/images/shopify-delivery-guarantee.png)
+*Left: distribution of T95 under each policy. Middle: shipping vs. goodwill cost by policy. Right: per-region T95 sorted by current value.*
+
+**Zone Skipping (Binary MIP).** For regions where ground shipping exceeds the SLA, an alternative is zone skipping: ship bulk freight by air from the DC to a regional carrier hub, then use regional last-mile delivery from the hub to the customer. The binary MIP decides which regions should zone-skip and which should stay on ground. The catch: each regional hub has limited weekly throughput. The solver rations zone-skip slots across competing regions based on where it produces the greatest combined saving in shipping cost and goodwill.
+
+Ground distance uses Manhattan (L1) geometry rather than straight-line distance to avoid routing over water — a coastal state like Florida has a longer effective ground distance than its crow-flies position suggests.
+
+![Zone skipping results: cost by policy, transit comparison, hub utilization](/images/shopify-zone-skip.png)
+*Left: total weekly cost (shipping + goodwill) under all-ground, unconstrained zone-skip, and the MIP solution. Middle: transit days comparison by region, colored by which mode the MIP chose. Right: throughput at each regional hub.*
+
+---
+
 ## What the Project Covers
 
-Each phase of this project corresponds to a real decision a DTC operator makes:
+Each phase corresponds to a real decision a DTC operator makes:
 
 | Phase | Decision | Method |
 |---|---|---|
 | EDA | What's actually driving revenue? | Descriptive analytics |
 | Elasticity | Which products are price-sensitive? | Log-log OLS regression |
 | Optimization | What should prices be? | SciPy numerical optimization |
-| Forecasting | What will demand look like? | Prophet + ML ensembles |
+| Forecasting | What will demand look like? | Prophet time-series |
 | Churn | Which customers are at risk? | Kaplan-Meier, Cox PH |
 | Inventory | How much stock do we need? | Safety stock modeling |
+| Supply chain | How do we move it efficiently? | Gurobi LP, MIP, stochastic MIP |
 
 The goal wasn't to build a production system — it was to understand how these decisions connect. Pricing affects demand, which affects inventory, which affects fulfillment, which affects retention. Treating any one of them in isolation misses the feedback loops that determine whether the business grows.
