@@ -15,7 +15,7 @@ tags:
   - business impact
   - data leakage
 excerpt: "Most ecommerce companies optimize pricing, inventory, and customer retention in silos. I built an integrated 6-phase framework that improved demand forecasting from 13% to 80% accuracy and caught my own data leakage in the process."
-published: false
+published: true
 ---
 
 <style>
