@@ -20,6 +20,10 @@ excerpt: "Most ecommerce companies run a 20%-off sitewide sale and call it a str
 published: true
 ---
 
+<div style="border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden; margin: 0 0 32px;">
+<iframe src="/pipeline-demo.html" width="100%" height="920" frameborder="0" scrolling="yes" style="display: block;"></iframe>
+</div>
+
 ## TL;DR
 
 - **Goal:** Seven decisions every ecommerce operator makes, analyzed end-to-end from pricing strategy to supply chain routing
@@ -151,12 +155,3 @@ Ground distance uses Manhattan geometry rather than straight-line to avoid routi
 
 These seven phases don't exist independently. Pricing affects demand, which drives the forecast. The forecast sizes safety stock. Inventory positions constrain the transportation LP. The LP assignment determines whether the delivery SLA is achievable without air freight. Treating ecommerce operations as a linked system rather than a set of separate decisions is what the project is actually about.
 
----
-
-## Try the pipeline
-
-The simulator below generates a synthetic month of orders and runs them through the full analytical sequence in real time. Adjust the discount rate, demand multiplier, promo target, delivery SLA, and supplier reliability to see how each decision propagates downstream.
-
-<div style="border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden; margin: 24px 0;">
-<iframe src="/pipeline-demo.html" width="100%" height="920" frameborder="0" scrolling="yes" style="display: block;"></iframe>
-</div>
