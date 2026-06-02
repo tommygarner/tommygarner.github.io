@@ -10,11 +10,6 @@ redirect_from:
 
 {% include base_path %}
 
-## Data Scientist and Business Analyst
-**MS Business Analytics Student at The University of Texas at Austin (May 2026)**
-
-[Download my full Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
-
 <style>
 .skill-group { margin-bottom: 0.9em; }
 .skill-group-label {
@@ -42,16 +37,81 @@ redirect_from:
   vertical-align: middle;
   margin-right: 10px;
 }
+.featured-card {
+  border: 2px solid #bf5700;
+  border-radius: 8px;
+  padding: 1.2em 1.5em;
+  background: #fff9f5;
+  margin: 1.4em 0 1.8em;
+}
+.featured-card-label {
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #bf5700;
+  margin-bottom: 0.5em;
+}
+.featured-card h3 {
+  margin: 0 0 0.4em;
+  font-size: 1.1em;
+}
+.featured-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.featured-card h3 a:hover { text-decoration: underline; }
+.featured-card p {
+  margin: 0 0 0.8em;
+  color: #444;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+.fp-stats {
+  display: flex;
+  gap: 2em;
+  margin: 0.6em 0 0.9em;
+  flex-wrap: wrap;
+}
+.fp-stat-num {
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #bf5700;
+  display: block;
+  line-height: 1.1;
+}
+.fp-stat-label {
+  font-size: 0.74em;
+  color: #666;
+}
 </style>
 
-<p style="font-size: 1.15em; line-height: 1.6;">
-I build data products for the live entertainment industry. At Cisco I'm instrumenting AI agents with real-time observability pipelines. Before that, I built BI dashboards for iHeartMedia's B2B sales team and an ML pipeline that identifies $1M+ in annual value for secondary ticket operators.
+## Data Scientist · Live Entertainment
+**MS Business Analytics · The University of Texas at Austin · May 2026**
+
+[Download Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
+
+<p style="font-size: 1.1em; line-height: 1.7; margin: 0.8em 0 0.4em;">
+UT MS in Business Analytics graduate, with a focus on live entertainment. With projects on ticketing, forecasting, agents, and dashboarding, I'm currently looking for opportunities to apply my skills to the industry and enhance the experience for fans, artists, and teams.
 </p>
 
-{: .notice--info}
-**Featured Project: [Demand Forecasting for Secondary Ticket Sales](/portfolio/demand-forecasting-seatdata.io-final-results/)**
-Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+ in annual value** for mid-size operators. Includes an interactive Streamlit dashboard.
-[View Project Details](/portfolio/demand-forecasting-seatdata.io-final-results/){: .btn .btn--info} [Open Dashboard](https://event-explorer.streamlit.app/){: .btn .btn--light}
+<div class="featured-card">
+  <div class="featured-card-label">Featured Project</div>
+  <h3><a href="/portfolio/demand-forecasting-seatdata.io-final-results/">Demand Forecasting for Secondary Ticket Sales</a></h3>
+  <p>A 12-part end-to-end ML pipeline that predicts ticket sales velocity for secondary market operators, built on real event data with an interactive Streamlit dashboard.</p>
+  <div class="fp-stats">
+    <div>
+      <span class="fp-stat-num">$1M+</span>
+      <span class="fp-stat-label">Annual value identified</span>
+    </div>
+    <div>
+      <span class="fp-stat-num">12</span>
+      <span class="fp-stat-label">Pipeline stages</span>
+    </div>
+  </div>
+  <a href="/portfolio/demand-forecasting-seatdata.io-final-results/" class="btn btn--info" style="margin-right:0.5em;">View Project</a>
+  <a href="https://event-explorer.streamlit.app/" class="btn btn--light">Open Dashboard</a>
+</div>
 
 ## Technical Skills
 
@@ -81,7 +141,6 @@ Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+
   <span class="skill-badge">Docker</span>
   <span class="skill-badge">Kubernetes</span>
   <span class="skill-badge">Git</span>
-  <span class="skill-badge">Helm Charts</span>
   <span class="skill-badge">OpenTelemetry</span>
 </div>
 
@@ -96,12 +155,15 @@ Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+
 
 ## Professional Experience
 
+<img src="/images/logos/LN_Logo_Primary_Red-Black-web.png" alt="Live Nation" class="employer-logo"> **Live Nation \| Venue Nation Rotational Intern**
+*Austin, TX \| May 2026 - Present*
+
 <img src="/images/logos/cisco.png" alt="Cisco" class="employer-logo"> **Cisco \| Business Analyst Intern (MSBA Capstone)**
-*Austin, TX \| January 2026 - Present*
-*   Architecting a real-time observability pipeline using OpenTelemetry for Cisco's internal Google ADK agent to streamline firewall connectivity troubleshooting.
+*Austin, TX \| January 2026 - May 2026*
+*   Architected a real-time observability pipeline using OpenTelemetry for Cisco's internal Google ADK agent to streamline firewall connectivity troubleshooting.
 *   Defined and instrumented KPIs in Python to quantify user interaction patterns and agent reliability across the enterprise.
-*   Developing Grafana dashboards connected to Prometheus metrics to provide stakeholders with actionable visibility into agent usage and performance.
-*   Managing deployments within a cloud-native ecosystem using GitHub, Kubernetes, and Helm Charts.
+*   Developed Grafana dashboards connected to Prometheus metrics to provide stakeholders with actionable visibility into agent usage and performance.
+*   Managed deployments within a cloud-native ecosystem using GitHub and Kubernetes.
 
 <img src="/images/logos/iheartmedia.png" alt="iHeartMedia" class="employer-logo"> **iHeartMedia \| Promotions and Content Creation**
 *Austin, TX \| 2024 - 2025*
@@ -116,7 +178,7 @@ Built a 12-part ML pipeline to predict ticket sales velocity, identifying **$1M+
 ## Education
 
 <img src="/images/logos/ut-austin.png" alt="UT Austin" class="employer-logo"> **The University of Texas at Austin**
-*Master of Science in Business Analytics (MSBA)* \| **Expected May 2026**
+*Master of Science in Business Analytics (MSBA)* \| **May 2026**
 
 <img src="/images/logos/ut-austin.png" alt="UT Austin" class="employer-logo"> **The University of Texas at Austin**
-*Bachelor of Business Administration in Business Analytics (BBA)*
+*Bachelor of Business Administration in Business Analytics (BBA)* \| **May 2025**

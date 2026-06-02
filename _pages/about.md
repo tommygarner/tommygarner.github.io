@@ -6,11 +6,11 @@ author_profile: true
 
 Hi, I'm Tommy Garner!
 
-I'm a current **Masters of Science in Business Analytics (MSBA)** student at **The University of Texas at Austin (UT)**. I am getting quite excited about working with data to solve problems, and excited to showcase it here. Specifically, I want to build models, visualizations, and algorithms that make the **live entertainment industry** a little smarter and a lot more fun!
+I recently graduated with a **Master of Science in Business Analytics (MSBA)** from **The University of Texas at Austin (UT)**. I'm passionate about building data products that make the **live entertainment industry** a little smarter and a lot more fun — through models, visualizations, and algorithms that turn raw event data into real decisions.
 
-Most of my projects live at the intersection between **music**, **sports**, and **media** and I've enjoyed building an album recommendation system, a concert discovery app, and modeling for ticket demand forecasting. I've also worked on exploratory data analysis projects and end-to-end projects that help me improve my storytelling with the help of data, such as a fraudulent job posting detection application. 
+Most of my projects live at the intersection of **music**, **sports**, and **media**. I've built an album recommendation system, a concert discovery app, and an end-to-end ML pipeline for ticket demand forecasting. I also enjoy EDA and storytelling projects, like a fraudulent job posting detection application.
 
-Currently, I help volunteer with **SIL Global**, a faith-based NP language development organization, as a **Data and Business Analyst**. My most recent work experience includes joining **iHeartMedia's** Austin Promotions team doing content creation, giveaways, and event activations. I've also had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
+I'm currently a **Venue Nation Rotational Intern at Live Nation**. Before that I completed an MSBA capstone at **Cisco** instrumenting AI agents with real-time observability pipelines, and worked with **iHeartMedia's** Austin Promotions team on content creation and event activations. I also volunteer with **SIL Global** as a Data and Business Analyst. Oh, and I've had the pleasure of working as a wizard at Hogwarts in Orlando, Florida!
 
 I'm a huge San Antonio Spurs fan, disc-golfer, and guitar player. Much of my time in Austin has been spent going to impromptu concerts with my friends and plugging into my church. 
 
