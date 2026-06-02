@@ -88,6 +88,7 @@ redirect_from:
 
 ## Data Scientist · Live Entertainment
 **MS Business Analytics · The University of Texas at Austin · May 2026**
+Venue Nation Rotational Intern at Live Nation Entertainment
 
 [Download Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
 
@@ -98,15 +99,15 @@ UT MS in Business Analytics graduate, with a focus on live entertainment. With p
 <div class="featured-card">
   <div class="featured-card-label">Featured Project</div>
   <h3><a href="/portfolio/demand-forecasting-seatdata.io-final-results/">Demand Forecasting for Secondary Ticket Sales</a></h3>
-  <p>A 12-part end-to-end ML pipeline that predicts ticket sales velocity for secondary market operators, built on real event data with an interactive Streamlit dashboard.</p>
+  <p>Uses 4 months of StubHub data across 138K events to forecast 7-day secondary sales velocity, surfacing demand signals up to 6 weeks before pricing decisions are typically locked.</p>
   <div class="fp-stats">
     <div>
-      <span class="fp-stat-num">$1M+</span>
-      <span class="fp-stat-label">Annual value identified</span>
+      <span class="fp-stat-num">91%+</span>
+      <span class="fp-stat-label">Recall on active events, 6 weeks out</span>
     </div>
     <div>
-      <span class="fp-stat-num">12</span>
-      <span class="fp-stat-label">Pipeline stages</span>
+      <span class="fp-stat-num">6–8 tickets</span>
+      <span class="fp-stat-label">RMSE for most event categories</span>
     </div>
   </div>
   <a href="/portfolio/demand-forecasting-seatdata.io-final-results/" class="btn btn--info" style="margin-right:0.5em;">View Project</a>
@@ -166,12 +167,12 @@ UT MS in Business Analytics graduate, with a focus on live entertainment. With p
 *   Managed deployments within a cloud-native ecosystem using GitHub and Kubernetes.
 
 <img src="/images/logos/iheartmedia.png" alt="iHeartMedia" class="employer-logo"> **iHeartMedia \| Promotions and Content Creation**
-*Austin, TX \| 2024 - 2025*
+*Austin, TX \| September 2023 - July 2025*
 *   Architected Power BI dashboards integrating cross-platform promotional, content, and audience engagement data to support B2B sales and local client strategy.
 *   Executed event activations and content creation for Austin's top media markets.
 
 <img src="/images/logos/sil-global.png" alt="SIL Global" class="employer-logo"> **SIL Global \| Data and Business Analyst (Volunteer)**
-*Remote \| 2024 - Present*
+*Remote \| April 2025 - Present*
 *   Developed Amazon QuickSight dashboards to visualize key organizational impact metrics for stakeholders.
 *   Reviewed API integrations and collaborated with the data team to define and track new data.
 
