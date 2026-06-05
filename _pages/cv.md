@@ -99,7 +99,7 @@ UT MS in Business Analytics graduate, with a focus on live entertainment. With p
 <div class="featured-card">
   <div class="featured-card-label">Featured Project</div>
   <h3><a href="/portfolio/demand-forecasting-seatdata.io-final-results/">Demand Forecasting for Secondary Ticket Sales</a></h3>
-  <p>Uses 4 months of StubHub data across 138K events to forecast 7-day secondary sales velocity, surfacing demand signals up to 6 weeks before pricing decisions are typically locked.</p>
+  <p>Uses 4 months of StubHub data across 138K events to forecast 7-day secondary sales velocity, giving primary pricing teams actionable demand signals 6+ weeks before showtime.</p>
   <div class="fp-stats">
     <div>
       <span class="fp-stat-num">91%+</span>
