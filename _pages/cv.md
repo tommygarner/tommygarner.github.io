@@ -90,7 +90,7 @@ redirect_from:
 **MS Business Analytics · The University of Texas at Austin · May 2026**
 Venue Nation Rotational Intern at Live Nation Entertainment
 
-[Download Resume (PDF)]({{ base_path }}/files/ThomasGarner_Resume_January2026.pdf){: .btn .btn--info}
+[Download Resume]({{ base_path }}/files/ThomasGarner_Resume.pdf){: .btn .btn--info}
 
 <p style="font-size: 1.1em; line-height: 1.7; margin: 0.8em 0 0.4em;">
 UT MS in Business Analytics graduate, with a focus on live entertainment. With projects on ticketing, forecasting, agents, and dashboarding, I'm currently looking for opportunities to apply my skills to the industry and enhance the experience for fans, artists, and teams.
