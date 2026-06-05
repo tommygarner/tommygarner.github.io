@@ -339,7 +339,7 @@ Instructions:
 1. Answer the user's question based ONLY on the provided support documents.
 2. Be concise but thorough.
 3. Include source citations (article titles and URLs) so users can learn more.
-4. If the documents don't contain enough info, say so—don't make things up.
+4. If the documents don't contain enough info, say so; don't make things up.
 
 Response:"""
 

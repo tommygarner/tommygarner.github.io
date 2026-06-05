@@ -6,7 +6,7 @@ author_profile: true
 
 Hi, I'm Tommy Garner!
 
-I recently graduated with a **Master of Science in Business Analytics (MSBA)** from **The University of Texas at Austin (UT)**. I'm passionate about building data products that make the **live entertainment industry** a little smarter and a lot more fun — through models, visualizations, and algorithms that turn raw event data into real decisions.
+I recently graduated with a **Master of Science in Business Analytics (MSBA)** from **The University of Texas at Austin (UT)**. I'm passionate about building data products that make the **live entertainment industry** a little smarter and a lot more fun, through models, visualizations, and algorithms that turn raw event data into real decisions.
 
 Most of my projects live at the intersection of **music**, **sports**, and **media**. I've built an album recommendation system, a concert discovery app, and an end-to-end ML pipeline for ticket demand forecasting. I also enjoy EDA and storytelling projects, like a fraudulent job posting detection application.
 

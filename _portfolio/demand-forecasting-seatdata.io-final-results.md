@@ -14,7 +14,7 @@ tags:
   - feature engineering
   - database engineering
   - business impact
-excerpt: "Primary pricing teams at Ticketmaster and LiveNation set prices weeks in advance with limited demand visibility. The secondary market is a great proxy. This 12-part project built a system to read the secondary market for demand forecasting, reaching 13.37 RMSE and quantifying $1M+ annual value for a mid-size operator."
+excerpt: "Primary pricing teams at venues and promoters set prices weeks in advance with little more than prior-season comps for demand context. The secondary market updates in real time. This project builds a two-stage XGBoost + MLP system that reads daily StubHub snapshots across 138K events to forecast 7-day secondary sales velocity, detecting active demand above 91% from 6 weeks out and reaching 13.37 RMSE on the final 3-week window."
 published: true
 ---
 

@@ -15,7 +15,7 @@
     - devops
     - python
   excerpt: "How Docker transformed a complex Streamlit app with multiple dependencies into a reproducible, portable
-  analytics platform—and why containerization matters for data science projects."
+  analytics platform, and why containerization matters for data science projects."
 ---
 
   [<i class="fas fa-external-link-alt" aria-hidden="true"></i> View Live

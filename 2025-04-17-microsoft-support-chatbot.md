@@ -340,7 +340,7 @@ Instructions:
 1. Answer the user's question based ONLY on the provided support documents.
 2. Be concise but thorough.
 3. Include source citations (article titles and URLs) so users can learn more.
-4. If the documents don't contain enough info, say so—don't make things up.
+4. If the documents don't contain enough info, say so; don't make things up.
 
 Response:"""
 
@@ -462,7 +462,7 @@ We presented to Microsoft (via the MSBA team) and our faculty advisor. The demo 
 - ⚠️ "Would need integration with our existing support ticket system"
 
 **Outcome:**
-While Microsoft didn't commit to implementing our chatbot, they appreciated our **initiative and adaptability**. The MSBA team later told us that Microsoft's CX team was already exploring similar solutions internally—our prototype validated the need.
+While Microsoft didn't commit to implementing our chatbot, they appreciated our **initiative and adaptability**. The MSBA team later told us that Microsoft's CX team was already exploring similar solutions internally; our prototype validated the need.
 
 ---
 
@@ -525,7 +525,7 @@ With semantic search (embeddings + vector DB), we'd have matched on **meaning**,
 - **Knowledge gap:** None of us had used Pinecone/FAISS before March 2025
 - **Good enough:** For a proof-of-concept, keyword search demonstrated the concept
 
-**Lesson:** Technical debt is okay in prototypes, but **acknowledge it**. We clearly listed retrieval limitations in our presentation—Microsoft appreciated the honesty.
+**Lesson:** Technical debt is okay in prototypes, but **acknowledge it**. We clearly listed retrieval limitations in our presentation; Microsoft appreciated the honesty.
 
 ### 4. The Value of RAG (Even If We Didn't Know It)
 
@@ -624,7 +624,7 @@ Instructions:
 1. Answer based ONLY on provided documents
 2. Be concise but thorough
 3. Cite sources (title + URL)
-4. If insufficient info, say so—don't hallucinate
+4. If insufficient info, say so; don't hallucinate
 
 Response:
 ```
@@ -708,7 +708,7 @@ If I were to continue this project (or build something similar), here's my roadm
 - **Career:** Validated my interest in applied AI and data engineering roles
 
 **What I'd Tell Future Capstone Students:**
-1. **Expect pivots.** Your original plan will change—embrace it.
+1. **Expect pivots.** Your original plan will change; embrace it.
 2. **Communicate relentlessly.** Especially in multi-team projects.
 3. **Prototype fast, document well.** POCs are about proving feasibility, not perfection.
 4. **Learn the tools you wish you'd used.** (I'm now proficient in FAISS/Pinecone thanks to this experience.)
